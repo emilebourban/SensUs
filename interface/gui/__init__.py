@@ -198,6 +198,9 @@ class Application(dict):
                     if self['loading']['bar'].progression == 1:
                         self.active_layer = 'results'
 
+            if self.active_layer == 'focus':
+                self[self.active_layer].get_and_flip()
+                
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.quitting = True
@@ -206,7 +209,7 @@ class Application(dict):
                         self.quitting = True
                 if event.type == pygame.MOUSEBUTTONUP:
                     if self.active_layer == 'focus':
-                        self.active_layer == 'loading'
+                        self.active_layer = 'loading'
                     else:
                         pos = pygame.mouse.get_pos()
                         self[self.active_layer].onclick(pos)

@@ -22,7 +22,6 @@ class Capture(object):
 #            raise ValueError("Sorry, no cameras detected.")
 #        self.cam = pygame.camera.Camera(self.clist[0], self.size)
 #        self.cam.start()
-        
         self.cam = pc.Camera()
         self.cam.buffer_newest_first()
         self.cam.set_max_framerate()
@@ -69,22 +68,44 @@ class Capture(object):
     def __del__(self):
         self.release()
         
-    def run(self):
-        going = True
-        while going:
-            events = pygame.event.get()
-            for e in events:
-                if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
-                    # close the camera safely
-#                    self.quitting = True
-                    going = False
-#                    pygame.display.quit()
-                    self.release()
-                    pygame.quit()
-#                    import sys
-#                    sys.exit()
-            self.get_and_flip()
-        
+#    def run(self):
+#        going = True
+#        while going:
+#            events = pygame.event.get()
+#            for e in events:
+#                if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
+#                    # close the camera safely
+##                    self.quitting = True
+#                    going = False
+##                    pygame.display.quit()
+#                    self.release()
+##                    import sys
+##                    sys.exit()
+#            self.get_and_flip()
+#    
+    def draw(self):
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
