@@ -64,10 +64,7 @@ class Capture(object):
             numChannels = image.GetNumChannels()
             if numChannels > 1:
                 array = image.GetData().reshape(h, w, numChannels)
-            else:
-#                ret = image.GetData().reshape(h, w)
-#                array = np.empty((h,w,3),dtype=np.uint8)
-#                array[:,:,2]=array[:,:,1]=array[:,:,0]=ret
+            else:               
                 array = image.GetData().reshape(h, w).T
                 array = array[..., np.newaxis].repeat(3, -1).astype("uint8")
         self.snapshot = pygame.pixelcopy.make_surface(array)
