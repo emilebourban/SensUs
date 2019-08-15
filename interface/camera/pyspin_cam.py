@@ -136,24 +136,23 @@ class Camera:
         self.camera = self.sys.GetCameras().GetByIndex(index)
         self.camera.Init()
         self.nodemap = NodeMap(self.camera.GetNodeMap())
-        self.s_nodemap = self.camera.GetTLStreamNodeMap()
+        self.s_nodemap = NodeMap(self.camera.GetTLStreamNodeMap())
         
     def __getitem__(self, v):
-        return self.nodemap[v]
-        
+        try:
+            return self.nodemap[v]
+        except AttributeError:
+            return self.s_nodemap[v]
+    
+    
     def buffer_newest_first(self):
+#        cam['StreamBufferHandlingMode'].value = 'NewestFirst'
+        
         handling_mode = spin.CEnumerationPtr(self.s_nodemap.GetNode('StreamBufferHandlingMode'))
         handling_mode_entry = handling_mode.GetEntryByName('NewestFirst')
         handling_mode.SetIntValue(handling_mode_entry.GetValue())
     
-    def set_max_framerate(self):
-        node_trigger_mode = spin.CEnumerationPtr(self.camera.GetNodeMap().GetNode('TriggerMode'))
-        node_trigger_mode_off = node_trigger_mode.GetEntryByName('Off')
-        node_trigger_mode.SetIntValue(node_trigger_mode_off.GetValue())
-        acquisition_frame_rate_enable = self.camera.AcquisitionFrameRateEnable
-        acquisition_frame_rate_enable.SetValue(True)
-        self.camera.AcquisitionFrameRate.SetValue(self.camera.AcquisitionFrameRate.GetMax())
-        
+
     def BeginAcquisition(self):
         self.camera.BeginAcquisition()
     

@@ -1,3 +1,7 @@
 
+from camera.pyspin_cam import Camera
 
-print('hello')
+cam = Camera()
+
+print(cam['DecimationSelector'].value)
+

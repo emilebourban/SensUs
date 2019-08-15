@@ -16,20 +16,32 @@ class Capture(object):
         # create a display surface. standard pygame stuff
         self.display = pygame.display.set_mode(self.size, 0)
 
-        # this is the same as what we saw before
-#        self.clist = pygame.camera.list_cameras()
-#        if not self.clist:
-#            raise ValueError("Sorry, no cameras detected.")
-#        self.cam = pygame.camera.Camera(self.clist[0], self.size)
-#        self.cam.start()
+
         self.cam = pc.Camera()
-        self.cam.buffer_newest_first()
-        self.cam.set_max_framerate()
-#        self.cam['AcquisitionMode'].value = 'Continuous'
-        #TODO set the size of acquired image
-        #set exposure
-#        self.cam[]
+#        self.cam.buffer_newest_first()
+        self.cam['StreamBufferHandlingMode'].value = 'NewestFirst'
         
+        #Setting framerate to maximum
+        self.cam['TriggerMode'].value = 'Off'
+        self.cam['AcquisitionFrameRateEnable'].value = True
+        self.cam['AcquisitionFrameRate'].value = self.cam['AcquisitionFrameRate'].max
+        
+#        self.cam['AcquisitionMode'].value = 'Continuous'
+        
+        #binning of the image for smaller image size => higher framerate
+        self.cam['DecimationSelector'].value = 'All'
+        self.cam['BinningHorizontal'].value = 4
+        self.cam['BinningVertical'].value = 4
+        self.cam['BinningHorizontalMode'].value = 'Average'
+        self.cam['BinningVerticalMode'].value = 'Average'
+
+        #setting pixel format
+        self.cam['PixelFormat'].value = 'Mono8'
+        
+        #TODO give size to constructor depending on window size
+        self.cam['Width'].value = self.size[0]
+        self.cam['Height'].value = self.size[1]
+
         self.cam.BeginAcquisition()
         
         # create a surface to capture to.  for performance purposes
@@ -53,9 +65,11 @@ class Capture(object):
             if numChannels > 1:
                 array = image.GetData().reshape(h, w, numChannels)
             else:
-                ret = image.GetData().reshape(h, w)
-                array = np.empty((h,w,3),dtype=np.uint8)
-                array[:,:,2]=array[:,:,1]=array[:,:,0]=ret
+#                ret = image.GetData().reshape(h, w)
+#                array = np.empty((h,w,3),dtype=np.uint8)
+#                array[:,:,2]=array[:,:,1]=array[:,:,0]=ret
+                array = image.GetData().reshape(h, w).T
+                array = array[..., np.newaxis].repeat(3, -1).astype("uint8")
         self.snapshot = pygame.pixelcopy.make_surface(array)
 
         # blit it to the display surface.  simple!
@@ -68,21 +82,7 @@ class Capture(object):
     def __del__(self):
         self.release()
         
-#    def run(self):
-#        going = True
-#        while going:
-#            events = pygame.event.get()
-#            for e in events:
-#                if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
-#                    # close the camera safely
-##                    self.quitting = True
-#                    going = False
-##                    pygame.display.quit()
-#                    self.release()
-##                    import sys
-##                    sys.exit()
-#            self.get_and_flip()
-#    
+
     def draw(self):
         pass
 
