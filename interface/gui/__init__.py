@@ -165,6 +165,8 @@ class Capture(object):
             else:               
                 array = image.GetData().reshape(h, w).T
                 array = array[..., np.newaxis].repeat(3, -1).astype("uint8")
+        image.Release()
+
         self.snapshot = pygame.pixelcopy.make_surface(array)
 
         # blit it to the display surface.  simple!
