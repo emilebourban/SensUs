@@ -137,21 +137,16 @@ class Camera:
         self.camera.Init()
         self.nodemap = NodeMap(self.camera.GetNodeMap())
         self.s_nodemap = NodeMap(self.camera.GetTLStreamNodeMap())
-        
+        self.d_nodemap = NodeMap(self.camera.GetTLDeviceNodeMap)
+    
     def __getitem__(self, v):
         try:
             return self.nodemap[v]
         except AttributeError:
-            return self.s_nodemap[v]
-    
-    
-    def buffer_newest_first(self):
-#        cam['StreamBufferHandlingMode'].value = 'NewestFirst'
-        
-        handling_mode = spin.CEnumerationPtr(self.s_nodemap.GetNode('StreamBufferHandlingMode'))
-        handling_mode_entry = handling_mode.GetEntryByName('NewestFirst')
-        handling_mode.SetIntValue(handling_mode_entry.GetValue())
-    
+            try:
+                return self.s_nodemap[v]
+            except AttributeError:
+                return self.d_nodemap[v]
 
     def BeginAcquisition(self):
         self.camera.BeginAcquisition()
@@ -167,8 +162,3 @@ class Camera:
     
     def __del__(self):
         self.release()
-        
-        
-        
-        
-        
