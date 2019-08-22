@@ -133,7 +133,8 @@ class Camera:
 
     def __init__(self, index=0):
         self.sys = spin.System.GetInstance()
-        self.camera = self.sys.GetCameras().GetByIndex(index)
+        self.camera_list = self.sys.GetCameras()
+        self.camera = self.camera_list.GetByIndex(index)
         self.camera.Init()
         self.nodemap = NodeMap(self.camera.GetNodeMap())
         self.s_nodemap = NodeMap(self.camera.GetTLStreamNodeMap())
@@ -151,14 +152,40 @@ class Camera:
     def BeginAcquisition(self):
         self.camera.BeginAcquisition()
     
+    def EndAcquisition(self):
+        self.camera.EndAcquisition()
+    
+    def Init(self):
+        self.camera.Init()
+        
+    def Deinit(self):
+        self.camera.DeInit()
+    
     def GetNextImage(self):
         return self.camera.GetNextImage()
     
-    def release(self):
-        self.camera.EndAcquisition()
-        self.camera.DeInit()
-        del self.camera
+    def Clear_cam_list(self):
+        self.camera_list.Clear()
+        
+    def ReleaseInstance(self):
         self.sys.ReleaseInstance() 
-    
+
+        
+    def release(self):
+        self.camera.DeInit()
+#        del self.camera
+        self.camera_list.Clear()
+        self.sys.ReleaseInstance() 
+     
+#    def AcquisitionStatus(self):
+#        return self.camera.AcquisitionStatus()
+        
+        
     def __del__(self):
         self.release()
+        
+#        self.camera.EndAcquisition()
+#        self.camera.DeInit()
+#        del self.camera
+#        self.sys.ReleaseInstance() 
+   

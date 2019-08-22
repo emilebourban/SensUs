@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 
 import pygame
-import os
-import time
-from datetime import datetime
 import numpy as np
+from time import time
 from camera import pyspin_cam as pc
-import multiprocessing as mp
-
-import PySpin as spin
 #from camera import cam_stream as cs
 
 class Element:
@@ -99,27 +94,17 @@ class Loading_bar:
 
 
 
-class Capture:
-    def __init__(self, screen):
-        self.stream = True
-        self.cam = None
+class Capture(object):
+    def __init__(self, screen, camera):
+        
         self.screen = screen
-        #        self.cam.buffer_newest_first()
+
+        self.size = (self.screen.get_size())
+        # create a display surface. standard pygame stuff
+#        self.display = screen
         
-    def plug(self):
-        self.cam = pc.Camera()
-        self.cam.Init()
-        self.cam.BeginAcquisition()
-        
-    def unplug(self):
-        self.cam.EndAcquisition()
-        self.cam.DeInit()
-        self.cam.Clear_cam_list()
-        self.cam.ReleaseInstance()
-        #TODO maybe add del cam
-        
-        
-    def set_stream_param(self):
+        self.cam = camera
+#        self.cam.buffer_newest_first()
         self.cam['StreamBufferHandlingMode'].value = 'NewestFirst'
 
         #Setting framerate to maximum
@@ -140,103 +125,87 @@ class Capture:
         self.cam['PixelFormat'].value = 'Mono8'
 
         #TODO give size to constructor depending on window size
+        self.cam['Width'].value = self.size[0]
+        self.cam['Height'].value = self.size[1]
         
-        self.cam['Width'].value = self.screen.get_size()[0]
-        self.cam['Height'].value = self.screen.get_size()[1]
+        print(self.cam['StreamBufferCountMode'].value)
+        print(self.cam['StreamBufferCount'+self.cam['StreamBufferCountMode'].value.rsplit('_',1)[1]].value)
 
-    def set_image_acquisition(self):
-        self.stream = False
-        self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
-        #Setting framerate to maximum
-        self.cam['TriggerMode'].value = 'Off'
-        self.cam['AcquisitionMode'].value = 'Continuous'
-                #TODO give size to constructor depending on window size
-        self.cam['Width'].value = self.cam['Width'].max
-        self.cam['Height'].value = self.cam['Height'].max
-        
-        self.cam['StreamCRCCheckEnable'].value = True
-#        self.cam['AcquisitionMode'].value = 'Continuous'
 
-        #binning of the image for smaller image size => higher framerate
-        self.cam['DecimationSelector'].value = 'All'
-        self.cam['BinningHorizontal'].value = 1
-        self.cam['BinningVertical'].value = 1
-        self.cam['BinningHorizontalMode'].value = 'Average'
-        self.cam['BinningVerticalMode'].value = 'Average'
-        
-        self.cam['GainAuto'].value = 'Off'
-        self.cam['ExposureAuto'].value = 'Once'
-        #setting pixel format
-        self.cam['PixelFormat'].value = 'Mono8'
+        self.cam.BeginAcquisition()
 
-        #TODO give size to constructor depending on window size
-    
+        # create a surface to capture to.  for performance purposes
+        # bit depth is the same as that of the display surface.
+
     def get_image(self):
         # if you don't want to tie the framerate to the camera, you can check
         # if the camera has an image ready.  note that while this works
         # on most cameras, some will never return true.
 
         #de array a surfacepygame
-        if self.stream==True:
-            image = self.cam.GetNextImage()
-            if image.IsIncomplete():
-                print('Image incomplete with image status %d...' % image.GetImageStatus())
-    
-            else:
-                h = image.GetHeight()
-                w = image.GetWidth()
-                numChannels = image.GetNumChannels()
-                if numChannels > 1:
-                    array = image.GetData().reshape(h, w, numChannels)
-                else:
-                    array = image.GetData().reshape(h, w).T
-                    array = array[..., np.newaxis].repeat(3, -1).astype("uint8")
-            
-            image.Release()
-    
-            return pygame.pixelcopy.make_surface(array)
+        image = self.cam.GetNextImage()
+        if image.IsIncomplete():
+            print('Image incomplete with image status %d...' % image.GetImageStatus())
+
         else:
-            image = self.cam.GetNextImage()
-            if image.IsIncomplete():
-                print('Image incomplete with image status %d...' % image.GetImageStatus())
-                image.Release()
-                return 
+            h = image.GetHeight()
+            w = image.GetWidth()
+            numChannels = image.GetNumChannels()
+            if numChannels > 1:
+                array = image.GetData().reshape(h, w, numChannels)
             else:
-                # Convert image to Mono8
-                image_converted = image.Convert(spin.PixelFormat_Mono8)
-                image.Release()
-                return image_converted
-            
-    def BeginAcquisition(self):
+                array = image.GetData().reshape(h, w).T
+                array = array[..., np.newaxis].repeat(3, -1).astype("uint8")
+        
+        image.Release()
+
+        return pygame.pixelcopy.make_surface(array)
+        
+#        # blit it to the display surface.  simple!
+#        self.display.blit(self.snapshot, (0,0))
+
+    def reinit(self, camera):
+        
+        self.cam = camera
+#        self.cam.buffer_newest_first()
+        self.cam['StreamBufferHandlingMode'].value = 'NewestFirst'
+
+        #Setting framerate to maximum
+        self.cam['TriggerMode'].value = 'Off'
+        self.cam['AcquisitionFrameRateEnable'].value = True
+        self.cam['AcquisitionFrameRate'].value = self.cam['AcquisitionFrameRate'].max
+        self.cam['StreamCRCCheckEnable'].value = False
+#        self.cam['AcquisitionMode'].value = 'Continuous'
+
+        #binning of the image for smaller image size => higher framerate
+        self.cam['DecimationSelector'].value = 'All'
+        self.cam['BinningHorizontal'].value = 4
+        self.cam['BinningVertical'].value = 4
+        self.cam['BinningHorizontalMode'].value = 'Average'
+        self.cam['BinningVerticalMode'].value = 'Average'
+
+        #setting pixel format
+        self.cam['PixelFormat'].value = 'Mono8'
+
+        #TODO give size to constructor depending on window size
+        print(self.size[0])
+        self.cam['Width'].value = self.size[0]
+        print(self.cam['Width'].max)
+        print(self.size[1])
+        self.cam['Height'].value = self.size[1]
+
         self.cam.BeginAcquisition()
-        
-    def EndAcquisition(self):
-        self.cam.EndAcquisition()
-            
-    def DeInit(self):
-        self.cam.DeInit()
-    
-    def __del__(self):
-        del self.cam
 
-
-
-class Stream(object):
-
-    def __init__(self, screen):
-        
-        self.screen = screen
-        self.size = (self.screen.get_size())
-        self.capture = Capture(screen)
-        
-    def get_image(self):
-        return self.kamera.get_image()
         
     def click(self,position):
         pass
 
-    def deinit(self):
-        self.kamera.deinit()
+    def release(self):
+        self.cam.release()
+
+    def __del__(self):
+        self.release()
+
 
     def draw(self):
         snapshot = self.get_image()
@@ -246,9 +215,9 @@ class Stream(object):
 
 class Layer(dict):
 
-    def __init__(self, screen, stream=None):
+    def __init__(self, screen, capture=None):
         self.screen = screen
-        self.stream = stream
+        self.capture = capture
     def draw_circle(self, center):
         if 100 < center[0] < 700 and 90 < center[1] < 390:
             pygame.draw.circle(self.screen,(255, 0, 0), center, 100) # change the radius according to the scaling
@@ -283,57 +252,10 @@ class Layer(dict):
                 pass 
             else:
                 e.click(position)
+            
+            
 
 
-def info(title):
-    print(title)
-    print('module name:', __name__)
-    print('parent process:', os.getppid())
-    print('process id:', os.getpid())
-
-def f(conn):
-    info('function f')
-    
-    count=0
-    while conn.recv() and count<10:
-        
-        count +=1
-        print('hello')
-        time.sleep(0.2)
-#        running_img_acqu = conn.recv()
-#    conn.send(name*2)
-
-
-def acquire_images(camera):     
-    try:
-        test_file = open('test.txt', 'w+')
-    except IOError:
-        print('Unable to write to current directory. Please check permissions.')
-        input('Press Enter to exit...')
-        return False
-    test_file.close()
-    os.remove(test_file.name)
-    camera.set_image_acquisition()
-    
-    save_dir=''
-
-    #Starts iteration to set the gain and exposure time
-    for i in range(10):
-         # Create a unique filename
-        im = camera.get_image()
-    
-    num_images = 10
-    
-
-    for i in range(num_images):
-         # Create a unique filename
-        filename = 'Frame_'+'0'*(4 - len(str(i)))+str(i)+'.tif' 
-        im = camera.get_image()
-        print(datetime.now())
-        # Save image
-        im.Save(save_dir+filename)
-        print('Saved image '+filename)
-        time.sleep(2)
 
 class Application(dict):
 
@@ -342,25 +264,23 @@ class Application(dict):
         self.active_layer = 'main'
         self.quitting = False
         self.screen = pygame.display.set_mode((800, 480))
-        
+
         def switch_layer_click(new_layer):
             if self.active_layer == 'focus':
-                self[self.active_layer]['camera'].unplug()
+                self[self.active_layer]['camera'].release()
             elif new_layer == 'focus':
-                self[new_layer]['camera'].plug()
-
+#                self[new_layer]['camera'].reinit(pc.Camera())
+                pass
 #                self[new_layer]['camera'] = Capture(self.screen, pc.Camera())
             self.active_layer = new_layer
-            
 
         
-        def remove_circle_click(next_layer):
+        def remove_circle_click():
             self[self.active_layer].remove_circle()
         
         def second_onclick_func():
             pass
 
-        
         super().__init__({
         "main": Layer(self.screen),
         "chip": Layer(self.screen),
@@ -409,17 +329,18 @@ class Application(dict):
         self['chip']['text4']= Message("Back to menu", self.screen, (0,0,0), (630,300), 10)
 
         self['insert']['text1']= Message("Insert the Chip", self.screen, (0,0,0), (420,50), 30)
-        self['insert']['start'] = Element(self.screen, (255, 255, 255), (420,300), (300,50), switch_layer_click,'loading')
+        self['insert']['start'] = Element(self.screen, (255, 255, 255), (420,300), (300,50), switch_layer_click,'focus')
         self['insert']['text2']= Message("Set the focus. When it is done just touch me... ",self.screen,(0,0,0),(420,300),10)
 
-        self['focus']['camera'] = Stream(self.screen)
+
+        self['focus']['camera'] = Capture(self.screen, pc.Camera())
         self['focus']['text1'] = Message("Set the focus",self.screen,(0,0,0),(420,50),30)
         self['focus']['start'] = Element(self.screen, (255,255,255), (650,350), (100,50), switch_layer_click, 'loading')
         self['focus']['text2'] = Message('Focus is done', self.screen, (0,0,0), (650,350), 20)
         
 
         self['tutorial']['text1']= Message("Steps to do the chip", self.screen, (0,0,0), (420,50), 30)
-        self['tutorial']['start'] = Element(self.screen, (255, 255, 255), (550,300), (300,50), switch_layer_click,'focus')
+        self['tutorial']['start'] = Element(self.screen, (255, 255, 255), (550,300), (300,50), switch_layer_click,'main')
         self['tutorial']['text2']= Message("Back to menu", self.screen, (0,0,0), (550,300), 10)
 
         self['loading']['text1']= Message("Wait a moment", self.screen, (0,0,0), (420,50), 30)
@@ -428,7 +349,7 @@ class Application(dict):
         self['circle']['text1']= Message("Circle detection : ", self.screen, (0,0,0), (420,50), 20)
         self['circle']['start1'] = Element(self.screen, (255, 255, 255), (750,100), (90,50), remove_circle_click, 'circle')
         self['circle']['text2']= Message("Rm", self.screen, (0,0,0), (750,100), 10)
-        self['circle']['start2'] = Element(self.screen, (255, 255, 255), (750,300), (90,50), switch_layer_click,'main')
+        self['circle']['start2'] = Element(self.screen, (255, 255, 255), (750,300), (90,50), switch_layer_click,'result')
         self['circle']['text3']= Message("Next", self.screen, (0,0,0), (750,300), 10)
         self['circle']['centers'] = []
 
@@ -436,50 +357,26 @@ class Application(dict):
 
     def run(self):
         try:
-            t = time.time()
-#            process_started = False
-#            parent_conn, child_conn = mp.Pipe()
-#            
-#            p = mp.Process(target=f, args=(child_conn,))
+            t = time()
+            
             while not self.quitting:
-                    
-#                if self.active_layer == 'chip': #TODO: si active layer == 'loading'
-#                    if process_started == False:
-##                        p = mp.Process(target=acquire_images, args=(self.kamera,))
-#                        p.start()
-#                        process_started = True
-#                    else:
-#                        pass
-#                
-#                parent_conn.send(True)
-#                if self.active_layer == 'insert': #TODO: si active layer == 'measure aborted'
-#                    if p.is_alive():
-#                        parent_conn.send(False)
-#                        time.sleep(1)
-#                        parent_conn.close()
-#                        child_conn.close()
-#                        p.terminate()
-#                    del p
-#                    process_started = False
-#                        
-#                try:
-#                    p
-#                except NameError:
-#                    p = mp.Process(target=f, args=(child_conn,))
-#                    parent_conn.close()
-#                    child_conn.close()
-                    
+    
                 # animation
-                if time.time() - t >= 0.01:
+                if time() - t >= 0.01:
                     if  self.active_layer == 'loading':
                         self['loading']['bar'].progression += 0.001
-                        t = time.time()
+                        t = time()
                         if self['loading']['bar'].progression == 1:
                             self.active_layer = 'circle'
     
-
-#                if self.active_layer =='circle':
-#                    p.terminate()
+#                if self.active_layer == 'focus':
+#                    self[self.active_layer].get_and_flip()
+                    
+    #            if self.active_layer == 'circle':
+    #                img = pygame.image.load(path_image)
+    #                img = pygame.transform.scale(img, (600, 300))
+    #                self.screen.blit(img,(400, 240))
+    
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         self.quitting = True
@@ -494,10 +391,10 @@ class Application(dict):
                                 self['circle']['centers'].append(pos)
                 self[self.active_layer].draw()
                 pygame.display.update()
-#            self["focus"]['camera'].release()
+            self["focus"]['camera'].release()
             pygame.quit()
         except: 
             print('ERROR')
-#            del self["focus"]['camera'].kamera
+            del self["focus"]['camera']
             pygame.quit()
             raise
