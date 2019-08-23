@@ -37,7 +37,7 @@ class Element:
 
 class Message:
 
-    def __init__(self, text,screen, color, pos, size):
+    def __init__(self, text, screen, color, pos, size):
         self.screen = screen
         self.color = color
         self.pos = pos
@@ -100,74 +100,82 @@ class Loading_bar:
 
 
 class Capture:
-    def __init__(self, screen):
-        self.stream = True
+    def __init__(self, screen_size):
+        self.acquisition_started = False
         self.cam = None
-        self.screen = screen
-        #        self.cam.buffer_newest_first()
-        
-    def plug(self):
+        self.screen_size = screen_size
+
+    def make_cam(self):
         self.cam = pc.Camera()
-        self.cam.Init()
+    
+    def plug(self, setting, stream = True):
+        self.cam = pc.Camera()
+        self.set_acquisition_param(stream)
         self.cam.BeginAcquisition()
+        self.acquisition_started = True
+
         
     def unplug(self):
-        self.cam.EndAcquisition()
+        if self.acquisition_started:
+            self.cam.EndAcquisition()
+            self.acquisition_started = False
         self.cam.DeInit()
         self.cam.Clear_cam_list()
+        self.cam.Delete()
         self.cam.ReleaseInstance()
+        del self.cam
         #TODO maybe add del cam
         
         
-    def set_stream_param(self):
-        self.cam['StreamBufferHandlingMode'].value = 'NewestFirst'
-
-        #Setting framerate to maximum
-        self.cam['TriggerMode'].value = 'Off'
-        self.cam['AcquisitionFrameRateEnable'].value = True
-        self.cam['AcquisitionFrameRate'].value = self.cam['AcquisitionFrameRate'].max
-        self.cam['StreamCRCCheckEnable'].value = False
-#        self.cam['AcquisitionMode'].value = 'Continuous'
-
-        #binning of the image for smaller image size => higher framerate
-        self.cam['DecimationSelector'].value = 'All'
-        self.cam['BinningHorizontal'].value = 4
-        self.cam['BinningVertical'].value = 4
-        self.cam['BinningHorizontalMode'].value = 'Average'
-        self.cam['BinningVerticalMode'].value = 'Average'
-
-        #setting pixel format
-        self.cam['PixelFormat'].value = 'Mono8'
-
-        #TODO give size to constructor depending on window size
-        
-        self.cam['Width'].value = self.screen.get_size()[0]
-        self.cam['Height'].value = self.screen.get_size()[1]
-
-    def set_image_acquisition(self):
-        self.stream = False
-        self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
-        #Setting framerate to maximum
-        self.cam['TriggerMode'].value = 'Off'
-        self.cam['AcquisitionMode'].value = 'Continuous'
-                #TODO give size to constructor depending on window size
-        self.cam['Width'].value = self.cam['Width'].max
-        self.cam['Height'].value = self.cam['Height'].max
-        
-        self.cam['StreamCRCCheckEnable'].value = True
-#        self.cam['AcquisitionMode'].value = 'Continuous'
-
-        #binning of the image for smaller image size => higher framerate
-        self.cam['DecimationSelector'].value = 'All'
-        self.cam['BinningHorizontal'].value = 1
-        self.cam['BinningVertical'].value = 1
-        self.cam['BinningHorizontalMode'].value = 'Average'
-        self.cam['BinningVerticalMode'].value = 'Average'
-        
-        self.cam['GainAuto'].value = 'Off'
-        self.cam['ExposureAuto'].value = 'Once'
-        #setting pixel format
-        self.cam['PixelFormat'].value = 'Mono8'
+    def set_acquisition_param(self, stream):
+        if stream:
+            self.cam['StreamBufferHandlingMode'].value = 'NewestFirst'
+    
+            #Setting framerate to maximum
+            self.cam['TriggerMode'].value = 'Off'
+            self.cam['AcquisitionFrameRateEnable'].value = True
+            self.cam['AcquisitionFrameRate'].value = self.cam['AcquisitionFrameRate'].max
+            self.cam['StreamCRCCheckEnable'].value = False
+    #        self.cam['AcquisitionMode'].value = 'Continuous'
+    
+            #binning of the image for smaller image size => higher framerate
+            self.cam['DecimationSelector'].value = 'All'
+            self.cam['BinningHorizontal'].value = 4
+            self.cam['BinningVertical'].value = 4
+            self.cam['BinningHorizontalMode'].value = 'Average'
+            self.cam['BinningVerticalMode'].value = 'Average'
+    
+            #setting pixel format
+            self.cam['PixelFormat'].value = 'Mono8'
+    
+            #TODO give size to constructor depending on window size
+            
+            self.cam['Width'].value = self.screen_size[0]
+            self.cam['Height'].value = self.screen_size[1]
+        else:
+            self.stream = False
+            self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
+            #Setting framerate to maximum
+            self.cam['TriggerMode'].value = 'Off'
+            self.cam['AcquisitionMode'].value = 'Continuous'
+                    #TODO give size to constructor depending on window size
+            self.cam['Width'].value = self.cam['Width'].max
+            self.cam['Height'].value = self.cam['Height'].max
+            
+            self.cam['StreamCRCCheckEnable'].value = True
+    #        self.cam['AcquisitionMode'].value = 'Continuous'
+    
+            #binning of the image for smaller image size => higher framerate
+            self.cam['DecimationSelector'].value = 'All'
+            self.cam['BinningHorizontal'].value = 1
+            self.cam['BinningVertical'].value = 1
+            self.cam['BinningHorizontalMode'].value = 'Average'
+            self.cam['BinningVerticalMode'].value = 'Average'
+            
+            self.cam['GainAuto'].value = 'Off'
+            self.cam['ExposureAuto'].value = 'Once'
+            #setting pixel format
+            self.cam['PixelFormat'].value = 'Mono8'
 
         #TODO give size to constructor depending on window size
     
@@ -217,7 +225,8 @@ class Capture:
         self.cam.DeInit()
     
     def __del__(self):
-        del self.cam
+        self.unplug()
+
 
 
 
@@ -227,16 +236,20 @@ class Stream(object):
         
         self.screen = screen
         self.size = (self.screen.get_size())
-        self.capture = Capture(screen)
+        self.capture = Capture(self.size)
         
     def get_image(self):
-        return self.kamera.get_image()
-        
+        return self.capture.get_image()
+    
+    def plug(self, stream):
+        self.capture.plug(stream)
+    
+    def unplug(self):
+        self.capture.unplug()
+    
     def click(self,position):
         pass
 
-    def deinit(self):
-        self.kamera.deinit()
 
     def draw(self):
         snapshot = self.get_image()
@@ -295,16 +308,20 @@ def f(conn):
     info('function f')
     
     count=0
-    while conn.recv() and count<10:
-        
+    inside_loop = True
+    while inside_loop and count<30:
         count +=1
+#        conn.send(count)
+        inside_loop = conn.recv()
+        print(conn.recv())
+
         print('hello')
         time.sleep(0.2)
 #        running_img_acqu = conn.recv()
-#    conn.send(name*2)
+#        conn.send(count)
 
 
-def acquire_images(camera):     
+def acquire_images(capture):     
     try:
         test_file = open('test.txt', 'w+')
     except IOError:
@@ -313,27 +330,30 @@ def acquire_images(camera):
         return False
     test_file.close()
     os.remove(test_file.name)
-    camera.set_image_acquisition()
+    capture.plug()
+    capture.set_image_acquisition()
     
     save_dir=''
 
     #Starts iteration to set the gain and exposure time
     for i in range(10):
          # Create a unique filename
-        im = camera.get_image()
-    
+        im = capture.get_image()
+        print(i)
     num_images = 10
     
 
     for i in range(num_images):
          # Create a unique filename
         filename = 'Frame_'+'0'*(4 - len(str(i)))+str(i)+'.tif' 
-        im = camera.get_image()
+        im = capture.get_image()
         print(datetime.now())
         # Save image
         im.Save(save_dir+filename)
         print('Saved image '+filename)
         time.sleep(2)
+    capture.unplug()
+        
 
 class Application(dict):
 
@@ -347,7 +367,7 @@ class Application(dict):
             if self.active_layer == 'focus':
                 self[self.active_layer]['camera'].unplug()
             elif new_layer == 'focus':
-                self[new_layer]['camera'].plug()
+                self[new_layer]['camera'].plug(True)
 
 #                self[new_layer]['camera'] = Capture(self.screen, pc.Camera())
             self.active_layer = new_layer
@@ -369,7 +389,7 @@ class Application(dict):
         "focus": Layer(self.screen),
         "loading": Layer(self.screen),
         "circle": Layer(self.screen),
-        "results": Layer(self.screen)
+        "results": Layer(self.screen),
         })
 
 
@@ -390,7 +410,7 @@ class Application(dict):
         self['main']['measure'] = Element(self.screen, (255, 255, 255), (420,75), (600,50), switch_layer_click, 'chip')
         self['main']['Profil'] = Element(self.screen, (255, 255, 255), (420,150), (600,50), switch_layer_click,'chip')
         self['main']['Param'] = Element(self.screen, (255, 255, 255), (420,225), (600,50), switch_layer_click,'chip')
-        self['main']['Help'] = Element(self.screen, (255, 255, 255), (420,300), (600,50), switch_layer_click,'chip')
+        self['main']['Help'] = Element(self.screen, (255, 255, 255), (420,300), (600,50), switch_layer_click,'Katia')
 #       4 messages of the first layer
         self['main']['text1']= Message("Measure",self.screen,(0,0,0),(420,75),10)
         self['main']['text2']= Message("Profils",self.screen,(0,0,0),(420,150),10)
@@ -409,10 +429,10 @@ class Application(dict):
         self['chip']['text4']= Message("Back to menu", self.screen, (0,0,0), (630,300), 10)
 
         self['insert']['text1']= Message("Insert the Chip", self.screen, (0,0,0), (420,50), 30)
-        self['insert']['start'] = Element(self.screen, (255, 255, 255), (420,300), (300,50), switch_layer_click,'loading')
+        self['insert']['start'] = Element(self.screen, (255, 255, 255), (420,300), (300,50), switch_layer_click,'focus')
         self['insert']['text2']= Message("Set the focus. When it is done just touch me... ",self.screen,(0,0,0),(420,300),10)
 
-        self['focus']['camera'] = Stream(self.screen)
+#        self['focus']['camera'] = Stream(self.screen)
         self['focus']['text1'] = Message("Set the focus",self.screen,(0,0,0),(420,50),30)
         self['focus']['start'] = Element(self.screen, (255,255,255), (650,350), (100,50), switch_layer_click, 'loading')
         self['focus']['text2'] = Message('Focus is done', self.screen, (0,0,0), (650,350), 20)
@@ -433,41 +453,58 @@ class Application(dict):
         self['circle']['centers'] = []
 
         self['results']['text1']= Message("Results : ", self.screen, (0,0,0), (420,50), 20)
+        
+
 
     def run(self):
         try:
             t = time.time()
 #            process_started = False
 #            parent_conn, child_conn = mp.Pipe()
-#            
-#            p = mp.Process(target=f, args=(child_conn,))
+#            cap = Capture((10,10))
+#            p = mp.Process(target=acquire_images, args=(cap,))
+#            count = 0
             while not self.quitting:
-                    
-#                if self.active_layer == 'chip': #TODO: si active layer == 'loading'
-#                    if process_started == False:
-##                        p = mp.Process(target=acquire_images, args=(self.kamera,))
-#                        p.start()
-#                        process_started = True
-#                    else:
-#                        pass
-#                
-#                parent_conn.send(True)
-#                if self.active_layer == 'insert': #TODO: si active layer == 'measure aborted'
-#                    if p.is_alive():
-#                        parent_conn.send(False)
-#                        time.sleep(1)
-#                        parent_conn.close()
-#                        child_conn.close()
-#                        p.terminate()
-#                    del p
-#                    process_started = False
-#                        
 #                try:
 #                    p
 #                except NameError:
-#                    p = mp.Process(target=f, args=(child_conn,))
-#                    parent_conn.close()
-#                    child_conn.close()
+#                    cap = Capture((10,10))
+#                    p = mp.Process(target=acquire_images, args=(cap,))
+#                if self.active_layer == 'loading': #TODO: si active layer == 'loading'
+#                    if process_started == False:
+##                        p = mp.Process(target=acquire_images, args=(self.kamera,))
+#                        p.start()
+##                        parent_conn.send(True)
+##                        print('sent1True')
+#                        process_started = True
+#                    else:
+#                        pass
+##                        new_count = parent_conn.recv()
+##                        if count == new_count:
+##                            pass
+##                        else:
+##                            parent_conn.send(True)
+##                            count = new_count
+#                
+#                
+#                if self.active_layer == 'main': #TODO: si active layer == 'measure aborted'
+#                    if p.is_alive():
+##                        parent_conn.send(False)
+##                        print('sent2False')
+##                        time.sleep(5)
+##                        parent_conn.close()
+##                        child_conn.close()
+#                        p.terminate()
+#                    del p
+#                    process_started = False
+##                try:
+##                    parent_conn.send(True)
+##                except OSError:
+#                    print('OS ERROR')
+                    
+              
+#                    p = mp.Process(target=f, args=(Capture(10,10),))
+
                     
                 # animation
                 if time.time() - t >= 0.01:

@@ -158,9 +158,15 @@ class Camera:
     def Init(self):
         self.camera.Init()
         
-    def Deinit(self):
+    def DeInit(self):
         self.camera.DeInit()
     
+    def Delete(self):
+        del self.camera
+        del self.nodemap
+        del self.s_nodemap
+        del self.d_nodemap
+        
     def GetNextImage(self):
         return self.camera.GetNextImage()
     
@@ -181,8 +187,8 @@ class Camera:
 #        return self.camera.AcquisitionStatus()
         
         
-    def __del__(self):
-        self.release()
+#    def __del__(self):
+#        self.release()
         
 #        self.camera.EndAcquisition()
 #        self.camera.DeInit()
