@@ -2,7 +2,6 @@
 
 from application import Application
 import log_setup
-import logging
 
 # set to False if the app should never exit even if interupted or crashed
 CAN_EXIT = True
@@ -27,4 +26,3 @@ if __name__ == '__main__':
     log = log_setup.init()
     while not main(log):
         pass
-

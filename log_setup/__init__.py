@@ -49,12 +49,11 @@ def add_stdout_handler(log):
 
 
 def add_file_handler(log):
-    fmt = '%(asctime)s - $BOLD%(name)-16s$RESET - %(levelname)s - $BOLD'
+    fmt = '%(asctime)s - $BOLD%(name)s$RESET - %(levelname)s - $BOLD'
     fmt = fmt + '%(filename)s$RESET:%(lineno)d - %(message)s'
     fmt = to_ansi_format(fmt, True)
     fh = logging.FileHandler('log')
     fh.setLevel(logging.DEBUG)
-    fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     formatter = logging.Formatter(fmt)
     fh.setFormatter(formatter)
     log.addHandler(fh)
