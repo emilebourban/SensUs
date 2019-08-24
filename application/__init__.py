@@ -35,6 +35,7 @@ class Application(dict):
     def active_layer(self, l):
         if l not in self:
             raise KeyError(l)
+        self.log.debug(f'Moving to layer "{l}"')
         self._active_layer = l
 
     def run(self):

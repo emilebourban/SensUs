@@ -37247,3 +37247,68 @@ AttributeError: 'str' object has no attribute 'click_up'
 2019-08-25 00:14:44,609 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
 2019-08-25 00:14:44,704 - main.gui - [1;34mDEBUG[0m - Pygame initialized
 2019-08-25 00:14:44,808 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:15:53,956 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:15:54,053 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:15:54,155 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 01:00:22,285 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 01:00:22,397 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 01:00:22,409 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 01:18:06,284 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 01:18:06,395 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 01:18:06,499 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 01:18:18,164 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 01:18:18,246 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 01:18:18,261 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 01:19:10,163 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 01:19:10,261 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 01:19:10,360 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 01:20:11,245 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 01:20:11,354 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 01:20:11,458 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 01:20:13,096 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:16,062 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:20:17,329 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:18,396 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:20:19,062 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:19,929 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:20:20,496 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:21,262 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:20:23,029 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:23,429 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:20:23,596 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:23,962 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:20:24,262 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:24,462 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:20:24,696 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:24,929 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:20:25,396 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:25,696 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:20:25,829 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:26,029 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:20:26,162 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:26,329 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:20:26,496 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:26,662 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:20:27,029 - main.app - [1;34mDEBUG[0m - Moving to layer "chip"
+2019-08-25 01:20:27,329 - main.app - [1;34mDEBUG[0m - Moving to layer "main"
+2019-08-25 01:22:29,611 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 01:22:29,715 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 01:22:29,819 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 01:22:33,327 - main - [1;34mDEBUG[0m - Quitting: app returned True
+2019-08-25 01:22:33,725 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 01:22:33,739 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 01:22:34,762 - main - [1;34mDEBUG[0m - Quitting: app returned True
+2019-08-25 01:22:35,127 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 01:22:35,141 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 01:22:36,038 - main - [1;34mDEBUG[0m - Quitting: app returned True
+2019-08-25 01:22:36,443 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 01:22:36,455 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 01:22:37,451 - main - [1;34mDEBUG[0m - Quitting: KeyboardInterrupt
+2019-08-25 01:22:51,791 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 01:22:51,902 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 01:22:52,006 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 01:22:53,774 - main - [1;34mDEBUG[0m - Quitting: app returned True
+2019-08-25 01:24:30,252 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 01:24:30,365 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 01:24:30,466 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 01:24:31,739 - main - [1;34mDEBUG[0m - Quitting: app returned True

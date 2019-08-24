@@ -31,6 +31,7 @@ class MainLayer(Layer):
 
         # TODO remove this element
         self['circle'] = gui.DetectionCircle(self, (100, 100), 32)
+        {1, 2, 34}
 
 
 class ChipLayer(Layer):

@@ -11,9 +11,13 @@ CAN_EXIT = True
 def main(log):
     app = Application()
     try:
-        return app.run()
+        rtn_msg = app.run()
+        if rtn_msg:
+            log.debug(f'Quitting: app returned {rtn_msg}')
+            return True
     except BaseException as e:
         if type(e) is KeyboardInterrupt and CAN_EXIT:
+            log.debug('Quitting: KeyboardInterrupt')
             return True
         log.exception(f'app crashed: {e}')
 
@@ -23,3 +27,4 @@ if __name__ == '__main__':
     log = log_setup.init()
     while not main(log):
         pass
+
