@@ -3,6 +3,7 @@ from .base import Element, Clickable, RectangleClickable
 from logging import getLogger
 from weakref import ref
 from subprocess import run, PIPE
+from collections import OrderedDict
 import re
 
 # TODO dragaeble circles
@@ -34,7 +35,7 @@ def quit():
     pygame.quit()
 
 
-class Layer(dict):
+class Layer(OrderedDict):
 
     def __init__(self, app, bg_color=(200, 200, 255)):
         self.app = ref(app)
@@ -49,7 +50,7 @@ class Layer(dict):
     def clickable_elements(self):
         def is_clickable(e):
             return isinstance(e, Clickable)
-        return {k: v for k, v in self.items() if is_clickable(v)}
+        return OrderedDict([e for e in self.items() if is_clickable(e)])
 
     def draw(self):
         self.screen.fill(self.bg_color)
@@ -60,14 +61,14 @@ class Layer(dict):
                 self.log.exception(f'Failed to draw element: {e}')
 
     def click_down(self, pos):
-        for e in self.clickable_elements.values():
+        for e in reversed(self.clickable_elements.values()):
             try:
                 e.click_down(pos)
             except BaseException as e:
                 self.log.exception(f'Failed to exec click down: {e}')
 
     def click_up(self, pos):
-        for e in self.clickable_elements.values():
+        for e in reversed(self.clickable_elements.values()):
             try:
                 e.click_up(pos)
             except BaseException as e:

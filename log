@@ -37169,3 +37169,12 @@ AttributeError: 'str' object has no attribute 'click_up'
 2019-08-24 22:14:33,127 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
 2019-08-24 22:14:33,212 - main.gui - [1;34mDEBUG[0m - Pygame initialized
 2019-08-24 22:14:33,316 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-24 23:09:54,982 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-24 23:09:55,071 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-24 23:09:55,173 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-24 23:21:45,560 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-24 23:21:45,658 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-24 23:21:45,756 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-24 23:25:05,987 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-24 23:25:06,084 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-24 23:25:06,189 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
