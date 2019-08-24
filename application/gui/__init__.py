@@ -1,5 +1,5 @@
 import pygame
-from .base import Element, Clickable, RectangleClickable
+from . import base
 from logging import getLogger
 from weakref import ref
 from subprocess import run, PIPE
@@ -49,9 +49,16 @@ class Layer(OrderedDict):
     @property
     def clickable_elements(self):
         def is_clickable(e):
-            return isinstance(e, Clickable)
+            return isinstance(e, base.Clickable)
+        elements = [(k, v) for k, v in self.items() if is_clickable(v)]
+        return OrderedDict(elements)
 
-        return OrderedDict([(k, v) for k, v in self.items() if is_clickable(v)])
+    @property
+    def mouse_sentive_elements(self):
+        def is_mouse_sensitive(e):
+            return isinstance(e, base.MouseMotionSensitive)
+        elements = [(k, v) for k, v in self.items() if is_mouse_sensitive(v)]
+        return OrderedDict(elements)
 
     def draw(self):
         self.screen.fill(self.bg_color)
@@ -75,8 +82,15 @@ class Layer(OrderedDict):
             except BaseException as e:
                 self.log.exception(f'Failed to exec click up: {e}')
 
+    def mouse_motion(self, pos):
+        for e in reversed(self.mouse_sentive_elements.values()):
+            try:
+                e.mouse_motion(pos)
+            except BaseException as e:
+                self.log.exception(f'Failed to exec mouse motion: {e}')
 
-class Text(Element):
+
+class Text(base.Element):
 
     # TODO tune default font_size
     def __init__(self, layer, pos, text, font_size=18, color=(0, 0, 0),
@@ -98,7 +112,7 @@ class Text(Element):
         self.screen.blit(surf, rect)
 
 
-class Image(Element):
+class Image(base.Element):
 
     def __init__(self, layer, pos, path, w=None, h=None):
         super().__init__(layer, pos)
@@ -118,7 +132,7 @@ class Image(Element):
         self.screen.blit(self.img, self.pos)
 
 
-class Rectangle(Element):
+class Rectangle(base.Element):
 
     def __init__(self, layer, pos, size, color=(255, 0, 0)):
         super().__init__(self, layer, pos)
@@ -132,12 +146,12 @@ class Rectangle(Element):
         pygame.draw.rect(self.screen, color, [x, y, *s])
 
 
-class Button(Rectangle, Text, RectangleClickable):
+class Button(Rectangle, Text, base.RectangleClickable):
 
     def __init__(self, layer, pos, size, text, action):
         Rectangle.__init__(self, layer, pos, size, (255, 220, 200))
         Text.__init__(self, layer, pos, text)
-        RectangleClickable.__init__(self, pos, size)
+        base.RectangleClickable.__init__(self, pos, size)
         self.action = action
         self.is_pressed = False
 
@@ -155,14 +169,53 @@ class Button(Rectangle, Text, RectangleClickable):
         return True
 
     def on_click_up(self, inside):
-        self.is_pressed = False
-        if inside:
+        if self.is_pressed and inside:
             self.action()
+            self.is_pressed = False
             return True
+        self.is_pressed = False
         return False
 
 
-class Loading_bar(Element):
+class Circle(base.Element):
+
+    def __init__(self, layer, pos, radius, color=(255, 100, 100),
+                 thickness=4):
+        base.Element.__init__(self, layer, pos)
+        self.radius = radius
+        self.color = color
+        self.thickness = thickness
+
+    def draw(self):
+        pygame.draw.circle(self.screen, self.color, self.pos, self.radius,
+                           self.thickness)
+
+
+class DetectionCircle(Circle, base.Draggable, base.CircleClickable):
+
+    def __init__(self, layer, pos, radius, color=(255, 100, 100)):
+        base.Draggable.__init__(self, layer, pos)
+        base.CircleClickable.__init__(self, pos, radius)
+        Circle.__init__(self, layer, pos, radius, color)
+        self.selected = False
+
+    def on_click_down(self, inside):
+        if inside:
+            self.selected = True
+            self.drag_start()
+            return True
+        self.selected = False
+        return False
+
+    def on_click_up(self, inside):
+        self.drag_stop()
+        if inside:
+            return True
+        self.selected = False
+        return False
+
+
+class Loading_bar(base.Element):
 
     # TODO tune padding default value
     # TODO set colors

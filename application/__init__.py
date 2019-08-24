@@ -67,6 +67,10 @@ class Application(dict):
                 pos = pygame.mouse.get_pos()
                 self[self.active_layer].click_up(pos)
 
+            if event.type == pygame.MOUSEMOTION:
+                pos = pygame.mouse.get_pos()
+                self[self.active_layer].mouse_motion(pos)
+
     def draw(self):
         self[self.active_layer].draw()
         pygame.display.update()

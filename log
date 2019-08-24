@@ -37196,3 +37196,54 @@ AttributeError: 'str' object has no attribute 'click_up'
 2019-08-24 23:29:14,452 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
 2019-08-24 23:29:14,535 - main.gui - [1;34mDEBUG[0m - Pygame initialized
 2019-08-24 23:29:14,639 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-24 23:29:55,069 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-24 23:29:55,156 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-24 23:29:55,257 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-24 23:34:43,832 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-24 23:34:43,930 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-24 23:34:44,030 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:00:16,990 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:00:17,079 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:00:17,178 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:03:40,845 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:03:40,929 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:03:41,032 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:04:12,439 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:04:12,534 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:04:12,636 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:05:22,190 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:05:22,274 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:05:22,377 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:06:13,224 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:06:13,312 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:06:13,413 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:06:28,498 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:06:28,590 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:06:28,692 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:07:04,555 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:07:04,638 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:07:04,739 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:07:26,556 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:07:26,646 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:07:26,749 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:09:32,098 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:09:32,185 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:09:32,288 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:09:45,754 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:09:45,845 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:09:45,860 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:10:36,356 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:10:36,445 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:10:36,548 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:12:44,395 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:12:44,487 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:12:44,501 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:13:29,551 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:13:29,643 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:13:29,746 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:13:51,364 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:13:51,456 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:13:51,559 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-25 00:14:44,609 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-25 00:14:44,704 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-25 00:14:44,808 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800

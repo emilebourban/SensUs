@@ -29,6 +29,9 @@ class MainLayer(Layer):
                                   'Help',
                                   lambda: self.set_layer('chip'))
 
+        # TODO remove this element
+        self['circle'] = gui.DetectionCircle(self, (100, 100), 32)
+
 
 class ChipLayer(Layer):
 
