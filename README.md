@@ -4,7 +4,6 @@
 - correct layers
 - rewrite `application/image_analysis` module
 - write `class Video(Element)`
-- use OrderedDict for layer
 - write dot selection layer
 - write acquisition module 
 - (optionnal) generalize positionning system (not resolution dependent)

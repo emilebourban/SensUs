@@ -37178,3 +37178,21 @@ AttributeError: 'str' object has no attribute 'click_up'
 2019-08-24 23:25:05,987 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
 2019-08-24 23:25:06,084 - main.gui - [1;34mDEBUG[0m - Pygame initialized
 2019-08-24 23:25:06,189 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-24 23:26:16,850 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-24 23:26:16,937 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-24 23:26:17,040 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-24 23:27:14,780 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-24 23:27:14,872 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-24 23:27:14,974 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-24 23:27:36,174 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-24 23:27:36,263 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-24 23:27:36,363 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-24 23:28:02,962 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-24 23:28:03,045 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-24 23:28:03,147 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-24 23:28:18,556 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-24 23:28:18,644 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-24 23:28:18,744 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800
+2019-08-24 23:29:14,452 - main - [1;34mDEBUG[0m - ########### NEW LOG SESSION ############
+2019-08-24 23:29:14,535 - main.gui - [1;34mDEBUG[0m - Pygame initialized
+2019-08-24 23:29:14,639 - main.gui - [1;37mINFO[0m - Screen resolution: 1280x800

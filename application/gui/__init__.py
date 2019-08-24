@@ -50,7 +50,8 @@ class Layer(OrderedDict):
     def clickable_elements(self):
         def is_clickable(e):
             return isinstance(e, Clickable)
-        return OrderedDict([e for e in self.items() if is_clickable(e)])
+
+        return OrderedDict([(k, v) for k, v in self.items() if is_clickable(v)])
 
     def draw(self):
         self.screen.fill(self.bg_color)
