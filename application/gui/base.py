@@ -13,7 +13,7 @@ class Element:
 
     @property
     def app(self):
-        return self.layer.app()
+        return self.layer.app
 
     @property
     def screen(self):

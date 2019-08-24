@@ -97,7 +97,7 @@ class Layer(Group):
 
     @property
     def screen(self):
-        return self.app().screen
+        return self.app.screen
 
     def draw(self):
         self.screen.fill(self.bg_color)
