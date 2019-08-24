@@ -44,6 +44,7 @@ def add_stdout_handler(log):
     fmt = to_ansi_format(fmt, True)
     sh = logging.StreamHandler()
     color_formatter = ColoredFormatter(fmt)
+    sh.setLevel(logging.WARNING)
     sh.setFormatter(color_formatter)
     log.addHandler(sh)
 
