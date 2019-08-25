@@ -1,7 +1,6 @@
 # SensUs
 
 ## TODO
-- avoid crash during import PySpin -> Emile
 - correct layers -> Katia
 - rewrite `application/image_analysis` module -> Clara
 - try high pass filter -> Clara
