@@ -83,6 +83,7 @@ class InsertLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
+        size = (200, 40)
         
         self['insert'] = gui.Text(self, (420, 75),
                                   'Insert the chip')
