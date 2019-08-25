@@ -48,6 +48,7 @@ class MouseMotionSensitive:
 
 
 class Draggable(Element, MouseMotionSensitive):
+
     def __init__(self, layer, pos):
         Element.__init__(self, layer, pos)
         self.dragging = False

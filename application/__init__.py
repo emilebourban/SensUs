@@ -2,7 +2,7 @@
 
 from . import gui
 from . import layers
-from . import acquisition as acq
+#from . import acquisition as acq
 import pygame
 from logging import getLogger
 from time import time

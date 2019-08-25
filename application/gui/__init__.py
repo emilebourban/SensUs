@@ -35,7 +35,11 @@ def init(fullscreen=True):
 def quit():
     pygame.quit()
 
+
 class Group(OrderedDict):
+
+    def __init__(self):
+        self.log = getLogger('main.group')
 
     @property
     def clickable_elements(self):
@@ -272,6 +276,7 @@ class Loading_bar(base.Element):
         pygame.draw.rect(self.screen, self.bg_color, (x1, y1, x2, y2), 3)
         pygame.draw.rect(self.screen, self.fg_color, (px1, py1, px2, py2))
 
+
 class Video(base.Element):
 
     def __init__(self, layer, pos):
@@ -281,28 +286,50 @@ class Video(base.Element):
         self.img = self.app.get_image_livestream()
         if not self.img:
             return
-        #self.img = pygame.transform.scale(self.img, (self.screen_width * 0.5, self.screen_height * 0.5))
+        # self.img = pygame.transform.scale(self.img, (self.screen_width * 0.5, self.screen_height * 0.5))
         self.screen.pygame.blit(self.img, self.pos)
 
 
-'''
-class Image(base.Element):
+class Slider(base.Draggable, base.RectangleClickable):
 
-    def __init__(self, layer, pos, path, w=None, h=None):
-        super().__init__(layer, pos)
-        self.img = pygame.image.load(self.path)
-        iw, ih = self.img.get_width(), self.img.get_height()
-        r = iw / ih
-        if not w and not h:
-            w, h = iw, ih
-        elif not w:
-            w, h = ih * r, ih
-        else:
-            w, h = iw, iw / r
-        # TODO check not mixed up w and h
-        self.img = pygame.transform.scale(self.img, w, h)
+    def __init__(self, layer, pos, size, vmin, vmax, action,
+                 padding=20, line_width=4):
+        base.Draggable.__init__(self, layer, pos)
+        base.RectangleClickable.__init__(self, pos, size)
+        self.padding = padding
+        self.line_width = line_width
+        self.vmin = vmin
+        self.vmax = vmax
+        self.action = action
+        self._value = 0
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, v):
+        self._value = v
+        v = self.vmin + v * (self.vmax - self.vmin)
+        self.action(v)
 
     def draw(self):
-        self.screen.blit(self.img, self.pos)
+        self.draw_line()
+        self.draw_dot()
 
-'''
+    def draw_line(self):
+        x, y = self.pos
+        w, h = self.size[0] - 2 * self.padding, self.line_width
+        x, y = x - w / 2, y - h / 2
+        pygame.draw.rect(self.screen, (42, 42, 42), [x, y, w, h])
+
+    def draw_dot(self):
+        w = self.size[0] - 2 * self.padding
+        x = round(self.pos[0] + (self.value - 0.5) * w)
+        y = self.pos[1]
+        pygame.draw.circle(self.screen, (100, 255, 100), (x, y), 16)
+
+    def mouse_motion(self, pos, catched):
+        if self.dragging:
+            x = pos[0] - (self.pos[0] - self.size[0] / 2)
+            self.value = min(max(x / self.size[0], 0), 1)

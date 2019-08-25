@@ -42,7 +42,6 @@ class MainLayer(Layer):
 
         # TODO remove this element
         self['circle'] = gui.DetectionCircle(self, (100, 100), 32)
-        {1, 2, 34}
 
 
 class ChipLayer(Layer):
@@ -123,6 +122,8 @@ class CircleLayer(Layer):
                                  lambda: self.new_circle((100, 100), 42))
         self['rem'] = gui.Button(self, (660, 50), (40, 40), '-',
                                  lambda: self.rem_selected_circles())
+        self['size'] = gui.Slider(self, (400, 340), (512, 64), 10, 100,
+                                  lambda r: self.set_selected_circles_radius(r))
 
     def get_new_key(self):
         for i in count():
@@ -144,6 +145,10 @@ class CircleLayer(Layer):
     def rem_selected_circles(self):
         for k in self.get_selected_circles():
             del self['circles'][k]
+
+    def set_selected_circles_radius(self, r):
+        for k in self.get_selected_circles():
+            self['circles'][k].radius = round(r)
 
 
 class ResultsLayer(Layer):
