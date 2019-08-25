@@ -12,6 +12,10 @@ class Element:
         return self._layer()
 
     @property
+    def app(self):
+        return self.layer.app()
+
+    @property
     def screen(self):
         return self.layer.screen
 
