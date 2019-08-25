@@ -8,6 +8,7 @@
 - write spots selection layer -> Vianney
 - send capture in a subprocess -> Emile
 - Test acquisition, livestream, video element, memory -> Raluca
+- Make link btw image analysis & rest of application -> Raluca
 - Application dual mode oscillation "capture" / "livestream" -> Emile
 - Implement 12bits (10bits?) acquisition -> Emile
 - (Optionnal) multiprocess capture
