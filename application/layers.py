@@ -42,7 +42,6 @@ class MainLayer(Layer):
 
         # TODO remove this element
         self['circle'] = gui.DetectionCircle(self, (100, 100), 32)
-        {1, 2, 34}
 
 
 class ChipLayer(Layer):
@@ -84,6 +83,7 @@ class InsertLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
+        size = (200, 40)
 
         self['insert'] = gui.Text(self, (420, 75),
                                   'Insert the chip')
@@ -92,13 +92,14 @@ class InsertLayer(Layer):
                                       lambda: self.set_layer('focus'))
 
 class FocusLayer(Layer):
+
     # TODO: add a stream object in initGui
     def __init__(self, app):
         super().__init__(app)
         size = (200, 40)
         self['set'] = gui.Text(self, (420, 75),
                                'Set the focus')
-        self['stream'] = gui.Video(self(0,0))
+        self['stream'] = gui.Video(self, (64, 64))
         self['finised'] = gui.Button(self, (420, 150), size,
                                      'Focus is done',
                                      lambda: self.set_layer('loading'))
@@ -126,6 +127,17 @@ class CircleLayer(Layer):
                                  lambda: self.new_circle((100, 100), 42))
         self['rem'] = gui.Button(self, (660, 50), (40, 40), '-',
                                  lambda: self.rem_selected_circles())
+        self['reset'] = gui.Button(self, (740, 50), (80, 40), 'Reset',
+                                   lambda: self.set_circles([]))
+        self['size'] = gui.Slider(self, (400, 340), (512, 64), 10, 200,
+                                  lambda r: self.set_selected_circles_radius(r))
+
+    def select_circle(self, c):
+        for v in self['circles'].values():
+            v.is_selected = False
+        if c:
+            c.is_selected = True
+            self['size'].set(c.radius)
 
     def get_new_key(self):
         for i in count():
@@ -147,6 +159,16 @@ class CircleLayer(Layer):
     def rem_selected_circles(self):
         for k in self.get_selected_circles():
             del self['circles'][k]
+
+    def set_selected_circles_radius(self, r):
+        for k in self.get_selected_circles():
+            self['circles'][k].radius = round(r)
+
+    def click_down(self, pos, catched):
+        catched = super().click_down(pos, catched)
+        if not catched:
+            self.select_circle(None)
+        return catched
 
 
 class ResultsLayer(Layer):

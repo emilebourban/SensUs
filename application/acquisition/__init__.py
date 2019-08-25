@@ -1,11 +1,11 @@
-from camera import Camera
-import PySpin as spin
+from . import camera as cam
 import numpy as np
+from logging import getLogger
 
 
 class Acquistion:
     def __init__(self):
-        self.cam = Camera()
+        self.cam = cam.Camera()
 
     def BeginAcquisition(self):
         self.cam.BeginAcquisition()
@@ -20,8 +20,9 @@ class Acquistion:
 class Capture(Acquistion):
     def __init__(self):
         super().__init__(self)
+        self.log = getLogger('main.capture')
         self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
-
+        # TODO: use full depth, i.e 12 bits for image analysis :PixelFormat_Mono12p, try with packed
         self.cam['PixelFormat'].value = 'Mono8'
         self.cam['AcquisitionMode'].value = 'Continuous'
         self.cam['StreamCRCCheckEnable'].value = True
@@ -38,13 +39,13 @@ class Capture(Acquistion):
     def get_image(self, exposure_setting=False):
         image = self.cam.GetNextImage()
         if image.IsIncomplete():
-            print('Image incomplete with image status %d...' % image.GetImageStatus())
+            self.log.warning('Image incomplete with image status %d...' % image.GetImageStatus())
             image.Release()
-            return 
-        else:
+            return None
+        
             # Convert image to Mono8
+            import PySpin as spin
             image_converted = image.Convert(spin.PixelFormat_Mono8)
-
             image.Release()
             return image_converted
 
@@ -64,7 +65,7 @@ class Capture(Acquistion):
 class LiveStream(Acquistion):
     def __init__(self):
         super().__init__(self)
-
+        self.log = getLogger('main.LiveStream')
         self.cam['StreamBufferHandlingMode'].value = 'NewestFirst'
         self.cam['TriggerMode'].value = 'Off'
         self.cam['AcquisitionFrameRateEnable'].value = True
@@ -90,17 +91,18 @@ class LiveStream(Acquistion):
     def get_image(self):
         image = self.cam.GetNextImage()
         if image.IsIncomplete():
-            print('Image incomplete with image status %d...' % image.GetImageStatus())
-
+            self.log.warning('Image incomplete with image status %d...' % image.GetImageStatus())
+            image.Release()
+            return None
+        
+        h = image.GetHeight()
+        w = image.GetWidth()
+        numChannels = image.GetNumChannels()
+        if numChannels > 1:
+            array = image.GetData().reshape(h, w, numChannels)
         else:
-            h = image.GetHeight()
-            w = image.GetWidth()
-            numChannels = image.GetNumChannels()
-            if numChannels > 1:
-                array = image.GetData().reshape(h, w, numChannels)
-            else:
-                array = image.GetData().reshape(h, w).T
-                array = array[..., np.newaxis].repeat(3, -1).astype("uint8")
+            array = image.GetData().reshape(h, w).T
+            array = array[..., np.newaxis].repeat(3, -1).astype("uint8")
 
         image.Release()
 

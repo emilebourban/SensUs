@@ -2,19 +2,21 @@ import pygame
 from . import base
 from logging import getLogger
 from weakref import ref
-from subprocess import run, PIPE
+from subprocess import run, PIPE, DEVNULL
 from collections import OrderedDict
 import re
+from pygame import gfxdraw
 
 
 def get_screen_resolution(log):
     try:
-        xrandr = run(['xrandr'], stdout=PIPE, encoding='utf8').stdout
+        xrandr = run(['xrandr'], stdout=PIPE, stderr=DEVNULL,
+                     encoding='utf8').stdout
         res = re.search('\s*(\d+x\d+).*\*', xrandr).group(1).split('x')
         res = [int(i) for i in res]
     except BaseException as e:
         log.exception('Failed to get screen resolution, using 800x600: {e}')
-        return [800, 600]
+        return [800, 480]
     log.info(f'Screen resolution: {res[0]}x{res[1]}')
     return res
 
@@ -33,7 +35,12 @@ def init(fullscreen=True):
 def quit():
     pygame.quit()
 
+
 class Group(OrderedDict):
+
+    def __init__(self, *args, **kwargs):
+        self.log = getLogger('main.group')
+        OrderedDict.__init__(self, *args, **kwargs)
 
     @property
     def clickable_elements(self):
@@ -96,7 +103,7 @@ class Layer(Group):
 
     @property
     def screen(self):
-        return self.app().screen
+        return self.app.screen
 
     def draw(self):
         self.screen.fill(self.bg_color)
@@ -207,8 +214,9 @@ class Circle(base.Element):
 
     def draw(self, force_color=None):
         color = force_color if force_color else self.color
-        pygame.draw.circle(self.screen, color, self.pos, self.radius,
-                           self.thickness)
+        gfxdraw.aacircle(self.screen, *self.pos, self.radius, color)
+        #pygame.draw.circle(self.screen, color, self.pos, self.radius,
+                           #self.thickness)
 
 
 class DetectionCircle(Circle, base.Draggable, base.CircleClickable):
@@ -221,23 +229,22 @@ class DetectionCircle(Circle, base.Draggable, base.CircleClickable):
 
     def draw(self):
         if self.is_selected or self.dragging:
-            Circle.draw(self, (100, 255, 0))
+            Circle.draw(self, (20, 200, 0))
         else:
             Circle.draw(self)
 
     def on_click_down(self, inside, catched):
         if catched or not inside:
             return False
+        self.layer.select_circle(self)
         self.drag_start()
         return True
 
     def on_click_up(self, inside, catched):
         if inside and not catched and self.dragging:
             self.drag_stop()
-            self.is_selected = True
             return True
         self.drag_stop()
-        self.is_selected = False
         return False
 
 
@@ -269,7 +276,8 @@ class Loading_bar(base.Element):
         pygame.draw.rect(self.screen, self.bg_color, (x1, y1, x2, y2), 3)
         pygame.draw.rect(self.screen, self.fg_color, (px1, py1, px2, py2))
 
-class Video(base.Element)
+
+class Video(base.Element):
 
     def __init__(self, layer, pos):
         super().__init__(layer, pos)
@@ -278,28 +286,52 @@ class Video(base.Element)
         self.img = self.app.get_image_livestream()
         if not self.img:
             return
-        #self.img = pygame.transform.scale(self.img, (self.screen_width * 0.5, self.screen_height * 0.5))
-        self.screen.pygame.blit.(self.img, self.pos)
+        # self.img = pygame.transform.scale(self.img, (self.screen_width * 0.5, self.screen_height * 0.5))
+        self.screen.pygame.blit(self.img, self.pos)
 
 
-'''
-class Image(base.Element):
+class Slider(base.Draggable, base.RectangleClickable):
 
-    def __init__(self, layer, pos, path, w=None, h=None):
-        super().__init__(layer, pos)
-        self.img = pygame.image.load(self.path)
-        iw, ih = self.img.get_width(), self.img.get_height()
-        r = iw / ih
-        if not w and not h:
-            w, h = iw, ih
-        elif not w:
-            w, h = ih * r, ih
-        else:
-            w, h = iw, iw / r
-        # TODO check not mixed up w and h
-        self.img = pygame.transform.scale(self.img, w, h)
+    def __init__(self, layer, pos, size, vmin, vmax, action,
+                 padding=20, line_width=4):
+        base.Draggable.__init__(self, layer, pos)
+        base.RectangleClickable.__init__(self, pos, size)
+        self.padding = padding
+        self.line_width = line_width
+        self.vmin = vmin
+        self.vmax = vmax
+        self.action = action
+        self._value = 0
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, v):
+        self._value = v
+        self.action(self.vmin + v * (self.vmax - self.vmin))
+
+    def set(self, v):
+        self.value = (v - self.vmin) / (self.vmax - self.vmin)
 
     def draw(self):
-        self.screen.blit(self.img, self.pos)
+        self.draw_line()
+        self.draw_dot()
 
-'''
+    def draw_line(self):
+        x, y = self.pos
+        w, h = self.size[0] - 2 * self.padding, self.line_width
+        x, y = x - w / 2, y - h / 2
+        pygame.draw.rect(self.screen, (42, 42, 42), [x, y, w, h])
+
+    def draw_dot(self):
+        w = self.size[0] - 2 * self.padding
+        x = round(self.pos[0] + (self.value - 0.5) * w)
+        y = self.pos[1]
+        pygame.draw.circle(self.screen, (100, 255, 100), (x, y), 16)
+
+    def mouse_motion(self, pos, catched):
+        if self.dragging:
+            x = pos[0] - (self.pos[0] - self.size[0] / 2)
+            self.value = min(max(x / self.size[0], 0), 1)

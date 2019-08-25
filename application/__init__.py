@@ -3,7 +3,7 @@
 from . import gui
 import os
 from . import layers
-from . import acqusition as acq
+from . import acquisition as acq
 import pygame
 from logging import getLogger
 from time import time
@@ -70,11 +70,11 @@ class Application(dict):
 
                 self.exec_events()
 
-                if active_layer == "focus"
-                    get_image_livestream()
+                if active_layer() == "focus":
+                    self.get_image_livestream()
 
-                if active_layer == "loading"
-                    try
+                if active_layer() == "loading":
+                    try:
                         test_file = open('test.txt', 'w+')
                     except IOError:
                         print('Unable to write to current directory. Please check permissions.')
