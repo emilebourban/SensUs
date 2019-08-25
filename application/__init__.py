@@ -70,13 +70,15 @@ class Application(dict):
     def exec_events(self):
         for event in pygame.event.get():
 
-            # TODO to remove eventually
             if event.type == pygame.QUIT:
                 self.quitting = True
 
-            # TODO to remove eventually
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 self.quitting = True
+
+            # 'd' is pressed -> toggle debug mode
+            if event.type == pygame.KEYDOWN and event.key == 100:
+                self.debug = not self.debug
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
