@@ -21,12 +21,14 @@ def get_screen_resolution(log):
     return res
 
 
-def init(fullscreen=True):
+def init(fullscreen=False, hide_cursor=False):
     log = getLogger('main.gui')
     pygame.init()
     log.debug('Pygame initialized')
     res = get_screen_resolution(log)
     flags = pygame.HWSURFACE | pygame.DOUBLEBUF
+    if hide_cursor:
+        pygame.mouse.set_visible(False)
     if fullscreen:
         return pygame.display.set_mode(res, flags | pygame.FULLSCREEN)
     return pygame.display.set_mode((800, 400), flags)

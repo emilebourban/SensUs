@@ -14,9 +14,11 @@ import re
 
 class Application(dict):
 
-    def __init__(self, debug=False, max_fps=30, ip_refresh_time=1.0):
+    def __init__(self, is_raspi=True, debug=False, max_fps=30,
+                 ip_refresh_time=1.0):
         self.log = getLogger('main.app')
-        self.screen = gui.init(fullscreen=False)
+        self.is_raspi = is_raspi
+        self.screen = gui.init(fullscreen=self.raspi, hide_cursor=is_raspi)
         super().__init__({
             "main": layers.MainLayer(self),
             "chip": layers.ChipLayer(self),
