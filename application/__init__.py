@@ -89,11 +89,9 @@ class Application(dict):
                 self.exec_events()
 
                 if self.active_layer == "focus":
-<<<<<<< HEAD
                     self.image = self.get_image_livestream()
 
                 if self.active_layer == "loading":
-
                     set_exposure_time(self.get_exposure_time())
 
                     try:
