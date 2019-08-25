@@ -11,6 +11,7 @@
 - Make link btw image analysis & rest of application -> Raluca
 - Application dual mode oscillation "capture" / "livestream" -> Emile
 - Implement 12bits (10bits?) acquisition -> Emile
+- Remove cursor in pygame
 - (Optionnal) multiprocess capture
 - (Optionnal) being able to set spots positions during acquisitionduring acquisitions
 
