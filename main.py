@@ -7,8 +7,17 @@ import log_setup
 CAN_EXIT = True
 
 
+def is_raspi():
+    try:
+        from socket import gethostname
+        if 'raspi' in gethostname():
+            return True
+    except BaseException:
+        return False
+
+
 def main(log):
-    app = Application(debug=True)
+    app = Application(is_raspi=is_raspi(), debug=True)
     try:
         rtn_msg = app.run()
         if rtn_msg:

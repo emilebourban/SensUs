@@ -16,21 +16,31 @@ import re
 
 class Application(dict):
 
-    def __init__(self, debug=False, max_fps=30, ip_refresh_time=1.0):
+    def __init__(self, is_raspi=True, debug=False, max_fps=30,
+                 ip_refresh_time=1.0):
         self.log = getLogger('main.app')
-        self.screen = gui.init(fullscreen=False)
+        self.is_raspi = is_raspi
+        self.screen = gui.init(fullscreen=is_raspi, hide_cursor=is_raspi)
         super().__init__({
-            "main": layers.MainLayer(self),
-            "chip": layers.ChipLayer(self),
-            "tutorial": layers.TutorialLayer(self),
-            "insert": layers.InsertLayer(self),
-            "focus": layers.FocusLayer(self),
-            "loading": layers.LoadingLayer(self),
-            "circle": layers.CircleLayer(self),
-            "results": layers.ResultsLayer(self),
+            'welcome': layers.WelcomeLayer(self),
+            'main': layers.MainLayer(self),
+            'chip': layers.ChipLayer(self),
+            'tutorial1': layers.Tutorial1Layer(self),
+            'tutorial2': layers.Tutorial2Layer(self),
+            'tutorial3': layers.Tutorial3Layer(self),
+            'tutorial4': layers.Tutorial4Layer(self),
+            'tutorial5': layers.Tutorial5Layer(self),
+            'insert': layers.InsertLayer(self),
+            'focus': layers.FocusLayer(self),
+            'loading': layers.LoadingLayer(self),
+            'circle': layers.CircleLayer(self),
+            'results': layers.ResultsLayer(self),
+            'profiles': layers.ProfilesLayer(self),
+            'help': layers.HelpLayer(self),
+            'parameters': layers.ParametersLayer(self),
         })
         self.over_layer = layers.OverLayer(self)
-        self._active_layer = 'main'
+        self._active_layer = 'welcome'
         self.quitting = False
         self.max_fps = max_fps
         self.ip_refresh_time = ip_refresh_time
@@ -79,6 +89,7 @@ class Application(dict):
                 self.exec_events()
 
                 if self.active_layer == "focus":
+<<<<<<< HEAD
                     self.image = self.get_image_livestream()
 
                 if self.active_layer == "loading":
@@ -106,9 +117,6 @@ class Application(dict):
                         im.Save(save_dir + filename)
                         print('Saved image' + filename)
                         #envoyé à image_analysis
-
-
-
 
                 self.draw()
         return True
@@ -148,7 +156,6 @@ class Application(dict):
             if event.type == pygame.MOUSEMOTION:
                 pos = pygame.mouse.get_pos()
                 self[self.active_layer].mouse_motion(pos, False)
-
 
     def draw(self):
         self[self.active_layer].draw()

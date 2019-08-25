@@ -21,12 +21,14 @@ def get_screen_resolution(log):
     return res
 
 
-def init(fullscreen=True):
+def init(fullscreen=False, hide_cursor=False):
     log = getLogger('main.gui')
     pygame.init()
     log.debug('Pygame initialized')
     res = get_screen_resolution(log)
     flags = pygame.HWSURFACE | pygame.DOUBLEBUF
+    if hide_cursor:
+        pygame.mouse.set_visible(False)
     if fullscreen:
         return pygame.display.set_mode(res, flags | pygame.FULLSCREEN)
     return pygame.display.set_mode((800, 400), flags)
@@ -144,20 +146,21 @@ class Image(base.Element):
 
     def __init__(self, layer, pos, path, w=None, h=None):
         super().__init__(layer, pos)
-        self.img = pygame.image.load(self.path)
+        self.img = pygame.image.load(path)
         iw, ih = self.img.get_width(), self.img.get_height()
         r = iw / ih
         if not w and not h:
             w, h = iw, ih
         elif not w:
-            w, h = ih * r, ih
-        else:
-            w, h = iw, iw / r
-        # TODO check not mixed up w and h
-        self.img = pygame.transform.scale(self.img, w, h)
+            w, h = round(h * r), h
+        elif not h:
+            w, h = w, round(w / r)
+        self.size = w, h
+        self.img = pygame.transform.scale(self.img, self.size)
 
     def draw(self):
-        self.screen.blit(self.img, self.pos)
+        p = self.pos[0] - self.size[0] / 2, self.pos[1] - self.size[1] / 2
+        self.screen.blit(self.img, p)
 
 
 class Rectangle(base.Element):
