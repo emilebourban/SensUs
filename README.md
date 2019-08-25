@@ -11,6 +11,7 @@
 - Application dual mode oscillation "capture" / "livestream" -> Emile
 - Implement 12bits (10bits?) acquisition -> Emile
 - Remove cursor in pygame
+- (Optionnal) Create disable mode for buttons (becoming grayish)
 - (Optionnal) multiprocess capture
 - (Optionnal) being able to set spots positions during acquisitionduring acquisitions
 
