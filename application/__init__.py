@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from . import gui
+import os
 from . import layers
 from . import acquisition as acq
 import pygame
@@ -35,6 +36,7 @@ class Application(dict):
         self.max_fps = max_fps
         self.ip_refresh_time = ip_refresh_time
         self.debug = debug
+        self.acq = acq.LiveStream()
 
     @property
     def active_layer(self):
@@ -48,10 +50,10 @@ class Application(dict):
         self._active_layer = l
 
     def get_image_capture(self):
-        self.acq.Capture.get_image(self)
+        self.acq.get_image()
 
     def get_image_livestream(self):
-        self.acq.LiveStream.get_image(self)
+        self.acq.get_image()
 
 
     def run(self):
@@ -70,22 +72,24 @@ class Application(dict):
 
                 self.exec_events()
 
-                if self.active_layer == "focus":
+                if active_layer() == "focus":
                     self.get_image_livestream()
 
-                if self.active_layer == "loading":
-
+                if active_layer() == "loading":
                     try:
                         test_file = open('test.txt', 'w+')
                     except IOError:
                         print('Unable to write to current directory. Please check permissions.')
                         input('Press Enter to exit...')
                         return False
+
                     test_file.close()
                     os.remove(test_file.name)
-                    save_dir=''
-                    num_images = 120
 
+
+                    save_dir=''
+
+                    num_images = 120
                     for i in range(num_images):
 
                         filename = 'Frame_'+'0'*(4 - len(str(i)))+str(i)+'.tif'
