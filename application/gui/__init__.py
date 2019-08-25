@@ -213,9 +213,9 @@ class Circle(base.Element):
 
     def draw(self, force_color=None):
         color = force_color if force_color else self.color
-        # gfxdraw.aacircle(self.screen, *self.pos, self.radius, self.color)
-        pygame.draw.circle(self.screen, color, self.pos, self.radius,
-                           self.thickness)
+        gfxdraw.aacircle(self.screen, *self.pos, self.radius, color)
+        #pygame.draw.circle(self.screen, color, self.pos, self.radius,
+                           #self.thickness)
 
 
 class DetectionCircle(Circle, base.Draggable, base.CircleClickable):
@@ -228,23 +228,22 @@ class DetectionCircle(Circle, base.Draggable, base.CircleClickable):
 
     def draw(self):
         if self.is_selected or self.dragging:
-            Circle.draw(self, (100, 255, 0))
+            Circle.draw(self, (20, 200, 0))
         else:
             Circle.draw(self)
 
     def on_click_down(self, inside, catched):
         if catched or not inside:
             return False
+        self.layer.select_circle(self)
         self.drag_start()
         return True
 
     def on_click_up(self, inside, catched):
         if inside and not catched and self.dragging:
             self.drag_stop()
-            self.is_selected = True
             return True
         self.drag_stop()
-        self.is_selected = False
         return False
 
 
@@ -310,8 +309,10 @@ class Slider(base.Draggable, base.RectangleClickable):
     @value.setter
     def value(self, v):
         self._value = v
-        v = self.vmin + v * (self.vmax - self.vmin)
-        self.action(v)
+        self.action(self.vmin + v * (self.vmax - self.vmin))
+
+    def set(self, v):
+        self.value = (v - self.vmin) / (self.vmax - self.vmin)
 
     def draw(self):
         self.draw_line()

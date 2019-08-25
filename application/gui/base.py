@@ -35,10 +35,10 @@ class Clickable:
         return False
 
     def on_click_down(self, inside, catched):
-        pass
+        return False
 
     def on_click_up(self, inside, catched):
-        pass
+        return False
 
 
 class MouseMotionSensitive:
@@ -66,9 +66,11 @@ class Draggable(Element, MouseMotionSensitive):
     def on_click_down(self, inside, catched):
         if inside:
             self.drag_start()
+            return True
 
     def on_click_up(self, inside, catched):
         self.drag_stop()
+        return False
 
 
 class RectangleClickable(Clickable):

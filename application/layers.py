@@ -84,7 +84,6 @@ class InsertLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
         size = (200, 40)
-        
         self['insert'] = gui.Text(self, (420, 75),
                                   'Insert the chip')
         self['continue'] = gui.Button(self, (420, 225), size,
@@ -92,6 +91,7 @@ class InsertLayer(Layer):
                                       lambda: self.set_layer('focus'))
 
 class FocusLayer(Layer):
+
     # TODO: add a stream object in initGui
     def __init__(self, app):
         super().__init__(app)
@@ -126,8 +126,15 @@ class CircleLayer(Layer):
                                  lambda: self.new_circle((100, 100), 42))
         self['rem'] = gui.Button(self, (660, 50), (40, 40), '-',
                                  lambda: self.rem_selected_circles())
-        self['size'] = gui.Slider(self, (400, 340), (512, 64), 10, 100,
+        self['size'] = gui.Slider(self, (400, 340), (512, 64), 10, 200,
                                   lambda r: self.set_selected_circles_radius(r))
+
+    def select_circle(self, c):
+        for v in self['circles'].values():
+            v.is_selected = False
+        if c:
+            c.is_selected = True
+            self['size'].set(c.radius)
 
     def get_new_key(self):
         for i in count():
@@ -153,6 +160,12 @@ class CircleLayer(Layer):
     def set_selected_circles_radius(self, r):
         for k in self.get_selected_circles():
             self['circles'][k].radius = round(r)
+
+    def click_down(self, pos, catched):
+        catched = super().click_down(pos, catched)
+        if not catched:
+            self.select_circle(None)
+        return catched
 
 
 class ResultsLayer(Layer):
