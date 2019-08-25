@@ -2,7 +2,7 @@ import pygame
 from . import base
 from logging import getLogger
 from weakref import ref
-from subprocess import run, PIPE
+from subprocess import run, PIPE, DEVNULL
 from collections import OrderedDict
 import re
 from pygame import gfxdraw
@@ -10,12 +10,13 @@ from pygame import gfxdraw
 
 def get_screen_resolution(log):
     try:
-        xrandr = run(['xrandr'], stdout=PIPE, encoding='utf8').stdout
+        xrandr = run(['xrandr'], stdout=PIPE, stderr=DEVNULL,
+                     encoding='utf8').stdout
         res = re.search('\s*(\d+x\d+).*\*', xrandr).group(1).split('x')
         res = [int(i) for i in res]
     except BaseException as e:
         log.exception('Failed to get screen resolution, using 800x600: {e}')
-        return [800, 600]
+        return [800, 480]
     log.info(f'Screen resolution: {res[0]}x{res[1]}')
     return res
 
