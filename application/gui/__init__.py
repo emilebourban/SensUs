@@ -6,8 +6,6 @@ from subprocess import run, PIPE
 from collections import OrderedDict
 import re
 
-# TODO dragaeble circles
-
 
 def get_screen_resolution(log):
     try:
@@ -15,7 +13,8 @@ def get_screen_resolution(log):
         res = re.search('\s*(\d+x\d+).*\*', xrandr).group(1).split('x')
         res = [int(i) for i in res]
     except BaseException as e:
-        log.exception('Failed to get screen resolution: {e}')
+        log.exception('Failed to get screen resolution, using 800x600: {e}')
+        return [800, 600]
     log.info(f'Screen resolution: {res[0]}x{res[1]}')
     return res
 
@@ -34,10 +33,59 @@ def init(fullscreen=True):
 def quit():
     pygame.quit()
 
+class Group(OrderedDict):
 
-class Layer(OrderedDict):
+    @property
+    def clickable_elements(self):
+        def is_clickable(e):
+            return isinstance(e, base.Clickable) or isinstance(e, Group)
+        elements = [(k, v) for k, v in self.items() if is_clickable(v)]
+        return OrderedDict(elements)
+
+    @property
+    def mouse_sentive_elements(self):
+        def is_mouse_sensitive(e):
+            mse = isinstance(e, base.MouseMotionSensitive)
+            return mse or isinstance(e, Group)
+        elements = [(k, v) for k, v in self.items() if is_mouse_sensitive(v)]
+        return OrderedDict(elements)
+
+    def draw(self):
+        for element in self.values():
+            try:
+                element.draw()
+            except BaseException as e:
+                self.log.exception(f'Failed to draw element: {e}')
+
+    def click_down(self, pos, catched):
+        for e in reversed(self.clickable_elements.values()):
+            try:
+                catched = e.click_down(pos, catched) or catched
+            except BaseException as e:
+                self.log.exception(f'Failed to exec click down: {e}')
+        return catched
+
+    def click_up(self, pos, catched):
+        for e in reversed(self.clickable_elements.values()):
+            try:
+                catched = e.click_up(pos, catched) or catched
+            except BaseException as e:
+                self.log.exception(f'Failed to exec click up: {e}')
+        return catched
+
+    def mouse_motion(self, pos, catched):
+        for e in reversed(self.mouse_sentive_elements.values()):
+            try:
+                catched = e.mouse_motion(pos, catched) or catched
+            except BaseException as e:
+                self.log.exception(f'Failed to exec mouse motion: {e}')
+        return catched
+
+
+class Layer(Group):
 
     def __init__(self, app, bg_color=(200, 200, 255)):
+        super().__init__()
         self._app = ref(app)
         self.bg_color = bg_color
         self.log = getLogger('main.layer')
@@ -48,50 +96,11 @@ class Layer(OrderedDict):
 
     @property
     def screen(self):
-        return self.app.screen
-
-    @property
-    def clickable_elements(self):
-        def is_clickable(e):
-            return isinstance(e, base.Clickable)
-        elements = [(k, v) for k, v in self.items() if is_clickable(v)]
-        return OrderedDict(elements)
-
-    @property
-    def mouse_sentive_elements(self):
-        def is_mouse_sensitive(e):
-            return isinstance(e, base.MouseMotionSensitive)
-        elements = [(k, v) for k, v in self.items() if is_mouse_sensitive(v)]
-        return OrderedDict(elements)
+        return self.app().screen
 
     def draw(self):
         self.screen.fill(self.bg_color)
-        for element in self.values():
-            try:
-                element.draw()
-            except BaseException as e:
-                self.log.exception(f'Failed to draw element: {e}')
-
-    def click_down(self, pos):
-        for e in reversed(self.clickable_elements.values()):
-            try:
-                e.click_down(pos)
-            except BaseException as e:
-                self.log.exception(f'Failed to exec click down: {e}')
-
-    def click_up(self, pos):
-        for e in reversed(self.clickable_elements.values()):
-            try:
-                e.click_up(pos)
-            except BaseException as e:
-                self.log.exception(f'Failed to exec click up: {e}')
-
-    def mouse_motion(self, pos):
-        for e in reversed(self.mouse_sentive_elements.values()):
-            try:
-                e.mouse_motion(pos)
-            except BaseException as e:
-                self.log.exception(f'Failed to exec mouse motion: {e}')
+        Group.draw(self)
 
 
 class Text(base.Element):
@@ -102,18 +111,26 @@ class Text(base.Element):
         super().__init__(layer, pos)
         self.fg_color = color
         self.font_size = font_size
-        self.text = text
         self.font = pygame.font.Font(font, self.font_size)
+        self.text = text
 
-    def text_objects(self):
-        surf = self.font.render(self.text, True, self.fg_color)
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, t):
+        self._text = t
+        self.surf, self.rect = self.text_objects(t)
+        self.rect.center = self.pos
+
+    def text_objects(self, text):
+        surf = self.font.render(text, True, self.fg_color)
         return surf, surf.get_rect()
 
     def draw(self):
-        surf, rect = self.text_objects()
-        rect.center = self.pos
         # TODO center text ?
-        self.screen.blit(surf, rect)
+        self.screen.blit(self.surf, self.rect)
 
 
 class Image(base.Element):
@@ -139,7 +156,7 @@ class Image(base.Element):
 class Rectangle(base.Element):
 
     def __init__(self, layer, pos, size, color=(255, 0, 0)):
-        super().__init__(self, layer, pos)
+        base.Element.__init__(self, layer, pos)
         self.size = size
         self.bg_color = color
 
@@ -166,17 +183,15 @@ class Button(Rectangle, Text, base.RectangleClickable):
             Rectangle.draw(self)
         Text.draw(self)
 
-    def on_click_down(self, inside):
-        if inside:
+    def on_click_down(self, inside, catched):
+        if not catched and inside:
             self.is_pressed = True
             return True
-        return True
+        return False
 
-    def on_click_up(self, inside):
+    def on_click_up(self, inside, catched):
         if self.is_pressed and inside:
             self.action()
-            self.is_pressed = False
-            return True
         self.is_pressed = False
         return False
 
@@ -190,8 +205,9 @@ class Circle(base.Element):
         self.color = color
         self.thickness = thickness
 
-    def draw(self):
-        pygame.draw.circle(self.screen, self.color, self.pos, self.radius,
+    def draw(self, force_color=None):
+        color = force_color if force_color else self.color
+        pygame.draw.circle(self.screen, color, self.pos, self.radius,
                            self.thickness)
 
 
@@ -201,21 +217,27 @@ class DetectionCircle(Circle, base.Draggable, base.CircleClickable):
         base.Draggable.__init__(self, layer, pos)
         base.CircleClickable.__init__(self, pos, radius)
         Circle.__init__(self, layer, pos, radius, color)
-        self.selected = False
+        self.is_selected = False
 
-    def on_click_down(self, inside):
-        if inside:
-            self.selected = True
-            self.drag_start()
+    def draw(self):
+        if self.is_selected or self.dragging:
+            Circle.draw(self, (100, 255, 0))
+        else:
+            Circle.draw(self)
+
+    def on_click_down(self, inside, catched):
+        if catched or not inside:
+            return False
+        self.drag_start()
+        return True
+
+    def on_click_up(self, inside, catched):
+        if inside and not catched and self.dragging:
+            self.drag_stop()
+            self.is_selected = True
             return True
-        self.selected = False
-        return False
-
-    def on_click_up(self, inside):
         self.drag_stop()
-        if inside:
-            return True
-        self.selected = False
+        self.is_selected = False
         return False
 
 
@@ -256,7 +278,6 @@ class Video(base.Element)
         self.img = self.app.get_image_livestream()
         if not self.img:
             return
-
         #self.img = pygame.transform.scale(self.img, (self.screen_width * 0.5, self.screen_height * 0.5))
         self.screen.pygame.blit.(self.img, self.pos)
 

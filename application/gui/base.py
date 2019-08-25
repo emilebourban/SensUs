@@ -11,8 +11,9 @@ class Element:
     def layer(self):
         return self._layer()
 
+    @property
     def app(self):
-        return self._layer_app()
+        return self.layer.app()
 
     @property
     def screen(self):
@@ -24,25 +25,25 @@ class Element:
 
 class Clickable:
 
-    def click_down(self, pos):
-        return self.on_click_down(self.is_in(pos))
+    def click_down(self, pos, catched):
+        return self.on_click_down(self.is_in(pos), catched) or catched
 
-    def click_up(self, pos):
-        return self.on_click_up(self.is_in(pos))
+    def click_up(self, pos, catched):
+        return self.on_click_up(self.is_in(pos), catched) or catched
 
     def is_in(self, pos):
         return False
 
-    def on_click_down(self, inside):
+    def on_click_down(self, inside, catched):
         pass
 
-    def on_click_up(self, inside):
+    def on_click_up(self, inside, catched):
         pass
 
 
 class MouseMotionSensitive:
 
-    def mouse_motion(self, pos):
+    def mouse_motion(self, pos, catched):
         pass
 
 
@@ -57,16 +58,16 @@ class Draggable(Element, MouseMotionSensitive):
     def drag_stop(self):
         self.dragging = False
 
-    def mouse_motion(self, pos):
+    def mouse_motion(self, pos, catched):
         if self.dragging:
             self.pos = pos
 
-    def on_click_down(self, inside):
+    def on_click_down(self, inside, catched):
         if inside:
-            self.draw_start()
+            self.drag_start()
 
-    def on_click_up(self, inside):
-        self.draw_stop()
+    def on_click_up(self, inside, catched):
+        self.drag_stop()
 
 
 class RectangleClickable(Clickable):

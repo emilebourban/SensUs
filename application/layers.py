@@ -1,4 +1,5 @@
 from . import gui
+from itertools import count
 
 
 class Layer(gui.Layer):
@@ -8,6 +9,17 @@ class Layer(gui.Layer):
 
     def set_layer(self, l):
         self.app().active_layer = l
+
+
+class OverLayer(Layer):
+
+    def __init__(self, app):
+        super().__init__(app)
+        self['ip'] = gui.Text(self, (400, 16), '-', font_size=11)
+
+    # overwrite draw to avoid drawing the background
+    def draw(self):
+        gui.Group.draw(self)
 
 
 class MainLayer(Layer):
@@ -26,7 +38,7 @@ class MainLayer(Layer):
                                    lambda: self.set_layer('chip'))
         self['help'] = gui.Button(self, (420, 300), size,
                                   'Help',
-                                  lambda: self.set_layer('chip'))
+                                  lambda: self.set_layer('circle'))
 
         # TODO remove this element
         self['circle'] = gui.DetectionCircle(self, (100, 100), 32)
@@ -96,7 +108,7 @@ class LoadingLayer(Layer):
         size = (200, 40)
         self['wait'] = gui.Text(self, (420, 75),
                                 'Wait a moment')
-        self['bar'] = gui.Loading_bar(self.screen, (420, 225), size,
+        self['bar'] = gui.Loading_bar(self, (420, 225), size,
                                       lambda: self.set_layer('circle'))
 
 
@@ -104,13 +116,34 @@ class CircleLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
-        size = (200, 40)
-
         self['wait'] = gui.Text(self, (420, 75),
                                 'Choose the cercle')
-        self['circle'] = gui.Button(self.screen, (420, 150), size,
-                                    'Detection done',
-                                    lambda: self.set_layer('results'))
+        self['circles'] = gui.Group()
+        self['add'] = gui.Button(self, (600, 50), (40, 40), '+',
+                                 lambda: self.new_circle((100, 100), 42))
+        self['rem'] = gui.Button(self, (660, 50), (40, 40), '-',
+                                 lambda: self.rem_selected_circles())
+
+    def get_new_key(self):
+        for i in count():
+            if i not in self['circles']:
+                return i
+
+    def get_selected_circles(self):
+        return {k for k, v in self['circles'].items() if v.is_selected}
+
+    def set_circles(self, circles):
+        circles = [gui.DetectionCircle(self, p, r) for p, r in circles]
+        circles = [(self.get_new_key(), c) for c in circles]
+        self['circles'] = gui.Group(circles)
+
+    def new_circle(self, p, r):
+        circle = gui.DetectionCircle(self, p, r)
+        self['circles'][self.get_new_key()] = circle
+
+    def rem_selected_circles(self):
+        for k in self.get_selected_circles():
+            del self['circles'][k]
 
 
 class ResultsLayer(Layer):
@@ -119,9 +152,9 @@ class ResultsLayer(Layer):
         super().__init__(app)
         size = (200, 40)
 
-        self['result'] = gui.Text(self.screen, (420, 75),
+        self['result'] = gui.Text(self, (420, 75),
                                   'The result')
-        self['back'] = gui.Button(self.screen, (420, 150), size,
+        self['back'] = gui.Button(self, (420, 150), size,
                                   'Back to menu',
                                   lambda: self.set_layer('main'))
 
