@@ -289,6 +289,7 @@ class Video(base.Element):
         if not self.app.image:
             return
         # self.img = pygame.transform.scale(self.img, (self.screen_width * 0.5, self.screen_height * 0.5))
+        self.app.image = pygame.pixelcopy.make_surface(self.app.image)
         self.screen.pygame.blit(self.app.image, self.pos)
 
 

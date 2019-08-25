@@ -19,7 +19,7 @@ class Acquistion:
 
 class Capture(Acquistion):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
         self.log = getLogger('main.capture')
         self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
         # TODO: use full depth, i.e 12 bits for image analysis :PixelFormat_Mono12p, try with packed
@@ -62,11 +62,11 @@ class Capture(Acquistion):
     def set_exposure_time(self, exp):
         self.cam['ExposureAuto'].value = 'Off'
         self.cam['ExposureTime'].value = exp
-        
+
 
 class LiveStream(Acquistion):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
         self.log = getLogger('main.LiveStream')
         self.cam['StreamBufferHandlingMode'].value = 'NewestFirst'
         self.cam['TriggerMode'].value = 'Off'
@@ -107,4 +107,4 @@ class LiveStream(Acquistion):
 
         image.Release()
 
-        return pygame.pixelcopy.make_surface(array)
+        return array
