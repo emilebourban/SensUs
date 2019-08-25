@@ -8,7 +8,7 @@ CAN_EXIT = True
 
 
 def main(log):
-    app = Application()
+    app = Application(debug=True)
     try:
         rtn_msg = app.run()
         if rtn_msg:

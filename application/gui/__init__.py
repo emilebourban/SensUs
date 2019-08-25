@@ -62,6 +62,9 @@ class Layer(OrderedDict):
 
     def draw(self):
         self.screen.fill(self.bg_color)
+        self.draw_elements()
+
+    def draw_elements(self):
         for element in self.values():
             try:
                 element.draw()
@@ -98,18 +101,26 @@ class Text(base.Element):
         super().__init__(layer, pos)
         self.fg_color = color
         self.font_size = font_size
-        self.text = text
         self.font = pygame.font.Font(font, self.font_size)
+        self.text = text
 
-    def text_objects(self):
-        surf = self.font.render(self.text, True, self.fg_color)
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, t):
+        self._text = t
+        self.surf, self.rect = self.text_objects(t)
+        self.rect.center = self.pos
+
+    def text_objects(self, text):
+        surf = self.font.render(text, True, self.fg_color)
         return surf, surf.get_rect()
 
     def draw(self):
-        surf, rect = self.text_objects()
-        rect.center = self.pos
         # TODO center text ?
-        self.screen.blit(surf, rect)
+        self.screen.blit(self.surf, self.rect)
 
 
 class Image(base.Element):
@@ -135,7 +146,7 @@ class Image(base.Element):
 class Rectangle(base.Element):
 
     def __init__(self, layer, pos, size, color=(255, 0, 0)):
-        super().__init__(self, layer, pos)
+        base.Element.__init__(self, layer, pos)
         self.size = size
         self.bg_color = color
 
