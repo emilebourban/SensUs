@@ -13,7 +13,8 @@ def get_screen_resolution(log):
         res = re.search('\s*(\d+x\d+).*\*', xrandr).group(1).split('x')
         res = [int(i) for i in res]
     except BaseException as e:
-        log.exception('Failed to get screen resolution: {e}')
+        log.exception('Failed to get screen resolution, using 800x600: {e}')
+        return [800, 600]
     log.info(f'Screen resolution: {res[0]}x{res[1]}')
     return res
 
