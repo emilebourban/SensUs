@@ -31,7 +31,9 @@ class Capture(Acquistion):
         self.cam['Height'].value = self.cam['Height'].max
         self.cam['GainAuto'].value = 'Off'
         self.cam['Gain'].value= 0
-        self.cam['ExposureAuto'].value = 'Off'
+        self.cam['AutoExposureExposureTimeUpperLimit'].value = 50000
+        self.cam['ExposureAuto'].value = 'Once'
+
         self.BeginAcquisition()
         
     def get_image(self, exposure_setting=False):
@@ -78,6 +80,7 @@ class LiveStream(Acquistion):
         self.cam['PixelFormat'].value = 'Mono8'
         self.cam['GainAuto'].value = 'Off'
         self.cam['Gain'].value= 0        
+        self.cam['AutoExposureExposureTimeUpperLimit'].value = 50000
         self.cam['ExposureAuto'].value = 'Once'
         #TODO take smaller part of image if lagging
         self.cam['Width'].value = self.cam['Width'].max
