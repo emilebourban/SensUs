@@ -17,9 +17,9 @@ class OverLayer(Layer):
         super().__init__(app)
         self['ip'] = gui.Text(self, (400, 16), '-', font_size=11)
 
-    # overwrite draw method to avoid filling with background
+    # overwrite draw to avoid drawing the background
     def draw(self):
-        self.draw_elements()
+        gui.Group.draw(self)
 
 
 class MainLayer(Layer):
@@ -115,25 +115,26 @@ class CircleLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
-        self.circles = []
-
         self['wait'] = gui.Text(self, (420, 75),
                                 'Choose the cercle')
         self['add'] = gui.Button(self, (600, 50), (40, 40), '+',
                                  lambda: self.new_circle((100, 100), 42))
 
-    # TODO also iter on self.circles for draw, click, drag...
-    def draw(self):
-        Layer.draw(self)
-        for c in self.circles:
-            c.draw()
+    def get_circles_keys(self):
+        n = len(self.circle_prefix)
+        return {k for k in self.keys() if k[:n] == self.circle_prefix}
 
     def set_circles(self, circles):
-        self.circles = [gui.DetectionCircle(self, p, r) for p, r in circles]
+        for k in self.get_circles_keys():
+            del self[k]
+        for i, c in enumerate(circles):
+            circle = gui.DetectionCircle(self, *c)
+            self[self.circle_prefix + str(i)] = circle
 
     def new_circle(self, p, r):
-        print(f'new circle r={r} at p={p}')
-        self.circles.append(gui.DetectionCircle(self, p, r))
+        n = len(self.get_circles_keys())
+        circle = gui.DetectionCircle(self, p, r)
+        self[self.circle_prefix + str(n)] = circle
 
 
 class ResultsLayer(Layer):

@@ -35,16 +35,7 @@ def quit():
     pygame.quit()
 
 
-class Layer(OrderedDict):
-
-    def __init__(self, app, bg_color=(200, 200, 255)):
-        self.app = ref(app)
-        self.bg_color = bg_color
-        self.log = getLogger('main.layer')
-
-    @property
-    def screen(self):
-        return self.app().screen
+class Group(OrderedDict):
 
     @property
     def clickable_elements(self):
@@ -61,10 +52,6 @@ class Layer(OrderedDict):
         return OrderedDict(elements)
 
     def draw(self):
-        self.screen.fill(self.bg_color)
-        self.draw_elements()
-
-    def draw_elements(self):
         for element in self.values():
             try:
                 element.draw()
@@ -91,6 +78,23 @@ class Layer(OrderedDict):
                 e.mouse_motion(pos)
             except BaseException as e:
                 self.log.exception(f'Failed to exec mouse motion: {e}')
+
+
+class Layer(Group):
+
+    def __init__(self, app, bg_color=(200, 200, 255)):
+        super().__init__()
+        self.app = ref(app)
+        self.bg_color = bg_color
+        self.log = getLogger('main.layer')
+
+    @property
+    def screen(self):
+        return self.app().screen
+
+    def draw(self):
+        self.screen.fill(self.bg_color)
+        Group.draw(self)
 
 
 class Text(base.Element):
