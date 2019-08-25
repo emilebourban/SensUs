@@ -3,6 +3,7 @@
 from . import gui
 import os
 from . import layers
+#from . import image_analysis
 from . import acquisition as acq
 import pygame
 from logging import getLogger
@@ -35,6 +36,7 @@ class Application(dict):
         self.ip_refresh_time = ip_refresh_time
         self.debug = debug
         self.acq = acq.LiveStream()
+        self.image = None
 
     @property
     def active_layer(self):
@@ -47,11 +49,17 @@ class Application(dict):
         self.log.debug(f'Moving to layer "{l}"')
         self._active_layer = l
 
-    def get_image_capture(self):
-        self.acq.get_image()
-
     def get_image_livestream(self):
-        self.acq.get_image()
+        return self.acq.get_image()
+
+    def get_exposure_time(self):
+        return self.acq.set_exposure_time()
+
+    def set_exposure_time(self, exp):
+        self.acq.set_exposure_time(exp)
+
+    def get_image_capture(self):
+        return self.acq.get_image()
 
 
     def run(self):
@@ -70,32 +78,37 @@ class Application(dict):
 
                 self.exec_events()
 
-                if active_layer() == "focus":
-                    self.get_image_livestream()
+                if self.active_layer == "focus":
+                    self.image = self.get_image_livestream()
 
-                if active_layer() == "loading":
+                if self.active_layer == "loading":
+
+                    set_exposure_time(self.get_exposure_time())
+
                     try:
                         test_file = open('test.txt', 'w+')
                     except IOError:
-                        print('Unable to write to current directory. Please check permissions.')
+                        self.log.warn('Unable to write to current directory. Please check permissions.')
                         input('Press Enter to exit...')
                         return False
 
                     test_file.close()
                     os.remove(test_file.name)
 
-
-                    save_dir=''
-
+                    save_dir='/Prog/SensUs/application/acquisition/saved_images/'
                     num_images = 120
-                    for i in range(num_images):
 
+                    for i in range(num_images):
                         filename = 'Frame_'+'0'*(4 - len(str(i)))+str(i)+'.tif'
-                        im = get_image_capture()
+                        self.image = self.get_image_capture()
                         print(datetime.now())
                         # Save image
-                        im.Save(save_dir+filename)
-                        print('Saved image '+filename)
+                        im.Save(save_dir + filename)
+                        print('Saved image' + filename)
+                        #envoyé à image_analysis
+
+
+
 
                 self.draw()
         return True
@@ -109,6 +122,7 @@ class Application(dict):
         except BaseException as e:
             self.log.warn(f'Failed to get ip addresses: {e}')
             return ['Failed to get IP addresses']
+
 
     def exec_events(self):
         for event in pygame.event.get():

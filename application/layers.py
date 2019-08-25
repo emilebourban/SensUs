@@ -99,7 +99,7 @@ class FocusLayer(Layer):
         size = (200, 40)
         self['set'] = gui.Text(self, (420, 75),
                                'Set the focus')
-        self['stream'] = gui.Video(self, (64, 64))
+        self['stream'] = gui.Video(self, (0, 0))
         self['finised'] = gui.Button(self, (420, 150), size,
                                      'Focus is done',
                                      lambda: self.set_layer('loading'))

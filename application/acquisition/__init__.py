@@ -36,20 +36,20 @@ class Capture(Acquistion):
         self.cam['ExposureAuto'].value = 'Once'
         self.BeginAcquisition()
 
-    def get_image(self, exposure_setting=False):
+    def get_image(self):
         image = self.cam.GetNextImage()
         if image.IsIncomplete():
             self.log.warning('Image incomplete with image status %d...' % image.GetImageStatus())
             image.Release()
             return None
-        
+
             # Convert image to Mono8
             import PySpin as spin
             image_converted = image.Convert(spin.PixelFormat_Mono8)
             image.Release()
             return image_converted
 
-    def set_exposure_time(self):
+    def get_exposure_time(self):
         self.cam['ExposureAuto'].value = 'Once'
 
         for i in range(50):
@@ -57,10 +57,12 @@ class Capture(Acquistion):
             chunk_data = im.GetChunkData()
             im.Release()
 
+        return chunk_data.GetExposureTime()
+
+    def set_exposure_time(self, exp):
         self.cam['ExposureAuto'].value = 'Off'
-        self.cam['ExposureTime'].value = chunk_data.GetExposureTime()
-
-
+        self.cam['ExposureTime'].value = exp
+        
 
 class LiveStream(Acquistion):
     def __init__(self):
@@ -85,7 +87,6 @@ class LiveStream(Acquistion):
         #TODO take smaller part of image if lagging
         self.cam['Width'].value = self.cam['Width'].max
         self.cam['Height'].value = self.cam['Height'].max
-
         self.BeginAcquisition()
 
     def get_image(self):
@@ -94,7 +95,7 @@ class LiveStream(Acquistion):
             self.log.warning('Image incomplete with image status %d...' % image.GetImageStatus())
             image.Release()
             return None
-        
+
         h = image.GetHeight()
         w = image.GetWidth()
         numChannels = image.GetNumChannels()
