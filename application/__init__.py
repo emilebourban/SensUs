@@ -45,7 +45,7 @@ class Application(dict):
         self.ip_refresh_time = ip_refresh_time
         self.debug = debug
         self.acq = acq.LiveStream()
-
+        
     @property
     def active_layer(self):
         return self._active_layer
@@ -58,10 +58,10 @@ class Application(dict):
         self._active_layer = l
 
     def get_image_capture(self):
-        self.acq.get_image()
+        return self.acq.get_image()
 
     def get_image_livestream(self):
-        self.acq.get_image()
+        return self.acq.get_image()
 
 
     def run(self):
@@ -82,7 +82,7 @@ class Application(dict):
 
                 if self.active_layer == "focus":
                     self.get_image_livestream()
-
+                    
                 if self.active_layer == "loading":
                     try:
                         test_file = open('test.txt', 'w+')
@@ -144,7 +144,6 @@ class Application(dict):
             if event.type == pygame.MOUSEMOTION:
                 pos = pygame.mouse.get_pos()
                 self[self.active_layer].mouse_motion(pos, False)
-
 
     def draw(self):
         self[self.active_layer].draw()
