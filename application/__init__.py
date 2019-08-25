@@ -19,7 +19,7 @@ class Application(dict):
                  ip_refresh_time=1.0):
         self.log = getLogger('main.app')
         self.is_raspi = is_raspi
-        self.screen = gui.init(fullscreen=self.raspi, hide_cursor=is_raspi)
+        self.screen = gui.init(fullscreen=is_raspi, hide_cursor=is_raspi)
         super().__init__({
             "main": layers.MainLayer(self),
             "chip": layers.ChipLayer(self),
