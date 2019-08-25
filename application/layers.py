@@ -1,11 +1,10 @@
 from . import gui
 
 
-class Layer(gui.Layer, dict):
+class Layer(gui.Layer):
 
     def __init__(self, app):
         gui.Layer.__init__(self, app)
-        dict.__init__(self)
 
     def set_layer(self, l):
         self.app().active_layer = l
@@ -84,6 +83,7 @@ class FocusLayer(Layer):
         size = (200, 40)
         self['set'] = gui.Text(self, (420, 75),
                                'Set the focus')
+        self['stream'] = gui.Video(self(0,0))
         self['finised'] = gui.Button(self, (420, 150), size,
                                      'Focus is done',
                                      lambda: self.set_layer('loading'))

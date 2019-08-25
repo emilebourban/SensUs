@@ -2,6 +2,7 @@
 
 from . import gui
 from . import layers
+from . import acqusition as acq
 import pygame
 from logging import getLogger
 from time import time
@@ -38,6 +39,13 @@ class Application(dict):
         self.log.debug(f'Moving to layer "{l}"')
         self._active_layer = l
 
+    def get_image_capture(self):
+        self.acq.Capture.get_image(self)
+
+    def get_image_livestream(self):
+        self.acq.LiveStream.get_image(self)
+
+
     def run(self):
         self.quitting = False
         t = time()
@@ -45,9 +53,37 @@ class Application(dict):
             # limiting fps
             if time() - t >= 1 / self.max_fps:
                 t = time()
+
                 self.exec_events()
+
+                if active_layer == "focus"
+                    get_image_livestream()
+
+                if active_layer == "loading"
+
+                    try:
+                        test_file = open('test.txt', 'w+')
+                    except IOError:
+                        print('Unable to write to current directory. Please check permissions.')
+                        input('Press Enter to exit...')
+                        return False
+                    test_file.close()
+                    os.remove(test_file.name)
+                    save_dir=''
+                    num_images = 120
+
+                    for i in range(num_images):
+
+                        filename = 'Frame_'+'0'*(4 - len(str(i)))+str(i)+'.tif'
+                        im = get_image_capture()
+                        print(datetime.now())
+                        # Save image
+                        im.Save(save_dir+filename)
+                        print('Saved image '+filename)
+
                 self.draw()
         return True
+
 
     def exec_events(self):
         for event in pygame.event.get():
@@ -71,6 +107,7 @@ class Application(dict):
             if event.type == pygame.MOUSEMOTION:
                 pos = pygame.mouse.get_pos()
                 self[self.active_layer].mouse_motion(pos)
+
 
     def draw(self):
         self[self.active_layer].draw()
