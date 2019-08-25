@@ -5,6 +5,7 @@ from weakref import ref
 from subprocess import run, PIPE
 from collections import OrderedDict
 import re
+from pygame import gfxdraw
 
 
 def get_screen_resolution(log):
@@ -204,6 +205,7 @@ class Circle(base.Element):
 
     def draw(self, force_color=None):
         color = force_color if force_color else self.color
+        # gfxdraw.aacircle(self.screen, *self.pos, self.radius, self.color)
         pygame.draw.circle(self.screen, color, self.pos, self.radius,
                            self.thickness)
 
