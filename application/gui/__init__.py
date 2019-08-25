@@ -40,14 +40,15 @@ class Group(OrderedDict):
     @property
     def clickable_elements(self):
         def is_clickable(e):
-            return isinstance(e, base.Clickable)
+            return isinstance(e, base.Clickable) or isinstance(e, Group)
         elements = [(k, v) for k, v in self.items() if is_clickable(v)]
         return OrderedDict(elements)
 
     @property
     def mouse_sentive_elements(self):
         def is_mouse_sensitive(e):
-            return isinstance(e, base.MouseMotionSensitive)
+            mse = isinstance(e, base.MouseMotionSensitive)
+            return mse or isinstance(e, Group)
         elements = [(k, v) for k, v in self.items() if is_mouse_sensitive(v)]
         return OrderedDict(elements)
 
@@ -58,26 +59,29 @@ class Group(OrderedDict):
             except BaseException as e:
                 self.log.exception(f'Failed to draw element: {e}')
 
-    def click_down(self, pos):
+    def click_down(self, pos, catched):
         for e in reversed(self.clickable_elements.values()):
             try:
-                e.click_down(pos)
+                catched = e.click_down(pos, catched) or catched
             except BaseException as e:
                 self.log.exception(f'Failed to exec click down: {e}')
+        return catched
 
-    def click_up(self, pos):
+    def click_up(self, pos, catched):
         for e in reversed(self.clickable_elements.values()):
             try:
-                e.click_up(pos)
+                catched = e.click_up(pos, catched) or catched
             except BaseException as e:
                 self.log.exception(f'Failed to exec click up: {e}')
+        return catched
 
-    def mouse_motion(self, pos):
+    def mouse_motion(self, pos, catched):
         for e in reversed(self.mouse_sentive_elements.values()):
             try:
-                e.mouse_motion(pos)
+                catched = e.mouse_motion(pos, catched) or catched
             except BaseException as e:
                 self.log.exception(f'Failed to exec mouse motion: {e}')
+        return catched
 
 
 class Layer(Group):
@@ -177,17 +181,15 @@ class Button(Rectangle, Text, base.RectangleClickable):
             Rectangle.draw(self)
         Text.draw(self)
 
-    def on_click_down(self, inside):
-        if inside:
+    def on_click_down(self, inside, catched):
+        if not catched and inside:
             self.is_pressed = True
             return True
-        return True
+        return False
 
-    def on_click_up(self, inside):
+    def on_click_up(self, inside, catched):
         if self.is_pressed and inside:
             self.action()
-            self.is_pressed = False
-            return True
         self.is_pressed = False
         return False
 
@@ -201,8 +203,9 @@ class Circle(base.Element):
         self.color = color
         self.thickness = thickness
 
-    def draw(self):
-        pygame.draw.circle(self.screen, self.color, self.pos, self.radius,
+    def draw(self, force_color=None):
+        color = force_color if force_color else self.color
+        pygame.draw.circle(self.screen, color, self.pos, self.radius,
                            self.thickness)
 
 
@@ -212,21 +215,25 @@ class DetectionCircle(Circle, base.Draggable, base.CircleClickable):
         base.Draggable.__init__(self, layer, pos)
         base.CircleClickable.__init__(self, pos, radius)
         Circle.__init__(self, layer, pos, radius, color)
-        self.selected = False
+        self.is_selected = False
 
-    def on_click_down(self, inside):
-        if inside:
-            self.selected = True
-            self.drag_start()
-            return True
-        self.selected = False
-        return False
+    def draw(self):
+        if self.is_selected:
+            Circle.draw(self, (100, 255, 0))
+        else:
+            Circle.draw(self)
 
-    def on_click_up(self, inside):
+    def on_click_down(self, inside, catched):
+        if catched or not inside:
+            self.is_selected = False
+            self.drag_stop()
+            return False
+        self.is_selected = True
+        self.drag_start()
+        return True
+
+    def on_click_up(self, inside, catched):
         self.drag_stop()
-        if inside:
-            return True
-        self.selected = False
         return False
 
 

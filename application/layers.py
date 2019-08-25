@@ -1,4 +1,5 @@
 from . import gui
+from itertools import count
 
 
 class Layer(gui.Layer, dict):
@@ -119,22 +120,21 @@ class CircleLayer(Layer):
                                 'Choose the cercle')
         self['add'] = gui.Button(self, (600, 50), (40, 40), '+',
                                  lambda: self.new_circle((100, 100), 42))
+        self['circles'] = gui.Group()
 
-    def get_circles_keys(self):
-        n = len(self.circle_prefix)
-        return {k for k in self.keys() if k[:n] == self.circle_prefix}
+    def get_new_key(self):
+        for i in count():
+            if i not in self['circles']:
+                return i
 
     def set_circles(self, circles):
-        for k in self.get_circles_keys():
-            del self[k]
-        for i, c in enumerate(circles):
-            circle = gui.DetectionCircle(self, *c)
-            self[self.circle_prefix + str(i)] = circle
+        circles = [gui.DetectionCircle(self, p, r) for p, r in circles]
+        circles = [(self.get_new_key(), c) for c in circles]
+        self['circles'] = gui.Group(circles)
 
     def new_circle(self, p, r):
-        n = len(self.get_circles_keys())
         circle = gui.DetectionCircle(self, p, r)
-        self[self.circle_prefix + str(n)] = circle
+        self['circles'][self.get_new_key()] = circle
 
 
 class ResultsLayer(Layer):

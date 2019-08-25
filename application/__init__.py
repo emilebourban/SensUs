@@ -82,15 +82,15 @@ class Application(dict):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                self[self.active_layer].click_down(pos)
+                self[self.active_layer].click_down(pos, False)
 
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
-                self[self.active_layer].click_up(pos)
+                self[self.active_layer].click_up(pos, False)
 
             if event.type == pygame.MOUSEMOTION:
                 pos = pygame.mouse.get_pos()
-                self[self.active_layer].mouse_motion(pos)
+                self[self.active_layer].mouse_motion(pos, False)
 
     def draw(self):
         self[self.active_layer].draw()
