@@ -8,7 +8,7 @@ class Layer(gui.Layer):
         gui.Layer.__init__(self, app)
 
     def set_layer(self, l):
-        self.app().active_layer = l
+        self.app.active_layer = l
 
 
 class OverLayer(Layer):
@@ -84,9 +84,12 @@ class InsertLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
+
         self['insert'] = gui.Text(self, (420, 75),
                                   'Insert the chip')
-
+        self['continue'] = gui.Button(self, (420, 225), size,
+                                      'Continue',
+                                      lambda: self.set_layer('focus'))
 
 class FocusLayer(Layer):
     # TODO: add a stream object in initGui
