@@ -271,7 +271,7 @@ class Loading_bar(base.Element):
         pygame.draw.rect(self.screen, self.bg_color, (x1, y1, x2, y2), 3)
         pygame.draw.rect(self.screen, self.fg_color, (px1, py1, px2, py2))
 
-class Video(base.Element)
+class Video(base.Element):
 
     def __init__(self, layer, pos):
         super().__init__(layer, pos)
@@ -281,7 +281,7 @@ class Video(base.Element)
         if not self.img:
             return
         #self.img = pygame.transform.scale(self.img, (self.screen_width * 0.5, self.screen_height * 0.5))
-        self.screen.pygame.blit.(self.img, self.pos)
+        self.screen.pygame.blit(self.img, self.pos)
 
 
 '''

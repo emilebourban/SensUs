@@ -1,11 +1,11 @@
-from camera import Camera
+from . import camera as cam
 import PySpin as spin
 import numpy as np
 
 
 class Acquistion:
     def __init__(self):
-        self.cam = Camera()
+        self.cam = cam.Camera()
 
     def BeginAcquisition(self):
         self.cam.BeginAcquisition()
