@@ -38,8 +38,9 @@ def quit():
 
 class Group(OrderedDict):
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.log = getLogger('main.group')
+        OrderedDict.__init__(self, *args, **kwargs)
 
     @property
     def clickable_elements(self):
