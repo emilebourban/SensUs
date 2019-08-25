@@ -118,14 +118,19 @@ class CircleLayer(Layer):
         super().__init__(app)
         self['wait'] = gui.Text(self, (420, 75),
                                 'Choose the cercle')
+        self['circles'] = gui.Group()
         self['add'] = gui.Button(self, (600, 50), (40, 40), '+',
                                  lambda: self.new_circle((100, 100), 42))
-        self['circles'] = gui.Group()
+        self['rem'] = gui.Button(self, (660, 50), (40, 40), '-',
+                                 lambda: self.rem_selected_circles())
 
     def get_new_key(self):
         for i in count():
             if i not in self['circles']:
                 return i
+
+    def get_selected_circles(self):
+        return {k for k, v in self['circles'].items() if v.is_selected}
 
     def set_circles(self, circles):
         circles = [gui.DetectionCircle(self, p, r) for p, r in circles]
@@ -135,6 +140,10 @@ class CircleLayer(Layer):
     def new_circle(self, p, r):
         circle = gui.DetectionCircle(self, p, r)
         self['circles'][self.get_new_key()] = circle
+
+    def rem_selected_circles(self):
+        for k in self.get_selected_circles():
+            del self['circles'][k]
 
 
 class ResultsLayer(Layer):

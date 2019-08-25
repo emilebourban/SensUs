@@ -6,8 +6,6 @@ from subprocess import run, PIPE
 from collections import OrderedDict
 import re
 
-# TODO dragaeble circles
-
 
 def get_screen_resolution(log):
     try:
@@ -218,22 +216,24 @@ class DetectionCircle(Circle, base.Draggable, base.CircleClickable):
         self.is_selected = False
 
     def draw(self):
-        if self.is_selected:
+        if self.is_selected or self.dragging:
             Circle.draw(self, (100, 255, 0))
         else:
             Circle.draw(self)
 
     def on_click_down(self, inside, catched):
         if catched or not inside:
-            self.is_selected = False
-            self.drag_stop()
             return False
-        self.is_selected = True
         self.drag_start()
         return True
 
     def on_click_up(self, inside, catched):
+        if inside and not catched and self.dragging:
+            self.drag_stop()
+            self.is_selected = True
+            return True
         self.drag_stop()
+        self.is_selected = False
         return False
 
 
