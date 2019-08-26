@@ -280,6 +280,7 @@ class Loading_bar(base.Element):
 
     @progression.setter
     def progression(self, v):
+        self.log.debug(f'>>> {v}')
         self._progress = max(0, min(1, v))
 
     def draw(self):
