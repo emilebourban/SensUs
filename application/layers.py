@@ -38,7 +38,7 @@ class Layer(gui.Layer):
         h_btn = 32
         pitch = 40
         x_btn = 400
-        y0 = round(480/2 - len(buttons)/2 * pitch)
+        y0 = round(480/2 - (len(buttons) - 1) / 2 * pitch)
         for n, (k, title, action) in enumerate(buttons):
             y = y0 + n * pitch
             self[k] = gui.Button(self, [x_btn, y], [w_btn, h_btn], title,
