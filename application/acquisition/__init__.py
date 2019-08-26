@@ -77,7 +77,11 @@ class Capture(Acquistion):
         self.BeginAcquisition()
 
         for i in range(50):
-            self.get_image()
+            image = self.cam.GetNextImage()
+            if image.IsIncomplete():
+                self.log.error('Image incomplete with image status %d...' % image.GetImageStatus())
+                image.Release()
+                return None
             #chunk_data = im.GetChunkData()
 
         self.EndAcquisition()
