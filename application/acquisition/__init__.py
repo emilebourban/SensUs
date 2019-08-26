@@ -70,7 +70,7 @@ class Capture(Acquistion):
     def get_exposure_time(self):
         self.EndAcquisition()
         self.cam['ExposureAuto'].value = 'Once'
-        old_expo_time = self.cam['ExposureTime']
+        old_expo_time = self.cam['ExposureTime'].value
         self.BeginAcquisition()
 
         for i in range(50):
@@ -79,8 +79,8 @@ class Capture(Acquistion):
 
         self.EndAcquisition()
         self.cam['ExposureAuto'].value = 'Off'
-        expo_time = self.cam['ExposureTime']
-        self.cam['ExposureTime'] = old_expo_time
+        expo_time = self.cam['ExposureTime'].value
+        self.cam['ExposureTime'].value = old_expo_time
         self.BeginAcquisition()
         return expo_time
 
