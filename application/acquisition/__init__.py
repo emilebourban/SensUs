@@ -122,10 +122,11 @@ class LiveStream(Acquistion):
         numChannels = image.GetNumChannels()
         if numChannels > 1:
             array = image.GetData().reshape(h, w, numChannels)
+            print('array > 1')
         else:
             array = image.GetData().reshape(h, w).T
             array = array[..., np.newaxis].repeat(3, -1).astype("uint8")
-
+            print('array < 1')
         image.Release()
 
         return array

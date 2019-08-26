@@ -133,9 +133,11 @@ class Application(dict):
         del self.acq
         self.acq = acquisition.Capture(expo_time=self.expo_time)
         img = self.acq.get_image()
+        print('>> 1 >> ', img)
         del self.acq
         self.acq = acquisition.LiveStream()
         path = self.result_path + f"{self.acq_i:04d}"
+        print('>> 2 >> ', img)
         np.save(path, img)
         self.log.debug(f'Capture to "{path}"')
         self.acq_i += 1
