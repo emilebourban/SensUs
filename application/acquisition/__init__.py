@@ -19,7 +19,15 @@ class Acquistion:
 
     def __del__(self):
         self.acq_log.debug('in acquisition del')
-        self.cam.release()
+        self.cam.EndAcquisition()
+        self.acq_log.debug('end acq')
+        self.cam.DeInit()
+        self.acq_log.debug('deinit')
+        self.cam.Clear_cam_list()
+        self.acq_log.debug('clear cam')
+        self.cam.Delete()
+        self.acq_log.debug('delete fct')
+        self.cam.ReleaseInstance()
         self.acq_log.debug('release of cam')
         del self.cam
         self.acq_log.debug('acquisition del')
