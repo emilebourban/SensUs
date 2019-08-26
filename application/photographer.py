@@ -45,6 +45,8 @@ class Photographer(Thread):
 
         while not self.quitting.is_set():
 
+            print('--- ', t_live - time())
+            print('>>> ', t_capt - time())
 
             # get new mode
             if not self.mode_queue.empty():
