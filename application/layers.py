@@ -197,8 +197,9 @@ class FocusLayer(Layer):
     # TODO: add a stream object in initGui
     def __init__(self, app):
         super().__init__(app)
-        self['wait_stream'] = gui.Text(self, (400, 300),
-                                        'Loading video...')
+        self['wait_stream'] = gui.Text(self, (400, 240),
+                                        'Loading video...',
+                                       always_gray=True)
         self['stream'] = gui.Video(self)
         self.create_title('Please set the focus')
         self.create_next_button('loading', 'Done')
