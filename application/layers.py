@@ -35,8 +35,8 @@ class Layer(gui.Layer):
 
     def create_small_buttons_list(self, buttons):
         w_btn = 300
-        h_btn = 32
-        pitch = 40
+        h_btn = 40
+        pitch = 50
         x_btn = 400
         y0 = round(480/2 - (len(buttons) - 1) / 2 * pitch)
         for n, (k, title, action) in enumerate(buttons):
@@ -93,7 +93,7 @@ class MainLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
         btn_list = [
-            ('measure', 'Start analysis', 'images/measure.png',
+            ('measure', 'New measure', 'images/measure.png',
              lambda: self.set_layer('chip')),
             ('profiles', 'Profiles', 'images/profile.png',
              lambda: self.set_layer('profiles')),
