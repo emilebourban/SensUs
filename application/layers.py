@@ -323,10 +323,8 @@ class ParametersLayer(Layer):
             pass
 
         btn_list = [
-            ('language', 'Languages', 'images/language.png',
-             lambda: nope)
-            ('brightness', 'Brightness', 'images/light.png',
-             lambda: nope)
+            ('language', 'Languages', 'images/language.png', nope)
+            ('brightness', 'Brightness', 'images/light.png', nope)
         ]
         self.create_background()
         self.create_buttons_list(btn_list)
