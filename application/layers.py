@@ -212,7 +212,7 @@ class LoadingLayer(Layer):
         self.create_next_button('choice', disabled=True)
         self.create_back_button('focus')
 
-        x0 = 850
+        x0 = 700
         y0 = 50
         s = 40
         self['circles'] = gui.Group()
