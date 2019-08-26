@@ -44,7 +44,10 @@ class Photographer(Thread):
         total_time = self.n_acquisitions * self.capture_refresh_time
         if start_time is None:
             return 0
-        return max(min((time() - start_time) / total_time, 1), 0)
+        v = max(min((time() - start_time) / total_time, 1), 0)
+
+        self.log.log(f'{time() - self.start_time} / {total_time} -> {v}')
+        return v
 
     def set_mode(self, m):
         if m not in (None, 'live_stream', 'capture'):
