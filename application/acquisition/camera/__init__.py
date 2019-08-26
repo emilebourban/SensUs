@@ -176,12 +176,13 @@ class Camera:
     def ReleaseInstance(self):
         self.sys.ReleaseInstance()
 
-    def __del__(self):
+    def release(self):
         self.EndAcquisition()
         self.DeInit()
         self.Clear_cam_list()
         self.Delete()
         self.ReleaseInstance()
+
 
 #    def AcquisitionStatus(self):
 #        return self.camera.AcquisitionStatus()

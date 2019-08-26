@@ -19,6 +19,8 @@ class Acquistion:
 
     def __del__(self):
         self.acq_log.debug('in acquisition del')
+        self.cam.release()
+        self.acq_log.debug('release of cam')
         del self.cam
         self.acq_log.debug('acquisition del')
 
