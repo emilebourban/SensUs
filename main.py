@@ -3,9 +3,6 @@
 from application import Application
 import log_setup
 
-# set to False if the app should never exit even if interupted or crashed
-CAN_EXIT = True
-
 
 def is_raspi():
     try:
@@ -17,17 +14,17 @@ def is_raspi():
 
 
 def main(log):
-    app = Application(is_raspi=is_raspi(), debug=False)
     try:
+        app = Application(is_raspi=is_raspi(), debug=False)
         rtn_msg = app.run()
         if rtn_msg:
             log.debug(f'Quitting: app returned {rtn_msg}')
             return True
-    except BaseException as e:
-        if type(e) is KeyboardInterrupt and CAN_EXIT:
+    except KeyboardInterrupt:
             log.debug('Quitting: KeyboardInterrupt')
             return True
-        log.exception(f'app crashed: {e}')
+    except BaseException as e:
+            log.exception(f'app crashed: {e}')
 
 
 if __name__ == '__main__':

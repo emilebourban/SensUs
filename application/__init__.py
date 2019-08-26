@@ -84,8 +84,8 @@ class Application(dict):
                     try:
                         img = self.photographer.get_new_live_image()
                         self.log.debug('Got new live image')
-                    except BaseException:
-                        pass
+                    except BaseException as e:
+                        self.log.warn('Failed to get new live image: {e}')
                 img = pygame.pixelcopy.make_surface(img)
                 img = pygame.transform.scale(img, (800, 533))
                 self.live_image = img
