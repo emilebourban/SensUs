@@ -24,7 +24,7 @@ class Photographer(Thread):
         self.n_acquisitions = 10
         self.acquisition = None
         self._acquisition_i = 0
-        self._acquisition_i_lock = 0
+        self._acquisition_i_lock = Lock()
         self.mode = None
         self.quitting = Event()
         self._start_time = None
