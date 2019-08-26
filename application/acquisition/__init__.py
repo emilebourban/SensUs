@@ -18,6 +18,7 @@ class Acquistion:
         self.cam.EndAcquisition()
 
     def __del__(self):
+        self.acq_log.debug('in acquisition del')
         del self.cam
         self.acq_log.debug('acquisition del')
 
