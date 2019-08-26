@@ -119,6 +119,7 @@ class LiveStream(Acquistion):
 
         h = image.GetHeight()
         w = image.GetWidth()
+        self.log.debug('w: ', w, 'h: ', h)
         numChannels = image.GetNumChannels()
         if numChannels > 1:
             array = image.GetData().reshape(h, w, numChannels)
