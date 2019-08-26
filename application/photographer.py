@@ -67,7 +67,7 @@ class Photographer(Thread):
                 self.log.debug('Photographe live_stream')
                 live_image = self.acquisition.get_image()
                 try:
-                    self.live_image.put(live_image, False)
+                    self.live_image_queue.put(live_image, False)
                 except Full:
                     self.log.warn('Live stream frame drop, (queue is full)')
 
