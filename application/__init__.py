@@ -99,7 +99,6 @@ class Application(dict):
                 progress = self.photographer.get_progress()
                 self['loading']['progress'].progression = progress
                 finished = self.photographer.is_finished()
-                self.log.debug(f'---> {finished}')
                 self['loading']['next'].disabled = not finished
                 self.over_layer['fps'].text = f"{fps:05.2f} fps"
                 t_draw = time()
