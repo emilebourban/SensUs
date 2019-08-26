@@ -13,6 +13,9 @@ class Acquistion:
     def get_image():
         pass
 
+    def EndAcquisition(self):
+        self.cam.EndAcquisition()
+
     def __del__(self):
         del self.cam
 
@@ -51,16 +54,20 @@ class Capture(Acquistion):
             return image_converted
 
     def get_exposure_time(self):
+        self.EndAcquisition()
         self.cam['ExposureAuto'].value = 'Once'
         old_expo_time = self.cam['ExposureTime']
+        self.BeginAcquisition()
 
         for i in range(50):
             self.get_image().Release()
             #chunk_data = im.GetChunkData()
 
+        self.EndAcquisition()
         self.cam['ExposureAuto'].value = 'Off'
         expo_time = self.cam['ExposureTime']
         self.cam['ExposureTime'] = old_expo_time
+        self.BeginAcquisition()
         return expo_time
 
 class LiveStream(Acquistion):
