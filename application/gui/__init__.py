@@ -182,7 +182,7 @@ class Rectangle(base.Element):
 class Button(Rectangle, Text, base.RectangleClickable):
 
     def __init__(self, layer, pos, size, text, action, disabled=False):
-        Rectangle.__init__(self, layer, pos, size, (255, 240, 230))
+        Rectangle.__init__(self, layer, pos, size, (235, 230, 230))
         Text.__init__(self, layer, pos, text)
         base.RectangleClickable.__init__(self, pos, size)
         self.action = action

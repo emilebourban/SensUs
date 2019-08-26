@@ -186,7 +186,7 @@ class InsertLayer(Layer):
         self.create_next_button('focus', 'Done')
         self.create_back_button('chip')
         # TODO create correct insert_chip.png
-        self['img'] = gui.Image(self, [400, 200],
+        self['img'] = gui.Image(self, [400, 240],
                                 'images/insert_chip.png',
                                 h=200)
 
