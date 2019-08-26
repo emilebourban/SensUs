@@ -2,6 +2,7 @@
 
 ## TODO
 - script pour tourner interface sans bureau
+- release folder of measures
 - Prendre image 12bits (10bits?) et filer à clara
 - rewrite `application/image_analysis` module -> Raluca
 - try high pass filter -> Clara
