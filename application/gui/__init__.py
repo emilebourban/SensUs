@@ -148,7 +148,7 @@ class Text(base.Element):
         if gray or self.always_gray:
             self.screen.blit(self.gray_surf, self.rect)
         else:
-            self.screen.blit(self.gray_surf, self.rect)
+            self.screen.blit(self.surf, self.rect)
 
 
 class Image(base.Element):
