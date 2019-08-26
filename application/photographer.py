@@ -69,6 +69,7 @@ class Photographer(Thread):
                     self.log.warn('Live stream frame drop, (queue is full)')
 
     def stop(self):
+        self.log.debug('stop signal')
         self.quitting.set()
 
     def capture(self):

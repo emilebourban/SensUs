@@ -65,6 +65,7 @@ class OverLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
         self['ip'] = gui.Text(self, (400, 16), '-', font_size=11)
+        self['fps'] = gui.Text(self, (100, 16), '?? fps', font_size=11)
 
     # overwrite draw to avoid drawing the background
     def draw(self):
