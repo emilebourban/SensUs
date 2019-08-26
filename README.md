@@ -1,15 +1,13 @@
 # SensUs
 
 ## TODO
-- correct layers -> Katia
-- rewrite `application/image_analysis` module -> Clara
+- script pour tourner interface sans bureau
+- Prendre image 12bits (10bits?) et filer à clara
+- rewrite `application/image_analysis` module -> Raluca
 - try high pass filter -> Clara
 - write spots selection layer -> Vianney
+- correct layers + modif sur interface
 - send capture in a subprocess -> Emile
-- Test acquisition, livestream, video element, memory -> Raluca
-- Make link btw image analysis & rest of application -> Raluca
-- Application dual mode oscillation "capture" / "livestream" -> Emile
-- Implement 12bits (10bits?) acquisition -> Emile
 - Remove cursor in pygame
 - (Optionnal) Create disable mode for buttons (becoming grayish)
 - (Optionnal) multiprocess capture
