@@ -265,8 +265,8 @@ class Loading_bar(base.Element):
 
     # TODO tune padding default value
     # TODO set colors
-    def __init__(self, layer, pos, size, bg_color=(255, 0, 0),
-                 fg_color=(0, 0, 255), padding=1, progress=0):
+    def __init__(self, layer, pos, size, bg_color=(42, 42, 42),
+                 fg_color=(200, 200, 200), padding=1, progress=0):
         super().__init__(layer, pos)
         self.bg_color = bg_color
         self.fg_color = fg_color
