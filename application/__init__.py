@@ -75,7 +75,7 @@ class Application(dict):
             self.exec_events()
 
             # get latest photographer's live image
-            if not self.photographer.has_new_live_image():
+            while self.photographer.has_new_live_image():
                 try:
                     self.live_image = self.photographer.get_new_live_image()
                     self.log.debug('Got new live image')
