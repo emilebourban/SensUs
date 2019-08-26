@@ -182,7 +182,7 @@ class Rectangle(base.Element):
 class Button(Rectangle, Text, base.RectangleClickable):
 
     def __init__(self, layer, pos, size, text, action, disabled=False):
-        Rectangle.__init__(self, layer, pos, size, (235, 230, 230))
+        Rectangle.__init__(self, layer, pos, size, (230, 220, 220))
         Text.__init__(self, layer, pos, text)
         base.RectangleClickable.__init__(self, pos, size)
         self.action = action
@@ -194,7 +194,7 @@ class Button(Rectangle, Text, base.RectangleClickable):
             Rectangle.draw(self, (200, 200, 200))
             Text.draw(self, gray=True)
         elif self.is_pressed:
-            Rectangle.draw(self, (220, 220, 220))
+            Rectangle.draw(self, (210, 210, 210))
             Text.draw(self)
         else:
             Rectangle.draw(self)

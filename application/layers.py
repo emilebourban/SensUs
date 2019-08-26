@@ -46,13 +46,13 @@ class Layer(gui.Layer):
 
     def create_next_button(self, target, text='Next', size=[150, 40],
                            disabled=False):
-        pos = (800 - 100, 480 - 50)
+        pos = (800 - 100, 480 - 40)
         self['next'] = gui.Button(self, pos, size, text,
                                   lambda: self.set_layer(target),
                                   disabled=disabled)
 
     def create_back_button(self, target, text='Back', size=[150, 40]):
-        pos = (0 + 100, 480 - 50)
+        pos = (0 + 100, 480 - 40)
         self['back'] = gui.Button(self, pos, size, text,
                                   lambda: self.set_layer(target))
 
@@ -328,4 +328,4 @@ class ParametersLayer(Layer):
         ]
         self.create_background()
         self.create_buttons_list(btn_list)
-        self.create_back_button('welcome')
+        self.create_back_button('main')
