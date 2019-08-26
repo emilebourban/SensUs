@@ -306,14 +306,12 @@ class HelpLayer(Layer):
                                      color=(255, 255, 255))
         self['phone_img'] = gui.Image(self, (200, 200),
                                       'images/phone.png', h=80)
-        self['phone'] = gui.
-        self['phone_img'] = gui.Image(self, (200, 200),
-                                      'images/phone.png', h=80)
-
-        self['2'] = gui.Text(self, (230, 180),
-                               'Phone: 078 842 25 20 ', font_size=25)
-        self['3'] = gui.Text(self, (295, 260),
-                               'Mail: teamEPFSens@gmail.com ', font_size=25)
+        self['phone'] = gui.Text(self, (200, 200),
+                                 'Phone: 078 842 25 20')
+        self['mail_img'] = gui.Image(self, (200, 300),
+                                     'images/mail.png', h=80)
+        self['mail'] = gui.Text(self, (200, 300),
+                                'Email: teamEPFSens@gmail.com')
 
 
 class ParametersLayer(Layer):
