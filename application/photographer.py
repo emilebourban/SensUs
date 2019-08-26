@@ -1,5 +1,5 @@
-from threading import Thread, Empty, Full
-from queue import Queue, Event
+from threading import Thread
+from queue import Queue, Event, Full, Empty
 from time import time
 from logging import getLogger
 from . import acquisition
