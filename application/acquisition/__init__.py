@@ -68,7 +68,7 @@ class Capture(Acquistion):
         self.log.debug(f'image converted: {image_converted}')
         image.Release()
         self.log.debug(f'image released: {image_converted}')
-        return image_converted
+        return image_converted.getNDArray()
 
     def get_exposure_time(self):
         self.EndAcquisition()
