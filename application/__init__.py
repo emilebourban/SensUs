@@ -19,8 +19,8 @@ class Application(dict):
 
     def __init__(self, is_raspi=True, debug=False, draw_fps=30,
                  ip_refresh_time=1.0, live_fps=24, capture_refresh_time=30):
-
         self.log = getLogger('main.app')
+        self.debug = debug
         self.is_raspi = is_raspi
         self.screen = gui.init(fullscreen=is_raspi, hide_cursor=False)
         super().__init__({
@@ -48,7 +48,6 @@ class Application(dict):
         self.ip_refresh_time = ip_refresh_time
         self.live_fps = live_fps
         self.capture_refresh_time = capture_refresh_time
-        self.debug = debug
         self.acq = None
         self.acq_i = 0
         self.acquisition_mode = None
