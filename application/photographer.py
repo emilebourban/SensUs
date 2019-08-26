@@ -82,11 +82,9 @@ class Photographer(Thread):
         while not self.quitting.is_set():
 
             # get new mode
-            if not self.mode_queue.empty():
+            while self.mode_queue.empty():
                 try:
-                    while not self.mode_queue.empty():
-                        mode = self.mode_queue.get(block=False)
-                    self._set_mode(mode)
+                    self._set_mode(self.mode_queue.get(block=False))
                     self.log.debug(f'Mode set to {self.mode}')
                 except Empty:
                     pass

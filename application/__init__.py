@@ -20,7 +20,7 @@ class Application(dict):
         self.log = getLogger('main.app')
         self.debug = debug
         self.is_raspi = is_raspi
-        self.screen = gui.init(fullscreen=is_raspi, hide_cursor=False)
+        self.screen = gui.init(fullscreen=is_raspi, hide_cursor=is_raspi)
         self.photographer = photographer.Photographer(live_stream_fps=18,
                                                       n_acquisitions=3,
                                                       capture_refresh_time=10)
