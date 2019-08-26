@@ -42,7 +42,7 @@ class Capture(Acquistion):
         self.log.debug('created capture')
         self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
         # TODO: use full depth, i.e 12 bits for image analysis :PixelFormat_Mono12p, try with packed
-        self.cam['PixelFormat'].value = 'Mono10p'
+        self.cam['PixelFormat'].value = 'Mono12p'
         self.cam['AcquisitionMode'].value = 'Continuous'
         self.cam['StreamCRCCheckEnable'].value = True
 
@@ -66,7 +66,7 @@ class Capture(Acquistion):
 
             # Convert image to Mono8
         import PySpin as spin
-        image_converted = image.Convert(spin.PixelFormat_Mono16)
+        image_converted = image.Convert(spin.PixelFormat_Mono16, spin.HQ_LINEAR)
         self.log.debug(f'image converted: {image_converted}')
         image.Release()
         self.log.debug(f'image released: {image_converted}')
