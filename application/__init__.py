@@ -57,9 +57,9 @@ class Application(dict):
         self.log.debug(f'Moving to layer "{l}"')
         self._active_layer = l
         if self._active_layer == 'focus':
-            self.acquisition_mode = 'live_stream'
+            self.photographer.set_mode('live_stream')
         if self._active_layer == 'loading':
-            self.acquisition_mode = 'capture'
+            self.photographer.set_mode('capture')
 
     def run(self):
         self.photographer.start()
