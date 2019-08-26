@@ -128,7 +128,7 @@ class Tutorial1Layer(Layer):
         self.create_title('Insert the chip')
         self.create_next_button('tutorial2')
         self.create_back_button('chip')
-        self['img'] = gui.Image(self, [400, 300],
+        self['img'] = gui.Image(self, [400, 270],
                                 'images/tuto1.png',
                                 h=300)
 
@@ -139,7 +139,7 @@ class Tutorial2Layer(Layer):
         super().__init__(app)
         self.create_next_button('tutorial3')
         self.create_back_button('tutorial1', 'Previous')
-        self['img'] = gui.Image(self, [400, 300],
+        self['img'] = gui.Image(self, [400, 220],
                                 'images/tuto2.png',
                                 h=300)
 
@@ -150,7 +150,7 @@ class Tutorial3Layer(Layer):
         super().__init__(app)
         self.create_next_button('tutorial4')
         self.create_back_button('tutorial2', 'Previous')
-        self['img'] = gui.Image(self, [400, 300],
+        self['img'] = gui.Image(self, [400, 220],
                                 'images/tuto3.png',
                                 h=300)
 
@@ -161,7 +161,7 @@ class Tutorial4Layer(Layer):
         super().__init__(app)
         self.create_next_button('tutorial5')
         self.create_back_button('tutorial3', 'Previous')
-        self['img'] = gui.Image(self, [400, 300],
+        self['img'] = gui.Image(self, [400, 220],
                                 'images/tuto4.png',
                                 h=300)
 
@@ -172,7 +172,7 @@ class Tutorial5Layer(Layer):
         super().__init__(app)
         self.create_next_button('insert', 'Start')
         self.create_back_button('tutorial4', 'Previous')
-        self['img'] = gui.Image(self, [400, 300],
+        self['img'] = gui.Image(self, [400, 220],
                                 'images/tuto5.png',
                                 h=300)
 
