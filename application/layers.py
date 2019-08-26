@@ -212,12 +212,15 @@ class LoadingLayer(Layer):
         self.create_next_button('choice', disabled=True)
         self.create_back_button('focus')
 
+        x0 = 850
+        y0 = 50
+        s = 40
         self['circles'] = gui.Group()
-        self['add'] = gui.Button(self, (600, 50), (32, 32), '+',
+        self['add'] = gui.Button(self, (x0-s/2, y0-s/2), (s, s), '+',
                                  lambda: self.new_circle((100, 100), 42))
-        self['rem'] = gui.Button(self, (632, 50), (32, 32), '-',
+        self['rem'] = gui.Button(self, (x0+s/2, y0-s/2), (s, s), '-',
                                  lambda: self.rem_selected_circles())
-        self['reset'] = gui.Button(self, (616, 82), (64, 32), 'Reset',
+        self['reset'] = gui.Button(self, (x0, y0+s/2), (2*s, s), 'Reset',
                                    lambda: self.set_circles([]))
         self['size'] = gui.Slider(self, (400, 480 - 50), (350, 64), 10, 200,
                                   lambda r: self.set_selected_circles_radius(r))
