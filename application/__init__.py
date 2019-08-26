@@ -90,6 +90,7 @@ class Application(dict):
             self.acq = acquisition.LiveStream()
             self.acq_i = 0
         if m is not None:
+            del self.acq
             self.acq = acquisition.LiveStream()
 
     def run(self):
