@@ -33,10 +33,10 @@ class Photographer(Thread):
         self.mode_queue.put(m)
 
     def has_new_live_image(self):
-        return not self.live_image_queue.empty()
+        return self.live_image_queue.empty() is not True
 
     def get_new_live_image(self):
-        return self.live_image_queue.get()
+        return self.live_image_queue.get(False)
 
     def run(self):
         self.log.debug('Photographer start')
