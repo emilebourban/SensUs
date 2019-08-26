@@ -318,7 +318,7 @@ class Video(base.Element):
         img = pygame.pixelcopy.make_surface(self.app.live_image)
         size = self.size
         pos = self.pos[0] - size[0] / 2, self.pos[1] - size[1] / 2
-        self.img = pygame.transform.scale(self.img, size)
+        img = pygame.transform.scale(img, size)
         self.screen.blit(img, pos)
 
 
