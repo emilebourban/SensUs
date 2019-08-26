@@ -88,20 +88,29 @@ class Photographer(Thread):
                     self.log.debug(f'Mode set to {self.mode}')
                 except Empty:
                     pass
+                except BaseException as e:
+                    self.log.debug(f'Failed to switch to mode {m}: {e}')
 
             # capture
             if self.mode == 'capture' \
                     and time() - t_capt > self.capture_refresh_time:
                 t_capt = time()
                 self.log.debug('Photographe capture')
-                self.capture()
+                try:
+                    self.capture()
+                except BaseException as e:
+                    self.log.debug(f'Failed to captura: {e}')
+
 
             # livestream
             if self.mode \
                     and time() - t_live > 1 / self.live_stream_fps:
                 t_live = time()
                 self.log.debug('Photographe live_stream')
-                self.live_stream()
+                try:
+                    self.live_stream()
+                except BaseException as e:
+                    self.log.debug(f'Failed to live stream: {e}')
 
     def stop(self):
         self.log.debug('stop signal')

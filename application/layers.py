@@ -198,7 +198,7 @@ class FocusLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
         self['wait_stream'] = gui.Text(self, (400, 240),
-                                        'Loading video...',
+                                       'Loading video...',
                                        always_gray=True)
         self['stream'] = gui.Video(self)
         self.create_title('Please set the focus')
@@ -211,7 +211,7 @@ class LoadingLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
         self['wait_stream'] = gui.Text(self, (400, 240),
-                                        'Loading video...',
+                                       'Loading video...',
                                        always_gray=True)
         self['stream'] = gui.Video(self)
         self.create_title('Acquisition')
