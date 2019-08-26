@@ -69,30 +69,40 @@ class Photographer(Thread):
                     and time() - t_live > 1 / self.live_stream_fps:
                 t_live = time()
                 self.log.debug('Photographe live_stream')
-                live_image = self.acquisition.get_image()
-                try:
-                    self.live_image_queue.put(live_image, False)
-                except Full:
-                    self.log.warn('Live stream frame drop, (queue is full)')
+                self.live_stream()
 
     def stop(self):
         self.log.debug('stop signal')
         self.quitting.set()
 
     def capture(self):
-        del self.acquisition
-        self.acquisition = acquisition.Capture(expo_time=self.expo_time)
-        img = self.acquisition.get_image()
-        self.log.debug(f'>>> capture res: {img.shape}')
-        path = self.capture_path + f"{self.acquisition_i:04d}"
-        np.save(path, img)
-        self.log.debug(f'Capture to "{path}"')
-        self.acquisition_i += 1
-        if self.acquisition_i >= self.n_acquisitions:
-            self.log.info('Capture mode ended')
-            self.acquisition_mode = 'live_stream'
-        del self.acquisition
-        self.acquisition = acquisition.LiveStream()
+        try:
+            del self.acquisition
+            self.acquisition = acquisition.Capture(expo_time=self.expo_time)
+            img = self.acquisition.get_image()
+            self.log.debug(f'>>> capture res: {img.shape}')
+            path = self.capture_path + f"{self.acquisition_i:04d}"
+            np.save(path, img)
+            self.log.debug(f'Capture to "{path}"')
+            self.acquisition_i += 1
+            if self.acquisition_i >= self.n_acquisitions:
+                self.log.info('Capture mode ended')
+                self.acquisition_mode = 'live_stream'
+            del self.acquisition
+            self.acquisition = acquisition.LiveStream()
+        except BaseException as e:
+            self.log.exception(f'Capture acquisition failed {e}')
+
+    def live_stream(self):
+        try:
+            live_image = self.acquisition.get_image()
+            try:
+                self.live_image_queue.put(live_image, False)
+            except Full:
+                self.log.warn('Live stream frame drop, (queue is full)')
+        except BaseException as e:
+            self.log.exception(f'Live stream acquisition failed {e}')
+
 
     def _set_mode(self, m):
         if m not in ('capture', 'live_stream', None):
