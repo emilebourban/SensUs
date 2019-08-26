@@ -109,8 +109,8 @@ class Application(dict):
                 self.live_image = self.acq.get_image()
 
             # capture
-            if self.acquisition_mode == 'capture' and \
-            time() - t_capt > self.capture_refresh_time:
+            if self.acquisition_mode == 'capture' \
+                    and time() - t_capt > self.capture_refresh_time:
                 self.capture()
 
             # events
@@ -124,7 +124,7 @@ class Application(dict):
 
             # drawing
             if time() - t_draw >= 1 / self.draw_fps:
-                t = time()
+                t_draw = time()
                 self.draw()
 
         return True
@@ -134,15 +134,15 @@ class Application(dict):
         self.acq = acquisition.Capture(expo_time=self.expo_time)
         img = self.acq.get_image()
         print('>> 1 >> ', img)
-        del self.acq
-        self.acq = acquisition.LiveStream()
         path = self.result_path + f"{self.acq_i:04d}"
-        print('>> 2 >> ', img)
         np.save(path, img)
         self.log.debug(f'Capture to "{path}"')
         self.acq_i += 1
         if self.acq_i >= self.n_results:
             self.acquisition_mode = 'live_stream'
+        del self.acq
+        self.acq = acquisition.LiveStream()
+        print('>> 2 >> ', img)
 
     def get_ip_addresses(self):
         try:
