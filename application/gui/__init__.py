@@ -119,11 +119,12 @@ class Text(base.Element):
 
     # TODO tune default font_size
     def __init__(self, layer, pos, text, font_size=18, color=(0, 0, 0),
-                 gray_color=(160, 160, 160),
+                 gray_color=(160, 160, 160), always_gray=False
                  font='fonts/texgyreheros-regular.otf'):
         super().__init__(layer, pos)
         self.fg_color = color
         self.gray_color = gray_color
+        self.always_gray = always_gray
         self.font_size = font_size
         self.font = pygame.font.Font(font, self.font_size)
         self.text = text
@@ -144,7 +145,10 @@ class Text(base.Element):
         return surf, surf.get_rect()
 
     def draw(self, gray=False):
-        self.screen.blit(self.surf if not gray else self.gray_surf, self.rect)
+        if gray or self.always_gray:
+            self.screen.blit(self.gray_surf, self.rect)
+        else:
+            self.screen.blit(self.gray_surf, self.rect)
 
 
 class Image(base.Element):
