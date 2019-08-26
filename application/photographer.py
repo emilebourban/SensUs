@@ -36,7 +36,6 @@ class Photographer(Thread):
 
     @start_time.setter
     def start_time(self, t):
-        self.log.debug(f'>>>> SETTING START TIME {t}')
         with self._start_time_lock:
             self._start_time = t
 
@@ -47,7 +46,6 @@ class Photographer(Thread):
             return 0
         v = max(min((time() - start_time) / total_time, 1), 0)
 
-        self.log.debug(f'{time() - self.start_time} / {total_time} -> {v}')
         return v
 
     def set_mode(self, m):
