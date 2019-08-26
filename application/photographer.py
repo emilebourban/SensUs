@@ -79,6 +79,7 @@ class Photographer(Thread):
         del self.acquisition
         self.acquisition = acquisition.Capture(expo_time=self.expo_time)
         img = self.acquisition.get_image()
+        self.log.debug(f'>>> capture res: {img.shape}')
         path = self.capture_path + f"{self.acquisition_i:04d}"
         np.save(path, img)
         self.log.debug(f'Capture to "{path}"')
