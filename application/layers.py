@@ -35,8 +35,8 @@ class Layer(gui.Layer):
 
     def create_small_buttons_list(self, buttons):
         w_btn = 300
-        h_btn = 40
-        pitch = 50
+        h_btn = 35
+        pitch = 45
         x_btn = 400
         y0 = round(480/2 - (len(buttons) - 1) / 2 * pitch)
         for n, (k, title, action) in enumerate(buttons):
