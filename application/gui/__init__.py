@@ -191,9 +191,9 @@ class Button(Rectangle, Text, base.RectangleClickable):
 
     def draw(self):
         if self.disabled:
+            print('disabled')
             Rectangle.draw(self, (200, 200, 200))
             Text.draw(self, gray=True)
-
         elif self.is_pressed:
             Rectangle.draw(self, (100, 255, 0))
             Text.draw(self)
