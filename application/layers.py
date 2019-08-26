@@ -45,13 +45,13 @@ class Layer(gui.Layer):
 
     def create_next_button(self, target, text='Next', size=[150, 40],
                            disabled=False):
-        pos = (800 - 100, 480 - 120)
+        pos = (800 - 100, 480 - 80)
         self['next'] = gui.Button(self, pos, size, text,
                                   lambda: self.set_layer(target),
                                   disabled=disabled)
 
     def create_back_button(self, target, text='Back', size=[150, 40]):
-        pos = (0 + 100, 480 - 120)
+        pos = (0 + 100, 480 - 80)
         self['back'] = gui.Button(self, pos, size, text,
                                   lambda: self.set_layer(target))
 
@@ -195,21 +195,20 @@ class FocusLayer(Layer):
     # TODO: add a stream object in initGui
     def __init__(self, app):
         super().__init__(app)
-
+        self['stream'] = gui.Video(self, (400, 200), h=300)
         self.create_title('Set the focus')
         self.create_next_button('loading', 'Done')
         self.create_back_button('insert')
-        self['stream'] = gui.Video(self, (400, 200), h=300)
 
 
 class LoadingLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
+        self['stream'] = gui.Video(self, (400, 200), h=300)
         self.create_title('Please wait...')
         self.create_next_button('circle')
         self.create_back_button('focus')
-        self['stream'] = gui.Video(self, (400, 200), h=300)
 
 
 class ResultsLayer(Layer):
