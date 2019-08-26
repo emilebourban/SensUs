@@ -27,6 +27,7 @@ class Capture(Acquistion):
     def __init__(self, expo_time=15000):
         super().__init__()
         self.log = getLogger('main.capture')
+        self.log.debug('created capture')
         self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
         # TODO: use full depth, i.e 12 bits for image analysis :PixelFormat_Mono12p, try with packed
         self.cam['PixelFormat'].value = 'Mono8'
@@ -77,6 +78,7 @@ class LiveStream(Acquistion):
     def __init__(self):
         super().__init__()
         self.log = getLogger('main.LiveStream')
+        self.log.debug('created livestream')
         self.cam['StreamBufferHandlingMode'].value = 'NewestFirst'
         self.cam['TriggerMode'].value = 'Off'
         self.cam['AcquisitionFrameRateEnable'].value = True
