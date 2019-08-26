@@ -99,8 +99,13 @@ class Application(dict):
                 t_draw = time()
                 self.draw()
 
+        self.log('Waiting on photographer to finished...')
         self.photographer.stop()
         self.photographer.join(5)
+        if self.photographer.is_alive():
+            self.log('Photographer failed to finish')
+        else:
+            self.log('Photographer finished')
         return True
 
     def exec_events(self):
