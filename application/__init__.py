@@ -63,7 +63,7 @@ class Application(dict):
 
     def run(self):
         self.log.debug('starting photographer')
-        self.photographer.start()
+        # self.photographer.start()
         self.log.debug('photographer started')
         self.quitting = False
         t_draw = time()
