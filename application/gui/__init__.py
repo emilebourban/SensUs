@@ -284,12 +284,11 @@ class Loading_bar(base.Element):
 
     def draw(self):
         c, s, p, v = self.pos, self.size, self.padding, self.progression
-        x1, y1 = c[0] - s[0]/2, c[1] - s[1]/2
-        x2, y2 = c[0] + s[0]/2, c[1] + s[1]/2
-        px1, py1 = x1 + p, y1 + p
-        px2, py2 = px1 + v * (s[0] - 2 * p), y2 - p
-        pygame.draw.rect(self.screen, self.bg_color, (x1, y1, x2, y2))
-        pygame.draw.rect(self.screen, self.fg_color, (px1, py1, px2, py2))
+        x, y = c[0] - s[0]/2, c[1] - s[1]/2
+        xp, yp = x + p, y + p
+        wp, hp = v * (s[0] - 2 * p), h - 2 * p
+        pygame.draw.rect(self.screen, self.bg_color, (x, y, *s))
+        pygame.draw.rect(self.screen, self.fg_color, (xp, yp, wp, hp))
 
 
 class Video(base.Element):
