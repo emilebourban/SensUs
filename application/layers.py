@@ -76,10 +76,10 @@ class WelcomeLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
-        self['logo'] = gui.Image(self, (400, 160),
+        self['logo'] = gui.Image(self, (400, 200),
                                  'images/logo.png',
                                  h=300)
-        self['text'] = gui.Text(self, (400, 350),
+        self['text'] = gui.Text(self, (400, 400),
                                 'Swiss Precision for Healthcare Improvement',
                                 font_size=25, color=(218, 41, 28))
 
