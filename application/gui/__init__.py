@@ -303,6 +303,7 @@ class Video(base.Element):
         if img is None:
             return None
         ih, iw = img.shape[:2]
+        print(f'{iw}x{ih}')
         r = iw / ih
         if not w and not h:
             w, h = iw, ih
