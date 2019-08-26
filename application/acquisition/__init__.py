@@ -56,6 +56,7 @@ class Capture(Acquistion):
 
     def get_image(self):
         image = self.cam.GetNextImage()
+        self.log.debug(f'image collected {image}')
         if image.IsIncomplete():
             self.log.warning('Image incomplete with image status %d...' % image.GetImageStatus())
             image.Release()
@@ -64,7 +65,9 @@ class Capture(Acquistion):
             # Convert image to Mono8
             import PySpin as spin
             image_converted = image.Convert(spin.PixelFormat_Mono8)
+            self.log.debug(f'image converted: {image_converted}')
             image.Release()
+            self.log.debug(f'image released: {image_converted}')
             return image_converted
 
     def get_exposure_time(self):
@@ -119,15 +122,12 @@ class LiveStream(Acquistion):
 
         h = image.GetHeight()
         w = image.GetWidth()
-        self.log.debug('w: ', w, 'h: ', h)
         numChannels = image.GetNumChannels()
         if numChannels > 1:
             array = image.GetData().reshape(h, w, numChannels)
-            print('array > 1')
         else:
             array = image.GetData().reshape(h, w).T
             array = array[..., np.newaxis].repeat(3, -1).astype("uint8")
-            print('array < 1')
         image.Release()
 
         return array
