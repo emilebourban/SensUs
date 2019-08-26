@@ -208,7 +208,7 @@ class LoadingLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
         self['stream'] = gui.Video(self)
-        self.create_title('Acquisition...')
+        self.create_title('Acquisition')
         self.create_next_button('choice', disabled=True)
         self.create_back_button('focus')
 
@@ -218,7 +218,7 @@ class LoadingLayer(Layer):
         self['circles'] = gui.Group()
         self['add'] = gui.Button(self, (x0-s/2, y0-s/2), (s, s), '+',
                                  lambda: self.new_circle((100, 100), 42))
-        self['rem'] = gui.Button(self, (x0+s/2, y0-s/2), (s, s), '-',
+        self['rem'] = gui.Button(self, (x0+s/2, y0-s/2), (s, s), '−',
                                  lambda: self.rem_selected_circles())
         self['reset'] = gui.Button(self, (x0, y0+s/2), (2*s, s), 'Reset',
                                    lambda: self.set_circles([]))
