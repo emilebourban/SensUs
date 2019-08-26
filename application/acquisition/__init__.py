@@ -58,7 +58,7 @@ class Capture(Acquistion):
         image = self.cam.GetNextImage()
         self.log.debug(f'image collected {image}')
         if image.IsIncomplete():
-            self.log.warning('Image incomplete with image status %d...' % image.GetImageStatus())
+            self.log.error('Image incomplete with image status %d...' % image.GetImageStatus())
             image.Release()
             return None
 
