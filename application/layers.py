@@ -45,13 +45,13 @@ class Layer(gui.Layer):
 
     def create_next_button(self, target, text='Next', size=[150, 40],
                            disabled=False):
-        pos = (800 - 100, 480 - 120)
+        pos = (800 - 100, 480 - 60)
         self['next'] = gui.Button(self, pos, size, text,
                                   lambda: self.set_layer(target),
                                   disabled=disabled)
 
     def create_back_button(self, target, text='Back', size=[150, 40]):
-        pos = (0 + 100, 480 - 120)
+        pos = (0 + 100, 480 - 40)
         self['back'] = gui.Button(self, pos, size, text,
                                   lambda: self.set_layer(target))
 
@@ -126,11 +126,11 @@ class Tutorial1Layer(Layer):
     def __init__(self, app):
         super().__init__(app)
         self.create_title('Insert the chip')
-        self.create_next_button('tutorial2', disabled=True)
+        self.create_next_button('tutorial2')
         self.create_back_button('chip')
-        self['img'] = gui.Image(self, [400, 200],
+        self['img'] = gui.Image(self, [400, 300],
                                 'images/tuto1.png',
-                                h=200)
+                                h=300)
 
 
 class Tutorial2Layer(Layer):
@@ -139,9 +139,9 @@ class Tutorial2Layer(Layer):
         super().__init__(app)
         self.create_next_button('tutorial3')
         self.create_back_button('tutorial1', 'Previous')
-        self['img'] = gui.Image(self, [400, 200],
+        self['img'] = gui.Image(self, [400, 300],
                                 'images/tuto2.png',
-                                h=200)
+                                h=300)
 
 
 class Tutorial3Layer(Layer):
@@ -150,9 +150,9 @@ class Tutorial3Layer(Layer):
         super().__init__(app)
         self.create_next_button('tutorial4')
         self.create_back_button('tutorial2', 'Previous')
-        self['img'] = gui.Image(self, [400, 200],
+        self['img'] = gui.Image(self, [400, 300],
                                 'images/tuto3.png',
-                                h=200)
+                                h=300)
 
 
 class Tutorial4Layer(Layer):
@@ -161,9 +161,9 @@ class Tutorial4Layer(Layer):
         super().__init__(app)
         self.create_next_button('tutorial5')
         self.create_back_button('tutorial3', 'Previous')
-        self['img'] = gui.Image(self, [400, 200],
+        self['img'] = gui.Image(self, [400, 300],
                                 'images/tuto4.png',
-                                h=200)
+                                h=300)
 
 
 class Tutorial5Layer(Layer):
@@ -172,9 +172,9 @@ class Tutorial5Layer(Layer):
         super().__init__(app)
         self.create_next_button('insert', 'Start')
         self.create_back_button('tutorial4', 'Previous')
-        self['img'] = gui.Image(self, [400, 200],
+        self['img'] = gui.Image(self, [400, 300],
                                 'images/tuto5.png',
-                                h=200)
+                                h=300)
 
 
 class InsertLayer(Layer):
@@ -195,21 +195,20 @@ class FocusLayer(Layer):
     # TODO: add a stream object in initGui
     def __init__(self, app):
         super().__init__(app)
-
+        self['stream'] = gui.Video(self, (400, 200), h=300)
         self.create_title('Set the focus')
         self.create_next_button('loading', 'Done')
         self.create_back_button('insert')
-        self['stream'] = gui.Video(self, (400, 200), h=300)
 
 
 class LoadingLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
-        self.create_title('Please wait...')
-        self.create_next_button('circle')
-        self.create_back_button('focus')
         self['stream'] = gui.Video(self, (400, 200), h=300)
+        self.create_title('Please wait...')
+        self.create_next_button('circle', disabled=True)
+        self.create_back_button('focus')
 
 
 
