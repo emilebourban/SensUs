@@ -209,7 +209,7 @@ class LoadingLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
-        self.['wait_stream'] = gui.Text(self, (400, 300),
+        self['wait_stream'] = gui.Text(self, (400, 300),
                                         'Loading video...')
         self['stream'] = gui.Video(self)
         self.create_title('Acquisition')
