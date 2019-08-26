@@ -208,7 +208,7 @@ class LoadingLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
         self['stream'] = gui.Video(self)
-        self.create_title('Please the spots and wait...')
+        self.create_title('Acquisition...')
         self.create_next_button('choice', disabled=True)
         self.create_back_button('focus')
 
@@ -224,6 +224,8 @@ class LoadingLayer(Layer):
                                    lambda: self.set_circles([]))
         self['size'] = gui.Slider(self, (400, 480 - 50), (350, 64), 10, 200,
                                   lambda r: self.set_selected_circles_radius(r))
+        self['progress'] = gui.Loading_bar(self, (400, 60), (600, 10),
+                                           progress=0.3)
 
     def select_circle(self, c):
         for v in self['circles'].values():
