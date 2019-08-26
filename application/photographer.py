@@ -105,20 +105,24 @@ class Photographer(Thread):
 
 
     def _set_mode(self, m):
-        if m not in ('capture', 'live_stream', None):
-            raise KeyError(m)
-        self.log.debug(f'Setting acquisition mode to "{m}"')
-        self.mode = m
+        try: 
+            if m not in ('capture', 'live_stream', None):
+                raise KeyError(m)
+            self.log.debug(f'Setting acquisition mode to "{m}"')
+            self.mode = m
 
-        if m == 'capture':
-            del self.acquisition
-            self.acquisition = acquisition.Capture()
-            self.expo_time = self.acquisition.get_exposure_time()
-            self.log.info(f'New expo time: {self.expo_time}us')
-            del self.acquisition
-            self.acquisition = acquisition.LiveStream()
-            self.acquisition_i = 0
+            if m == 'capture':
+                del self.acquisition
+                self.acquisition = acquisition.Capture()
+                self.expo_time = self.acquisition.get_exposure_time()
+                self.log.info(f'New expo time: {self.expo_time}us')
+                del self.acquisition
+                self.acquisition = acquisition.LiveStream()
+                self.acquisition_i = 0
 
-        if m == 'live_stream':
-            del self.acquisition
-            self.acquisition = acquisition.LiveStream()
+            if m == 'live_stream':
+                del self.acquisition
+                self.acquisition = acquisition.LiveStream()
+
+        except BaseException as e:
+            self.log.exception(f'Failed to set mode to {m}: {e}')

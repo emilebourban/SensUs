@@ -4,6 +4,7 @@ from logging import getLogger
 
 
 class Acquistion:
+
     def __init__(self):
         self.acq_log = getLogger('main.acquisition')
         self.cam = cam.Camera()
@@ -34,6 +35,7 @@ class Acquistion:
 
 
 class Capture(Acquistion):
+
     def __init__(self, expo_time=20000):
         super().__init__()
         self.log = getLogger('main.capture')
