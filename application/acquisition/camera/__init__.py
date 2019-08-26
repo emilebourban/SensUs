@@ -18,7 +18,7 @@ class NodeMap:
                 spin.intfIEnumeration: NodeEnum,
                 spin.intfICommand: NodeCmd
                 }[t](node)
-                    
+
 
 class Node:
     pass
@@ -28,15 +28,15 @@ class NodeEnum(Node):
 
     def __init__(self, node):
         self.node = spin.CEnumerationPtr(node)
-        
+
     @property
     def content(self):
         return {e.GetName() for e in self.node.GetEntries()}
-    
+
     @property
     def value(self):
         return self.node.GetCurrentEntry().GetName()
-   
+
 
     @value.setter
     def value(self, v):
@@ -139,7 +139,7 @@ class Camera:
         self.nodemap = NodeMap(self.camera.GetNodeMap())
         self.s_nodemap = NodeMap(self.camera.GetTLStreamNodeMap())
         self.d_nodemap = NodeMap(self.camera.GetTLDeviceNodeMap)
-    
+
     def __getitem__(self, v):
         try:
             return self.nodemap[v]
@@ -151,47 +151,46 @@ class Camera:
 
     def BeginAcquisition(self):
         self.camera.BeginAcquisition()
-    
+
     def EndAcquisition(self):
         self.camera.EndAcquisition()
-    
+
     def Init(self):
         self.camera.Init()
-        
+
     def DeInit(self):
         self.camera.DeInit()
-    
+
 #    def Delete(self):
 #        del self.camera
 #        del self.nodemap
 #        del self.s_nodemap
 #        del self.d_nodemap
-        
+
     def GetNextImage(self):
         return self.camera.GetNextImage()
-    
+
     def Clear_cam_list(self):
         self.camera_list.Clear()
-        
+
     def ReleaseInstance(self):
-        self.sys.ReleaseInstance() 
+        self.sys.ReleaseInstance()
 
     def __del__(self):
         self.EndAcquisition()
         self.DeInit()
         self.Clear_cam_list()
-        #TODO: maybe del cam
+        del self.cam
         self.ReleaseInstance()
-        
+
 #    def AcquisitionStatus(self):
 #        return self.camera.AcquisitionStatus()
-        
-        
+
+
 #    def __del__(self):
 #        self.release()
-        
+
 #        self.camera.EndAcquisition()
 #        self.camera.DeInit()
 #        del self.camera
-#        self.sys.ReleaseInstance() 
-   
+#        self.sys.ReleaseInstance()
