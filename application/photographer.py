@@ -36,13 +36,13 @@ class Photographer(Thread):
 
     @start_time.setter
     def start_time(self, t):
+        self.log.debug(f'>>>> SETTING START TIME {t}')
         with self._start_time_lock:
             self._start_time = t
 
     def get_progress(self):
         start_time = self.start_time
         total_time = self.n_acquisitions * self.capture_refresh_time
-        self.log.debug(f'{self.start_time} - {total_time}')
         if start_time is None:
             return 0
         v = max(min((time() - start_time) / total_time, 1), 0)
