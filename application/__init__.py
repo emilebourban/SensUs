@@ -22,7 +22,7 @@ class Application(dict):
         self.is_raspi = is_raspi
         self.screen = gui.init(fullscreen=is_raspi, hide_cursor=False)
         self.photographer = photographer.Photographer(live_stream_fps=18,
-                                                      n_aquisitions=3,
+                                                      n_acquisitions=3,
                                                       capture_refresh_time=10)
         super().__init__({
             'welcome': layers.WelcomeLayer(self),
