@@ -39,9 +39,9 @@ class NodeEnum(Node):
 
     @value.setter
     def value(self, v):
-	entry = self.node.GetEntryByName(v)
-	if entry is None:
-		raise KeyError(v)
+        entry = self.node.GetEntryByName(v)
+        if entry is None:
+            raise KeyError(v)
         v = entry.GetValue()
         self.node.SetIntValue(v)
 
