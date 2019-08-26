@@ -68,7 +68,7 @@ class Capture(Acquistion):
         import PySpin as spin
         self.log.info(f'>>> image.GetData()')
         # image_converted = image.Convert(spin.PixelFormat_Mono16, spin.HQ_LINEAR)
-        return image.GetNDArray()
+        return None
 
     def get_exposure_time(self):
         self.EndAcquisition()
