@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import log_setup
+from sys import exit
 
 
 def is_raspi():
@@ -31,3 +32,4 @@ if __name__ == '__main__':
     # If the log seems to crash use: log = log_setup.init(safe_mode=True))
     log = log_setup.init()
     main(log)
+    exit()
