@@ -224,7 +224,10 @@ class Circle(base.Element):
 
     def draw(self, force_color=None):
         color = force_color if force_color else self.color
+        # draw multiple circles to thicken the line
+        gfxdraw.aacircle(self.screen, *self.pos, self.radius-1, color)
         gfxdraw.aacircle(self.screen, *self.pos, self.radius, color)
+        gfxdraw.aacircle(self.screen, *self.pos, self.radius+1, color)
         #pygame.draw.circle(self.screen, color, self.pos, self.radius,
                            #self.thickness)
 
@@ -337,7 +340,9 @@ class Slider(base.Draggable, base.RectangleClickable):
         w = self.size[0] - 2 * self.padding
         x = round(self.pos[0] + (self.value - 0.5) * w)
         y = self.pos[1]
-        pygame.draw.circle(self.screen, (100, 255, 100), (x, y), 16)
+        gfxdraw.filled_circle(self.screen, (x, y), 16,
+                              (100, 255, 100))
+        # pygame.draw.circle(self.screen, (100, 255, 100), (x, y), 16)
 
     def mouse_motion(self, pos, catched):
         if self.dragging:
