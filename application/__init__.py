@@ -119,9 +119,11 @@ class Application(dict):
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
+                console.log.debug('QUIT event type')
                 self.quitting = True
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                console.log.debug('ESCAPE KEY event type')
                 self.quitting = True
 
             # 'd' is pressed -> toggle debug mode
