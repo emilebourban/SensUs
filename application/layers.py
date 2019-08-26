@@ -197,7 +197,7 @@ class FocusLayer(Layer):
     # TODO: add a stream object in initGui
     def __init__(self, app):
         super().__init__(app)
-        self['stream'] = gui.Video(self, (400, 480/2), w=800)
+        self['stream'] = gui.Video(self)
         self.create_title('Please set the focus')
         self.create_next_button('loading', 'Done')
         self.create_back_button('insert')
@@ -207,7 +207,7 @@ class LoadingLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
-        self['stream'] = gui.Video(self, (400, 480/2), w=800)
+        self['stream'] = gui.Video(self)
         self.create_title('Please the spots and wait...')
         self.create_next_button('choice', disabled=True)
         self.create_back_button('focus')

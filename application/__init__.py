@@ -75,12 +75,17 @@ class Application(dict):
             self.exec_events()
 
             # get latest photographer's live image
-            while self.photographer.has_new_live_image():
-                try:
-                    self.live_image = self.photographer.get_new_live_image()
-                    self.log.debug('Got new live image')
-                except BaseException:
-                    pass
+            if self.photographer.has_new_live_image():
+                while self.photographer.has_new_live_image():
+                    try:
+                        img = self.photographer.get_new_live_image()
+                        self.log.debug('Got new live image')
+                    except BaseException:
+                        pass
+                img = pygame.pixelcopy.make_surface(img)
+                img = pygame.transform.scale(img, (800, 480))
+                self.live_image = img
+
 
             # update ip
             if self.debug and time() - t_ip > self.ip_refresh_time:
