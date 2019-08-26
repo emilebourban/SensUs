@@ -31,12 +31,12 @@ class Photographer(Thread):
 
     @property
     def start_time(self):
-        with self._start_time_lock.acquire:
+        with self._start_time_lock:
             return self._start_time
 
     @start_time.setter
     def start_time(self, t):
-        with self._start_time_lock.acquire:
+        with self._start_time_lock:
             self._start_time = t
 
     def get_progress(self):
