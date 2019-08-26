@@ -261,10 +261,8 @@ class DetectionCircle(Circle, base.Draggable, base.CircleClickable):
         return False
 
 
-class Loading_bar(base.Element):
+class LoadingBar(base.Element):
 
-    # TODO tune padding default value
-    # TODO set colors
     def __init__(self, layer, pos, size, bg_color=(42, 42, 42),
                  fg_color=(200, 200, 200), padding=1, progress=0):
         super().__init__(layer, pos)
@@ -280,7 +278,7 @@ class Loading_bar(base.Element):
 
     @progression.setter
     def progression(self, v):
-        self.log.debug(f'>>> {v}')
+        print(f'>>> {v}')
         self._progress = max(0, min(1, v))
 
     def draw(self):
