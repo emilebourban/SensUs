@@ -63,12 +63,12 @@ class Capture(Acquistion):
             return None
 
             # Convert image to Mono8
-            import PySpin as spin
-            image_converted = image.Convert(spin.PixelFormat_Mono8)
-            self.log.debug(f'image converted: {image_converted}')
-            image.Release()
-            self.log.debug(f'image released: {image_converted}')
-            return image_converted
+        import PySpin as spin
+        image_converted = image.Convert(spin.PixelFormat_Mono8)
+        self.log.debug(f'image converted: {image_converted}')
+        image.Release()
+        self.log.debug(f'image released: {image_converted}')
+        return image_converted
 
     def get_exposure_time(self):
         self.EndAcquisition()
