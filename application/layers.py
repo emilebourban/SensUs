@@ -43,10 +43,12 @@ class Layer(gui.Layer):
             self[k] = gui.Button(self, [x_btn, y], [w_btn, h_btn], title,
                                  action)
 
-    def create_next_button(self, target, text='Next', size=[150, 40]):
+    def create_next_button(self, target, text='Next', size=[150, 40],
+                           disabled=False):
         pos = (800 - 100, 480 - 120)
         self['next'] = gui.Button(self, pos, size, text,
-                                  lambda: self.set_layer(target))
+                                  lambda: self.set_layer(target),
+                                  disabled=disabled)
 
     def create_back_button(self, target, text='Back', size=[150, 40]):
         pos = (0 + 100, 480 - 120)
@@ -124,7 +126,7 @@ class Tutorial1Layer(Layer):
     def __init__(self, app):
         super().__init__(app)
         self.create_title('Insert the chip')
-        self.create_next_button('tutorial2')
+        self.create_next_button('tutorial2', disabled=True)
         self.create_back_button('chip')
         self['img'] = gui.Image(self, [400, 200],
                                 'images/tuto1.png',

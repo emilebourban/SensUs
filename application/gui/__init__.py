@@ -116,9 +116,11 @@ class Text(base.Element):
 
     # TODO tune default font_size
     def __init__(self, layer, pos, text, font_size=18, color=(0, 0, 0),
+                 gray_color=(160, 160, 160),
                  font='fonts/texgyreheros-regular.otf'):
         super().__init__(layer, pos)
         self.fg_color = color
+        self.gray_color = gray_color
         self.font_size = font_size
         self.font = pygame.font.Font(font, self.font_size)
         self.text = text
@@ -130,16 +132,16 @@ class Text(base.Element):
     @text.setter
     def text(self, t):
         self._text = t
-        self.surf, self.rect = self.text_objects(t)
+        self.surf, self.rect = self.text_objects(t, self.fg_color)
+        self.gray_surf, _ = self.text_objects(t, self.gray_color)
         self.rect.center = self.pos
 
-    def text_objects(self, text):
-        surf = self.font.render(text, True, self.fg_color)
+    def text_objects(self, text, color):
+        surf = self.font.render(text, True, color)
         return surf, surf.get_rect()
 
-    def draw(self):
-        # TODO center text ?
-        self.screen.blit(self.surf, self.rect)
+    def draw(self, gray=False):
+        self.screen.blit(self.surf if not gray else self.gray_surf, self.rect)
 
 
 class Image(base.Element):
@@ -179,19 +181,25 @@ class Rectangle(base.Element):
 
 class Button(Rectangle, Text, base.RectangleClickable):
 
-    def __init__(self, layer, pos, size, text, action):
+    def __init__(self, layer, pos, size, text, action, disabled=False):
         Rectangle.__init__(self, layer, pos, size, (255, 220, 200))
         Text.__init__(self, layer, pos, text)
         base.RectangleClickable.__init__(self, pos, size)
         self.action = action
+        self.disabled = disabled
         self.is_pressed = False
 
     def draw(self):
-        if self.is_pressed:
+        if self.disabled:
+            Rectangle.draw(self, (200, 200, 200))
+            Text.draw(self, gray=True)
+
+        elif self.is_pressed:
             Rectangle.draw(self, (100, 255, 0))
+            Text.draw(self)
         else:
             Rectangle.draw(self)
-        Text.draw(self)
+            Text.draw(self)
 
     def on_click_down(self, inside, catched):
         if not catched and inside:
