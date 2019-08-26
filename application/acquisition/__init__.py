@@ -66,6 +66,7 @@ class Capture(Acquistion):
 
             # Convert image to Mono8
         import PySpin as spin
+        self.log.info(f'>>> image.GetData()')
         # image_converted = image.Convert(spin.PixelFormat_Mono16, spin.HQ_LINEAR)
         return image.GetNDArray()
 
