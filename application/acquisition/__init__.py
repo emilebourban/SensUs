@@ -34,7 +34,7 @@ class Acquistion:
 
 
 class Capture(Acquistion):
-    def __init__(self, expo_time=15000):
+    def __init__(self, expo_time=20000):
         super().__init__()
         self.log = getLogger('main.capture')
         self.log.debug('created capture')

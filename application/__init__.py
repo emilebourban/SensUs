@@ -128,9 +128,9 @@ class Application(dict):
 
         return True
 
-    def capture():
+    def capture(self):
         del self.acq
-        self.acq = acquisition.Capture(self.expo_time)
+        self.acq = acquisition.Capture(expo_time=self.expo_time)
         img = self.acq.get_image()
         del self.acq
         self.acq = acquisition.LiveStream()
