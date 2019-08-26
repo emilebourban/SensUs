@@ -86,15 +86,15 @@ class Application(dict):
                 img = pygame.transform.scale(img, (800, 533))
                 self.live_image = img
 
-
             # update ip
             if self.debug and time() - t_ip > self.ip_refresh_time:
                 t_ip = time()
                 self.over_layer['ip'].text = ifconfig.get_ip_addresses_str()
 
-            # drawing
+            # drawing, update progessbar, update fps
             if time() - t_draw >= 1 / self.draw_fps:
                 fps = 1 / (time() - t_draw)
+                self['loading'].progression = self.photographer.get_progress()
                 self.over_layer['fps'].text = f"{fps:05.2f} fps"
                 t_draw = time()
                 self.draw()

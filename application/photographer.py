@@ -1,4 +1,4 @@
-from threading import Thread, Event
+from threading import Thread, Event, Lock
 from queue import Queue, Full, Empty
 from time import time
 from logging import getLogger
@@ -9,7 +9,7 @@ import numpy as np
 class Photographer(Thread):
 
     # !! FROM THE OUTSIDE, ONLY CALL start(), set_mode(...),
-    # !! has_new_live_image(), get_new_live_image() and stop()
+    # !! has_new_live_image(), get_new_live_image(), get_progess() and stop()
 
     def __init__(self, capture_path='results/img_', n_acquisitions=10,
                  live_stream_fps=24, capture_refresh_time=30):
@@ -26,6 +26,25 @@ class Photographer(Thread):
         self.acquisition_i = 0
         self.mode = None
         self.quitting = Event()
+        self._start_time = None
+        self._start_time_lock = Lock()
+
+    @property
+    def start_time(self):
+        with self._start_time_lock.acquire:
+            return self._start_time
+
+    @start_time.setter
+    def start_time(self, t):
+        with self._start_time_lock.acquire:
+            self._start_time = t
+
+    def get_progress(self):
+        start_time = self.start_time
+        total_time = self.n_acquisitions * self.capture_refresh_time
+        if start_time is None:
+            return 0
+        return max(min((time() - start_time) / total_time, 1), 0)
 
     def set_mode(self, m):
         if m not in (None, 'live_stream', 'capture'):
@@ -103,26 +122,31 @@ class Photographer(Thread):
         except BaseException as e:
             self.log.exception(f'Live stream acquisition failed {e}')
 
-
     def _set_mode(self, m):
-        try: 
+        try:
             if m not in ('capture', 'live_stream', None):
                 raise KeyError(m)
             self.log.debug(f'Setting acquisition mode to "{m}"')
             self.mode = m
 
             if m == 'capture':
-                del self.acquisition
-                self.acquisition = acquisition.Capture()
-                self.expo_time = self.acquisition.get_exposure_time()
-                self.log.info(f'New expo time: {self.expo_time}us')
-                del self.acquisition
-                self.acquisition = acquisition.LiveStream()
-                self.acquisition_i = 0
-
+                self.start_capture_mode()
             if m == 'live_stream':
-                del self.acquisition
-                self.acquisition = acquisition.LiveStream()
+                self.start_live_stream_mode()
 
         except BaseException as e:
             self.log.exception(f'Failed to set mode to {m}: {e}')
+
+    def start_capture_mode(self):
+        del self.acquisition
+        self.acquisition = acquisition.Capture()
+        self.expo_time = self.acquisition.get_exposure_time()
+        self.log.info(f'New expo time: {self.expo_time}us')
+        del self.acquisition
+        self.acquisition = acquisition.LiveStream()
+        self.acquisition_i = 0
+        self.start_time = time()
+
+    def start_live_stream_mode(self):
+        del self.acquisition
+        self.acquisition = acquisition.LiveStream()
