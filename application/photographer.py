@@ -43,10 +43,8 @@ class Photographer(Thread):
         start_time = self.start_time
         total_time = self.n_acquisitions * self.capture_refresh_time
         if start_time is None:
-            print('>>> NONE')
             return 0
         v = max(min((time() - start_time) / total_time, 1), 0)
-        print(f'>>> {time() - start_time} / {total_time} -> {v}')
         return v
 
     def set_mode(self, m):
@@ -142,13 +140,13 @@ class Photographer(Thread):
 
     def start_capture_mode(self):
         del self.acquisition
+        self.acquisition_i = 0
+        self.start_time = time()
         self.acquisition = acquisition.Capture()
         self.expo_time = self.acquisition.get_exposure_time()
         self.log.info(f'New expo time: {self.expo_time}us')
         del self.acquisition
         self.acquisition = acquisition.LiveStream()
-        self.acquisition_i = 0
-        self.start_time = time()
 
     def start_live_stream_mode(self):
         del self.acquisition
