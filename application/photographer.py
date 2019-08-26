@@ -139,6 +139,7 @@ class Photographer(Thread):
             self.log.exception(f'Failed to set mode to {m}: {e}')
 
     def start_capture_mode(self):
+        self.log.debug('#########################')
         del self.acquisition
         self.acquisition_i = 0
         self.start_time = time()
@@ -147,6 +148,7 @@ class Photographer(Thread):
         self.log.info(f'New expo time: {self.expo_time}us')
         del self.acquisition
         self.acquisition = acquisition.LiveStream()
+        self.log.debug('*************************')
 
     def start_live_stream_mode(self):
         del self.acquisition
