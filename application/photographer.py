@@ -30,7 +30,9 @@ class Photographer(Thread):
     def set_mode(self, m):
         if m not in (None, 'live_stream', 'capture'):
             raise KeyError(m)
+        self.log.debug(f'Putting mode: {m}')
         self.mode_queue.put(m)
+        self.log.debug(f'Put mode: {m}')
 
     def has_new_live_image(self):
         return self.live_image_queue.empty() is not True
@@ -48,7 +50,9 @@ class Photographer(Thread):
             # get new mode
             if not self.mode_queue.empty():
                 try:
-                    self._set_mode(self.mode_queue.get(block=False))
+                    while not self.mode_queue.empty():
+                        mode = self.mode_queue.get(block=False)
+                    self._set_mode(mode)
                     self.log.debug(f'Mode set to {self.mode}')
                 except Empty:
                     pass
