@@ -45,6 +45,8 @@ class Photographer(Thread):
 
         while not self.quitting.is_set():
 
+            self.log.debug('Photographe run')
+
             # get new mode
             if not self.mode_queue.empty():
                 try:

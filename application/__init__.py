@@ -69,6 +69,8 @@ class Application(dict):
 
         while not self.quitting:
 
+            self.log.debug('app run')
+
             # events
             self.exec_events()
 
