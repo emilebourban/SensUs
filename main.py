@@ -30,5 +30,4 @@ def main(log):
 if __name__ == '__main__':
     # If the log seems to crash use: log = log_setup.init(safe_mode=True))
     log = log_setup.init()
-    while not main(log):
-        pass
+    main(log):
