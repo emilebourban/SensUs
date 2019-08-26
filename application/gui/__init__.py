@@ -119,7 +119,7 @@ class Text(base.Element):
 
     # TODO tune default font_size
     def __init__(self, layer, pos, text, font_size=18, color=(0, 0, 0),
-                 gray_color=(160, 160, 160), always_gray=False
+                 gray_color=(160, 160, 160), always_gray=False,
                  font='fonts/texgyreheros-regular.otf'):
         super().__init__(layer, pos)
         self.fg_color = color
