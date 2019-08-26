@@ -18,7 +18,7 @@ class Acquistion:
 
 
 class Capture(Acquistion):
-    def __init__(self):
+    def __init__(self, expo_time=15000):
         super().__init__()
         self.log = getLogger('main.capture')
         self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
@@ -31,9 +31,10 @@ class Capture(Acquistion):
         self.cam['Width'].value = self.cam['Width'].max
         self.cam['Height'].value = self.cam['Height'].max
         self.cam['GainAuto'].value = 'Off'
-        self.cam['Gain'].value= 0
+        self.cam['Gain'].value = 0
         self.cam['AutoExposureExposureTimeUpperLimit'].value = 50000
-        self.cam['ExposureAuto'].value = 'Once'
+        self.cam['ExposureAuto'].value = 'Off'
+        self.cam['ExposureTime'].value = expo_time
         self.BeginAcquisition()
 
     def get_image(self):
@@ -51,18 +52,16 @@ class Capture(Acquistion):
 
     def get_exposure_time(self):
         self.cam['ExposureAuto'].value = 'Once'
+        old_expo_time = self.cam['ExposureTime']
 
         for i in range(50):
-            im = self.get_image()
-            chunk_data = im.GetChunkData()
-            im.Release()
+            self.get_image().Release()
+            #chunk_data = im.GetChunkData()
 
-        return chunk_data.GetExposureTime()
-
-    def set_exposure_time(self, exp):
         self.cam['ExposureAuto'].value = 'Off'
-        self.cam['ExposureTime'].value = exp
-
+        expo_time = self.cam['ExposureTime']
+        self.cam['ExposureTime'] = old_expo_time
+        return expo_time
 
 class LiveStream(Acquistion):
     def __init__(self):

@@ -4,7 +4,7 @@ from . import gui
 import os
 from . import layers
 #from . import image_analysis
-from . import acquisition as acq
+from . import acquisition
 import pygame
 from logging import getLogger
 from time import time
@@ -16,8 +16,9 @@ import re
 
 class Application(dict):
 
-    def __init__(self, is_raspi=True, debug=False, max_fps=30,
-                 ip_refresh_time=1.0):
+    def __init__(self, is_raspi=True, debug=False, draw_fps=30,
+                 ip_refresh_time=1.0, live_fps=24, capture_refresh_time=30):
+
         self.log = getLogger('main.app')
         self.is_raspi = is_raspi
         self.screen = gui.init(fullscreen=is_raspi, hide_cursor=False)
@@ -40,13 +41,19 @@ class Application(dict):
             'parameters': layers.ParametersLayer(self),
         })
         self.over_layer = layers.OverLayer(self)
-        self._active_layer = 'welcome'
+        self.active_layer = 'welcome'
         self.quitting = False
-        self.max_fps = max_fps
+        self.draw_fps = draw_fps
         self.ip_refresh_time = ip_refresh_time
+        self.live_fps = live_fps
+        self.capture_refresh_time = capture_refresh_time
         self.debug = debug
-        self.acq = acq.LiveStream()
-        self.image = None
+        self.acq = None
+        self.acq_i = 0
+        self.acquisition_mode = None
+        self.live_image = None
+        self.result_path = 'results/img_'
+        self.n_results = 10
 
     @property
     def active_layer(self):
@@ -58,66 +65,72 @@ class Application(dict):
             raise KeyError(l)
         self.log.debug(f'Moving to layer "{l}"')
         self._active_layer = l
+        if self._active_layer == 'focus':
+            self.acquisition_mode = 'live_stream'
+        if self._active_layer == 'loading'
+            self.acquisition_mode = 'capture'
 
-    def get_image_livestream(self):
-        return self.acq.get_image()
+    @property
+    def acquisition_mode(self):
+        return self._acquisition_mode
 
-    def get_exposure_time(self):
-        return self.acq.set_exposure_time()
-
-    def set_exposure_time(self, exp):
-        self.acq.set_exposure_time(exp)
-
-    def get_image_capture(self):
-        return self.acq.get_image()
-
+    @acquisition_mode.setter
+    def acquisition_mode(self, m):
+        if m not in ('capture', 'live_stream', None):
+            raise KeyError(m)
+        self._acquisition_mode = m
+        if m == 'capture':
+            self.acq = acquisition.Capture()
+            self.expo_time = self.acq.get_exposure_time()
+            self.acq = acquisition.LiveStream()
+            self.acq_i = 0
+        if m is not None:
+            self.acq = acquisition.LiveStream()
 
     def run(self):
         self.quitting = False
-        t = time()
+        t_draw = time()
         t_ip = time()
+        t_live = time()
+        t_capt = time()
+
         while not self.quitting:
+
+            # livestream
+            if self.acqusition_mode and time() - t_live > 1/self.live_fps:
+                t_live = time()
+                self.live_image = self.acq.get_image()
+
+            # capture
+            if self.acquisition_mode == 'capture' and
+            time() - t_capt > self.capture_refresh_time:
+                self.capture()
+
+
+            # events
+            self.exec_events()
+
             # update ip
             if self.debug and time() - t_ip > self.ip_refresh_time:
                 t_ip = time()
                 ips = self.get_ip_addresses()
                 self.over_layer['ip'].text = ' - '.join(ips)
-            # limiting fps
-            if time() - t >= 1 / self.max_fps:
+
+            # drawing
+            if time() - t_draw >= 1 / self.draw_fps:
                 t = time()
-
-                self.exec_events()
-
-                if self.active_layer == "focus":
-                    self.image = self.get_image_livestream()
-
-                if self.active_layer == "loading":
-                    set_exposure_time(self.get_exposure_time())
-
-                    try:
-                        test_file = open('test.txt', 'w+')
-                    except IOError:
-                        self.log.warn('Unable to write to current directory. Please check permissions.')
-                        input('Press Enter to exit...')
-                        return False
-
-                    test_file.close()
-                    os.remove(test_file.name)
-
-                    save_dir='/Prog/SensUs/application/acquisition/saved_images/'
-                    num_images = 120
-
-                    for i in range(num_images):
-                        filename = 'Frame_'+'0'*(4 - len(str(i)))+str(i)+'.tif'
-                        self.image = self.get_image_capture()
-                        print(datetime.now())
-                        # Save image
-                        im.Save(save_dir + filename)
-                        print('Saved image' + filename)
-                        #envoyé à image_analysis
-
                 self.draw()
+
         return True
+
+    def capture():
+        self.acq = acquisition.Capture(self.expo_time)
+        img = self.acq.get_image()
+        self.acq = acquisition.LiveStream()
+        np.save(self.result_path + f"{self.acq_i:04d}", img)
+        self.acq_i += 1
+        if self.acq_i >= self.n_results:
+            self.acquisition_mode = 'live_stream'
 
     def get_ip_addresses(self):
         try:
