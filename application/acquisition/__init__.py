@@ -74,7 +74,7 @@ class Capture(Acquistion):
         self.BeginAcquisition()
 
         for i in range(50):
-            self.get_image().Release()
+            self.get_image()
             #chunk_data = im.GetChunkData()
 
         self.EndAcquisition()
