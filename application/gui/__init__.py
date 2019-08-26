@@ -288,8 +288,7 @@ class Loading_bar(base.Element):
         x2, y2 = c[0] + s[0]/2, c[1] + s[1]/2
         px1, py1 = x1 + p, y1 + p
         px2, py2 = px1 + v * (s[0] - 2 * p), y2 - p
-        # TODO check remove last arg: 3
-        pygame.draw.rect(self.screen, self.bg_color, (x1, y1, x2, y2), 3)
+        pygame.draw.rect(self.screen, self.bg_color, (x1, y1, x2, y2))
         pygame.draw.rect(self.screen, self.fg_color, (px1, py1, px2, py2))
 
 
