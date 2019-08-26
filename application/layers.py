@@ -199,7 +199,8 @@ class FocusLayer(Layer):
         self.create_title('Set the focus')
         self.create_next_button('loading', 'Done')
         self.create_back_button('insert')
-        self['stream'] = gui.Video(self, (64, 64))
+        self['stream'] = gui.Video(self, (400, 200), h=200)
+
 
 class LoadingLayer(Layer):
 
@@ -208,6 +209,7 @@ class LoadingLayer(Layer):
         self.create_title('Please wait...')
         self.create_next_button('circle')
         self.create_back_button('focus')
+        self['stream'] = gui.Video(self, (400, 200), h=200)
 
 
 class ResultsLayer(Layer):
