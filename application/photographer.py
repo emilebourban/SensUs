@@ -13,6 +13,7 @@ class Photographer(Thread):
 
     def __init__(self, capture_path='results/img_', n_acquisitions=10,
                  live_stream_fps=24, capture_refresh_time=30):
+        Thread.__init__(self)
         self.log = getLogger('main.Photographer')
         self.log.debug('Photographer created')
         self.mode_queue = Queue()
