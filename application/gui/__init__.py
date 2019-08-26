@@ -295,7 +295,7 @@ class Video(base.Element):
     def draw(self):
         if self.app.live_image is None:
             return
-        self.screen.blit(self.app.live_image(0, 0))
+        self.screen.blit(self.app.live_image, (0, 0))
 
 
 class Slider(base.Draggable, base.RectangleClickable):
