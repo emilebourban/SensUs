@@ -189,7 +189,7 @@ class InsertLayer(Layer):
         # TODO create correct insert_chip.png
         self['img'] = gui.Image(self, [400, 240],
                                 'images/insert_chip.png',
-                                h=200)
+                                h=300)
 
 
 class FocusLayer(Layer):
@@ -299,21 +299,21 @@ class HelpLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
 
-        def nope():
-            pass
-
-        btn_list = [
-            ('bourban', 'Bourban Emile', nope),
-            ('conti', 'Conti Mark', nope),
-            ('cucu', 'Cucu Raluca', nope),
-            ('giezendanner', 'Giezendanner Ludovic', nope),
-            ('perier', 'Perier Marion', nope),
-            ('schalk', 'Schalk Katia', nope),
-            ('viatte', 'Viatte Clara', nope),
-        ]
         self.create_background()
-        self.create_small_buttons_list(btn_list)
+        self.create_title('In case of problem, please contact us')
         self.create_back_button('main')
+        self['rect'] = gui.Rectangle(self, (400, 260), (500, 200),
+                                     color=(255, 255, 255))
+        self['phone_img'] = gui.Image(self, (200, 200),
+                                      'images/phone.png', h=80)
+        self['phone'] = gui.
+        self['phone_img'] = gui.Image(self, (200, 200),
+                                      'images/phone.png', h=80)
+
+        self['2'] = gui.Text(self, (230, 180),
+                               'Phone: 078 842 25 20 ', font_size=25)
+        self['3'] = gui.Text(self, (295, 260),
+                               'Mail: teamEPFSens@gmail.com ', font_size=25)
 
 
 class ParametersLayer(Layer):
@@ -325,14 +325,11 @@ class ParametersLayer(Layer):
             pass
 
         btn_list = [
-            ('bourban', 'Bourban Emile', nope),
-            ('conti', 'Conti Mark', nope),
-            ('cucu', 'Cucu Raluca', nope),
-            ('giezendanner', 'Giezendanner Ludovic', nope),
-            ('perier', 'Perier Marion', nope),
-            ('schalk', 'Schalk Katia', nope),
-            ('viatte', 'Viatte Clara', nope),
+            ('language', 'Languages', 'images/language.png',
+             lambda: nope)
+            ('brightness', 'Brightness', 'images/light.png',
+             lambda: nope)
         ]
         self.create_background()
-        self.create_small_buttons_list(btn_list)
-        self.create_back_button('main')
+        self.create_buttons_list(btn_list)
+        self.create_back_button('welcome')
