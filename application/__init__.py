@@ -91,10 +91,10 @@ class Application(dict):
 
             # drawing
             if time() - t_draw >= 1 / self.draw_fps:
-                self.over_layer['fps'].text = 1 / (time() - t_draw)
+                fps = 1 / (time() - t_draw)
+                self.over_layer['fps'].text = f"{fps} fps"
                 t_draw = time()
                 self.draw()
-
 
         self.photographer.stop()
         self.photographer.join(5)
