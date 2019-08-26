@@ -2,6 +2,7 @@
 
 from . import gui
 import os
+import numpy as np
 from . import layers
 #from . import image_analysis
 from . import acquisition
@@ -128,7 +129,7 @@ class Application(dict):
 
         return True
 
-    def capture():
+    def capture(self):
         del self.acq
         self.acq = acquisition.Capture(self.expo_time)
         img = self.acq.get_image()
