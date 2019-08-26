@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-from application import Application
 import log_setup
 
 
@@ -15,6 +14,7 @@ def is_raspi():
 
 def main(log):
     try:
+        from application import Application
         app = Application(is_raspi=is_raspi(), debug=False)
         rtn_msg = app.run()
         if rtn_msg:
