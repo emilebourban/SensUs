@@ -26,7 +26,7 @@ class Layer(gui.Layer):
         pitch = 75
         x_img = 220
         x_btn = 420
-        y0 = round(480/2 - len(buttons)/2 * pitch)
+        y0 = round(480/2 - (len(buttons) - 1) / 2 * pitch)
         for n, (k, title, path, action) in enumerate(buttons):
             y = y0 + n * pitch
             self['img_' + k] = gui.Image(self, [x_img, y], path, h=h_btn)
