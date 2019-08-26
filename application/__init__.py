@@ -63,15 +63,13 @@ class Application(dict):
 
     def run(self):
         self.log.debug('starting photographer')
-        # self.photographer.start()
+        self.photographer.start()
         self.log.debug('photographer started')
         self.quitting = False
         t_draw = time()
         t_ip = time()
 
         while not self.quitting:
-
-            self.log.debug('app run')
 
             # events
             self.exec_events()
