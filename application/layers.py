@@ -120,7 +120,7 @@ class ChipLayer(Layer):
         self.create_background()
         self.create_title('Prepare the chip')
         self.create_buttons_list(btn_list)
-        self.create_back_button('main')
+        self.create_back_button('main', 'Cancel')
 
 
 class Tutorial1Layer(Layer):

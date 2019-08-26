@@ -58,9 +58,11 @@ class Application(dict):
             raise KeyError(l)
         self.log.debug(f'Moving to layer "{l}"')
         self._active_layer = l
-        if self._active_layer == 'focus':
+        if self.active_layer == 'main':
+            self.photographer.set_mode(None)
+        if self.active_layer == 'focus':
             self.photographer.set_mode('live_stream')
-        if self._active_layer == 'loading':
+        elif self.active_layer == 'loading':
             self.photographer.set_mode('capture')
 
     def run(self):
