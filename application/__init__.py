@@ -128,7 +128,7 @@ class Application(dict):
 
         return True
 
-    def capture(self):
+    def capture():
         del self.acq
         self.acq = acquisition.Capture(expo_time=self.expo_time)
         img = self.acq.get_image()
