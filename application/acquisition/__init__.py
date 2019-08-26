@@ -42,7 +42,7 @@ class Capture(Acquistion):
         self.log.debug('created capture')
         self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
         # TODO: use full depth, i.e 12 bits for image analysis :PixelFormat_Mono12p, try with packed
-        self.cam['PixelFormat'].value = 'Mono12'
+        self.cam['PixelFormat'].value = 'Mono10'
         self.cam['AcquisitionMode'].value = 'Continuous'
         self.cam['StreamCRCCheckEnable'].value = True
 
