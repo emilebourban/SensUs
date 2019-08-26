@@ -76,10 +76,9 @@ class Application(dict):
 
             # get latest photographer's live image
             if not self.photographer.has_new_live_image():
-                self.log.debug('Get new live image')
                 try:
                     self.live_image = self.photographer.get_new_live_image()
-                    self.log.debug(f'Mode set to {self.mode}')
+                    self.log.debug('Got new live image')
                 except BaseException:
                     pass
 
