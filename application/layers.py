@@ -4,16 +4,20 @@ from itertools import count
 
 class Layer(gui.Layer):
 
+    background = None
+
     def __init__(self, app):
         gui.Layer.__init__(self, app)
+        if self.background is None:
+            self.background = gui.Image(self, [800/2, 480/2],
+                                        'images/background.jpg',
+                                        h=480)
 
     def set_layer(self, l):
         self.app.active_layer = l
 
     def create_background(self):
-        self['bg'] = gui.Image(self, [800/2, 480/2],
-                               'images/background.png',
-                               h=480)
+        self['bg'] = self.background
 
     def create_buttons_list(self, buttons):
         w_btn = 300
