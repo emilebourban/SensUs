@@ -302,7 +302,7 @@ class Video(base.Element):
         img = self.app.live_image
         if img is None:
             return None
-        ih, iw = img.shape
+        ih, iw = img.shape[:2]
         r = iw / ih
         if not w and not h:
             w, h = iw, ih
