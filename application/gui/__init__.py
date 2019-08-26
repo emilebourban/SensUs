@@ -300,7 +300,7 @@ class Video(base.Element):
         if w and h:
             return (w, h)
         img = self.app.live_image
-        if not img:
+        if img is None:
             return None
         ih, iw = img.shape
         r = iw / ih
