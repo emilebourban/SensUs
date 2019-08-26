@@ -83,7 +83,7 @@ class Application(dict):
                     except BaseException:
                         pass
                 img = pygame.pixelcopy.make_surface(img)
-                img = pygame.transform.scale(img, (800, 480))
+                img = pygame.transform.scale(img, (800, 533))
                 self.live_image = img
 
 
