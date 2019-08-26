@@ -8,7 +8,7 @@ import numpy as np
 
 class Photographer(Thread):
 
-    # !! FROM THE OUTSIDE, ONLY CALL start(), set_mode(...),
+    # !! FROM THE OUTSIDE, ONLY CALL start(), set_mode(...), is_finished()
     # !! has_new_live_image(), get_new_live_image(), get_progess() and stop()
 
     def __init__(self, capture_path='results/img_', n_acquisitions=10,
@@ -23,7 +23,8 @@ class Photographer(Thread):
         self.capture_path = capture_path
         self.n_acquisitions = 10
         self.acquisition = None
-        self.acquisition_i = 0
+        self._acquisition_i = 0
+        self._acquisition_i_lock = 0
         self.mode = None
         self.quitting = Event()
         self._start_time = None
@@ -39,6 +40,16 @@ class Photographer(Thread):
         with self._start_time_lock:
             self._start_time = t
 
+    @property
+    def acquisition_i(self):
+        with self._acquisition_i_lock:
+            return self._acquisition_i
+
+    @acquisition_i.setter
+    def acquisition_i(self, i):
+        with self._acquisition_i_lock:
+            self._acquisition_i = i
+
     def get_progress(self):
         start_time = self.start_time
         total_time = self.n_acquisitions * self.capture_refresh_time
@@ -46,6 +57,9 @@ class Photographer(Thread):
             return 0
         v = max(min((time() - start_time) / total_time, 1), 0)
         return v
+
+    def is_finished(self):
+        return self.acquisition_i == self.n_acquisitions
 
     def set_mode(self, m):
         if m not in (None, 'live_stream', 'capture'):
@@ -139,7 +153,6 @@ class Photographer(Thread):
             self.log.exception(f'Failed to set mode to {m}: {e}')
 
     def start_capture_mode(self):
-        self.log.debug('#########################')
         del self.acquisition
         self.acquisition_i = 0
         self.start_time = time()
@@ -148,7 +161,6 @@ class Photographer(Thread):
         self.log.info(f'New expo time: {self.expo_time}us')
         del self.acquisition
         self.acquisition = acquisition.LiveStream()
-        self.log.debug('*************************')
 
     def start_live_stream_mode(self):
         del self.acquisition

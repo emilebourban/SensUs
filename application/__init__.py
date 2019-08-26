@@ -93,11 +93,13 @@ class Application(dict):
                 t_ip = time()
                 self.over_layer['ip'].text = ifconfig.get_ip_addresses_str()
 
-            # drawing, update progessbar, update fps
+            # drawing, update progessbar, update fps, "next" btn
             if time() - t_draw >= 1 / self.draw_fps:
                 fps = 1 / (time() - t_draw)
                 progress = self.photographer.get_progress()
                 self['loading']['progress'].progression = progress
+                finished = self.photographer.is_finished()
+                self['loading']['next'].disabled = not finished
                 self.over_layer['fps'].text = f"{fps:05.2f} fps"
                 t_draw = time()
                 self.draw()
