@@ -278,7 +278,6 @@ class LoadingBar(base.Element):
 
     @progression.setter
     def progression(self, v):
-        print(f'>>> {v}')
         self._progress = max(0, min(1, v))
 
     def draw(self):

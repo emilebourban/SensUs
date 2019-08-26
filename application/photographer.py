@@ -43,9 +43,10 @@ class Photographer(Thread):
         start_time = self.start_time
         total_time = self.n_acquisitions * self.capture_refresh_time
         if start_time is None:
+            print('>>> NONE')
             return 0
         v = max(min((time() - start_time) / total_time, 1), 0)
-
+        print(f'>>> {time() - start_time} / {total_time} -> {v}')
         return v
 
     def set_mode(self, m):
