@@ -219,7 +219,7 @@ class LoadingLayer(Layer):
                                  lambda: self.rem_selected_circles())
         self['reset'] = gui.Button(self, (740, 50), (80, 40), 'Reset',
                                    lambda: self.set_circles([]))
-        self['size'] = gui.Slider(self, (400, 340), (512, 64), 10, 200,
+        self['size'] = gui.Slider(self, (400, 480 - 50), (350, 64), 10, 200,
                                   lambda r: self.set_selected_circles_radius(r))
 
     def select_circle(self, c):
