@@ -7,7 +7,8 @@ class Layer(gui.Layer):
     background = None
 
     def __init__(self, app):
-        gui.Layer.__init__(self, app)
+        bg_color = (200, 200, 255) if app.debug else (255, 255, 255)
+        gui.Layer.__init__(self, app, bg_color)
         if self.background is None:
             self.background = gui.Image(self, [800/2, 480/2],
                                         'images/background.jpg',
