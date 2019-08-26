@@ -90,6 +90,7 @@ class Application(dict):
             self.acq = acquisition.LiveStream()
             self.acq_i = 0
         if m is not None:
+            del self.acq
             self.acq = acquisition.LiveStream()
 
     def run(self):
@@ -128,8 +129,10 @@ class Application(dict):
         return True
 
     def capture():
+        del self.acq
         self.acq = acquisition.Capture(self.expo_time)
         img = self.acq.get_image()
+        del self.acq
         self.acq = acquisition.LiveStream()
         path = self.result_path + f"{self.acq_i:04d}"
         np.save(path, img)
