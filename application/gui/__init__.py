@@ -290,15 +290,36 @@ class Loading_bar(base.Element):
 
 class Video(base.Element):
 
-    def __init__(self, layer, pos):
+    def __init__(self, layer, pos, w=None, h=None):
         super().__init__(layer, pos)
+        self.w, self.h = w, h
+
+    @property
+    def size(self):
+        w, h = self.w, self.h
+        if w and h:
+            return (w, h)
+        img = self.app.live_image
+        if img is None:
+            return None
+        iw, ih = img.shape[:2]
+        r = iw / ih
+        if not w and not h:
+            w, h = iw, ih
+        elif not w:
+            w, h = round(h * r), h
+        elif not h:
+            w, h = w, round(w / r)
+        return (w, h)
 
     def draw(self):
         if self.app.live_image is None:
             return
-        # self.img = pygame.transform.scale(self.img, (self.screen_width * 0.5, self.screen_height * 0.5))
         img = pygame.pixelcopy.make_surface(self.app.live_image)
-        self.screen.blit(img, self.pos)
+        size = self.size
+        pos = self.pos[0] - size[0] / 2, self.pos[1] - size[1] / 2
+        img = pygame.transform.scale(img, size)
+        self.screen.blit(img, pos)
 
 
 class Slider(base.Draggable, base.RectangleClickable):
