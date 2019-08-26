@@ -35,7 +35,6 @@ class Application(dict):
             'insert': layers.InsertLayer(self),
             'focus': layers.FocusLayer(self),
             'loading': layers.LoadingLayer(self),
-            'circle': layers.CircleLayer(self),
             'results': layers.ResultsLayer(self),
             'profiles': layers.ProfilesLayer(self),
             'help': layers.HelpLayer(self),

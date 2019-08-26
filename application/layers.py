@@ -196,7 +196,7 @@ class FocusLayer(Layer):
     # TODO: add a stream object in initGui
     def __init__(self, app):
         super().__init__(app)
-        self['stream'] = gui.Video(self, (400, 200), h=300)
+        self['stream'] = gui.Video(self, (400, 480/2), w=800)
         self.create_title('Please set the focus')
         self.create_next_button('loading', 'Done')
         self.create_back_button('insert')
@@ -206,26 +206,10 @@ class LoadingLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
-        self['stream'] = gui.Video(self, (400, 200), h=300)
-        self.create_title('Please wait...')
-        self.create_next_button('circle', disabled=True)
+        self['stream'] = gui.Video(self, (400, 480/2), w=800)
+        self.create_title('Please the spots and wait...')
+        self.create_next_button('choice', disabled=True)
         self.create_back_button('focus')
-
-
-class ResultsLayer(Layer):
-
-    def __init__(self, app):
-        super().__init__(app)
-        self.create_title('Results')
-
-
-class CircleLayer(Layer):
-
-    def __init__(self, app):
-        super().__init__(app)
-        self.create_title('Please select the visible spots')
-        self.create_next_button('choice', 'Done')
-        self.create_back_button('loading')
 
         self['circles'] = gui.Group()
         self['add'] = gui.Button(self, (600, 50), (40, 40), '+',
@@ -274,6 +258,13 @@ class CircleLayer(Layer):
         if not catched:
             self.select_circle(None)
         return catched
+
+
+class ResultsLayer(Layer):
+
+    def __init__(self, app):
+        super().__init__(app)
+        self.create_title('Results')
 
 
 class ProfilesLayer(Layer):
