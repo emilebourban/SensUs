@@ -42,6 +42,7 @@ class Application(dict):
         self.over_layer = layers.OverLayer(self)
         self.active_layer = 'welcome'
         self.quitting = False
+        self.live_image = None
         self.draw_fps = draw_fps
         self.ip_refresh_time = ip_refresh_time
 
@@ -70,6 +71,14 @@ class Application(dict):
 
             # events
             self.exec_events()
+
+            # get latest photographer's live image
+            if not self.photographer.has_new_live_image():
+                try:
+                    self.live_image = self.photographer.get_new_live_image()
+                    self.log.debug(f'Mode set to {self.mode}')
+                except BaseException:
+                    pass
 
             # update ip
             if self.debug and time() - t_ip > self.ip_refresh_time:

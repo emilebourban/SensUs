@@ -8,8 +8,8 @@ import numpy as np
 
 class Photographer(Thread):
 
-    # !! FROM THE OUTSIDE, ONLY CALL start(), set_mode(...), get_live_image()
-    # !! and stop())
+    # !! FROM THE OUTSIDE, ONLY CALL start(), set_mode(...),
+    # !! has_new_live_image(), get_new_live_image() and stop()
 
     def __init__(self, capture_path='results/img_', n_acquisitions=10,
                  live_stream_fps=24, capture_refresh_time=30):
@@ -31,7 +31,10 @@ class Photographer(Thread):
             raise KeyError(m)
         self.mode_queue.put(m)
 
-    def get_live_image(self):
+    def has_new_live_image(self):
+        return not self.live_image_queue.empty()
+
+    def get_new_live_image(self):
         return self.live_image_queue.get()
 
     def run(self):
