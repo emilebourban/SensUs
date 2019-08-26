@@ -42,7 +42,7 @@ class Photographer(Thread):
     def get_progress(self):
         start_time = self.start_time
         total_time = self.n_acquisitions * self.capture_refresh_time
-        self.log.debug(f'{time() - self.start_time} / {total_time}')
+        self.log.debug(f'{self.start_time} - {total_time}')
         if start_time is None:
             return 0
         v = max(min((time() - start_time) / total_time, 1), 0)
