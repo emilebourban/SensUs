@@ -212,8 +212,8 @@ class LoadingLayer(Layer):
         self.create_next_button('choice', disabled=True)
         self.create_back_button('focus')
 
-        x0 = 700
-        y0 = 50
+        x0 = 740
+        y0 = 60
         s = 40
         self['circles'] = gui.Group()
         self['add'] = gui.Button(self, (x0-s/2, y0-s/2), (s, s), '+',
