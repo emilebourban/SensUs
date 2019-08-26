@@ -286,7 +286,7 @@ class Loading_bar(base.Element):
         c, s, p, v = self.pos, self.size, self.padding, self.progression
         x, y = c[0] - s[0]/2, c[1] - s[1]/2
         xp, yp = x + p, y + p
-        wp, hp = v * (s[0] - 2 * p), h - 2 * p
+        wp, hp = v * (s[0] - 2 * p), s[1] - 2 * p
         pygame.draw.rect(self.screen, self.bg_color, (x, y, *s))
         pygame.draw.rect(self.screen, self.fg_color, (xp, yp, wp, hp))
 
