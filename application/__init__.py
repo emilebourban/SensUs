@@ -67,7 +67,7 @@ class Application(dict):
         self._active_layer = l
         if self._active_layer == 'focus':
             self.acquisition_mode = 'live_stream'
-        if self._active_layer == 'loading'
+        if self._active_layer == 'loading':
             self.acquisition_mode = 'capture'
 
     @property
@@ -80,6 +80,7 @@ class Application(dict):
             raise KeyError(m)
         self.log.debug(f'Setting acquisition mode to "{m}"')
         self._acquisition_mode = m
+
         if m == 'capture':
             self.acq = acquisition.Capture()
             self.expo_time = self.acq.get_exposure_time()
@@ -99,12 +100,12 @@ class Application(dict):
         while not self.quitting:
 
             # livestream
-            if self.acqusition_mode and time() - t_live > 1/self.live_fps:
+            if self.acquisition_mode and time() - t_live > 1/self.live_fps:
                 t_live = time()
                 self.live_image = self.acq.get_image()
 
             # capture
-            if self.acquisition_mode == 'capture' and
+            if self.acquisition_mode == 'capture' and \
             time() - t_capt > self.capture_refresh_time:
                 self.capture()
 

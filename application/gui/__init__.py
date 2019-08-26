@@ -286,11 +286,11 @@ class Video(base.Element):
         super().__init__(layer, pos)
 
     def draw(self):
-        if self.app.image is None:
+        if self.app.live_image is None:
             return
         # self.img = pygame.transform.scale(self.img, (self.screen_width * 0.5, self.screen_height * 0.5))
-        self.app.image = pygame.pixelcopy.make_surface(self.app.image)
-        self.screen.blit(self.app.image, self.pos)
+        img = pygame.pixelcopy.make_surface(self.app.live_image)
+        self.screen.blit(img, self.pos)
 
 
 class Slider(base.Draggable, base.RectangleClickable):
