@@ -75,12 +75,13 @@ class Application(dict):
             self.exec_events()
 
             # get latest photographer's live image
-            #if not self.photographer.has_new_live_image():
-            #    try:
-            #        self.live_image = self.photographer.get_new_live_image()
-            #        self.log.debug(f'Mode set to {self.mode}')
-            #    except BaseException:
-            #        pass
+            if not self.photographer.has_new_live_image():
+                self.log.debug('Get new live image')
+                try:
+                    self.live_image = self.photographer.get_new_live_image()
+                    self.log.debug(f'Mode set to {self.mode}')
+                except BaseException:
+                    pass
 
             # update ip
             if self.debug and time() - t_ip > self.ip_refresh_time:
