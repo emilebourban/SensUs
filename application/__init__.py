@@ -78,10 +78,12 @@ class Application(dict):
     def acquisition_mode(self, m):
         if m not in ('capture', 'live_stream', None):
             raise KeyError(m)
+        self.log.debug(f'Setting acquisition mode to "{m}"')
         self._acquisition_mode = m
         if m == 'capture':
             self.acq = acquisition.Capture()
             self.expo_time = self.acq.get_exposure_time()
+            self.log.info(f'New expo time: {self.expo_time}us')
             self.acq = acquisition.LiveStream()
             self.acq_i = 0
         if m is not None:
@@ -106,7 +108,6 @@ class Application(dict):
             time() - t_capt > self.capture_refresh_time:
                 self.capture()
 
-
             # events
             self.exec_events()
 
@@ -127,7 +128,9 @@ class Application(dict):
         self.acq = acquisition.Capture(self.expo_time)
         img = self.acq.get_image()
         self.acq = acquisition.LiveStream()
-        np.save(self.result_path + f"{self.acq_i:04d}", img)
+        path = self.result_path + f"{self.acq_i:04d}"
+        np.save(path, img)
+        self.log.debug(f'Capture to "{path}"')
         self.acq_i += 1
         if self.acq_i >= self.n_results:
             self.acquisition_mode = 'live_stream'
