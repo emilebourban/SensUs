@@ -110,6 +110,7 @@ class Application(dict):
             # capture
             if self.acquisition_mode == 'capture' \
                     and time() - t_capt > self.capture_refresh_time:
+                t_capt = time()
                 self.capture()
 
             # events

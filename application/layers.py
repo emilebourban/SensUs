@@ -197,7 +197,7 @@ class FocusLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
         self['stream'] = gui.Video(self, (400, 200), h=300)
-        self.create_title('Set the focus')
+        self.create_title('Please set the focus')
         self.create_next_button('loading', 'Done')
         self.create_back_button('insert')
 
