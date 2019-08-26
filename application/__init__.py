@@ -4,7 +4,7 @@ from . import gui
 import os
 import numpy as np
 from . import layers
-#from . import image_analysis
+#from . import measurement
 from . import acquisition
 import pygame
 from logging import getLogger
@@ -55,6 +55,7 @@ class Application(dict):
         self.live_image = None
         self.result_path = 'results/img_'
         self.n_results = 10
+        #self.meas = None
 
     @property
     def active_layer(self):
@@ -112,6 +113,7 @@ class Application(dict):
             if self.acquisition_mode == 'capture' \
                     and time() - t_capt > self.capture_refresh_time:
                 self.capture()
+                t_capt = 0
 
             # events
             self.exec_events()
@@ -136,8 +138,10 @@ class Application(dict):
         path = self.result_path + f"{self.acq_i:04d}"
         np.save(path, img)
         self.log.debug(f'Capture to "{path}"')
+        self.meas =
         self.acq_i += 1
         if self.acq_i >= self.n_results:
+            #self.meas = measurement.Measure(path, spot_position)
             self.acquisition_mode = 'live_stream'
         del self.acq
         self.acq = acquisition.LiveStream()
