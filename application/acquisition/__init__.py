@@ -66,7 +66,7 @@ class Capture(Acquistion):
 
             # Convert image to Mono8
         import PySpin as spin
-        image_converted = image.Convert(spin.PixelFormat_Raw16)
+        image_converted = image.Convert(spin.PixelFormat_Mono16)
         self.log.debug(f'image converted: {image_converted}')
         image.Release()
         self.log.debug(f'image released: {image_converted}')
