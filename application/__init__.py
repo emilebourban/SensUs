@@ -82,9 +82,11 @@ class Application(dict):
         self._acquisition_mode = m
 
         if m == 'capture':
+            del self.acq
             self.acq = acquisition.Capture()
             self.expo_time = self.acq.get_exposure_time()
             self.log.info(f'New expo time: {self.expo_time}us')
+            del self.acq
             self.acq = acquisition.LiveStream()
             self.acq_i = 0
         if m is not None:
