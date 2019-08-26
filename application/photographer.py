@@ -45,7 +45,6 @@ class Photographer(Thread):
 
         while not self.quitting.is_set():
 
-            self.log.debug('Photographe run')
 
             # get new mode
             if not self.mode_queue.empty():
@@ -59,12 +58,14 @@ class Photographer(Thread):
             if self.mode == 'capture' \
                     and time() - t_capt > self.capture_refresh_time:
                 t_capt = time()
+                self.log.debug('Photographe capture')
                 self.capture()
 
             # livestream
             if self.mode \
                     and time() - t_live > 1 / self.live_stream_fps:
                 t_live = time()
+                self.log.debug('Photographe live_stream')
                 live_image = self.acquisition.get_image()
                 try:
                     self.live_image.put(live_image)
