@@ -5,6 +5,7 @@ from logging import getLogger
 
 class Acquistion:
     def __init__(self):
+        self.acq_log = getLogger('main.acquisition')
         self.cam = cam.Camera()
 
     def BeginAcquisition(self):
@@ -18,6 +19,7 @@ class Acquistion:
 
     def __del__(self):
         del self.cam
+        self.acq_log.debug('acquisition del')
 
 
 class Capture(Acquistion):
