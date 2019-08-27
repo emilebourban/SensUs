@@ -77,8 +77,6 @@ class Acquistion:
         self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
         self.cam['GainAuto'].value = 'Off'
         self.cam['Gain'].value = 0
-        self.cam['BinningHorizontalMode'].value = 'Average'
-        self.cam['BinningVerticalMode'].value = 'Average'
         self.cam['TriggerMode'].value = 'Off'
         self.cam['DecimationSelector'].value = 'All'
 
@@ -122,6 +120,8 @@ class Acquistion:
         if binning:
             self.cam['BinningHorizontal'].value = 4
             self.cam['BinningVertical'].value = 4
+            self.cam['BinningHorizontalMode'].value = 'Average'
+            self.cam['BinningVerticalMode'].value = 'Average'
         else:
             self.cam['BinningHorizontal'].value = 1
             self.cam['BinningVertical'].value = 1
