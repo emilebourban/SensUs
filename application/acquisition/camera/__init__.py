@@ -179,7 +179,6 @@ class Camera:
         self.sys.ReleaseInstance()
 
     def __del__(self):
-        self.EndAcquisition()
         self.DeInit()
         self.Clear_cam_list()
         self.Delete()
