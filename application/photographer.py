@@ -99,7 +99,6 @@ class Photographer(Thread):
                 except BaseException as e:
                     self.log.debug(f'Failed to captura: {e}')
 
-
             # livestream
             if self.mode \
                     and time() - t_live > 1 / self.live_stream_fps:
@@ -119,14 +118,14 @@ class Photographer(Thread):
             del self.acquisition
             self.acquisition = acquisition.Capture(expo_time=self.expo_time)
             img = self.acquisition.get_image()
-            self.log.debug(f'>>> capture res: {img.shape}')
+            self.log.info(f'capture res: {img.shape}')
             path = self.capture_path + f"{self.acquisition_i:04d}"
             np.save(path, img)
             self.log.debug(f'Capture to "{path}"')
             self.acquisition_i += 1
             if self.acquisition_i >= self.n_acquisitions:
                 self.log.info('Capture mode ended')
-                self.acquisition_mode = 'live_stream'
+                self.mode = 'live_stream'
             del self.acquisition
             self.acquisition = acquisition.LiveStream()
         except BaseException as e:
@@ -160,10 +159,13 @@ class Photographer(Thread):
     def start_capture_mode(self):
         self.acquisition_i = 0
         self.start_time = time()
+        del self.acquisition
         self.acquisition = acquisition.Capture()
         self.expo_time = self.acquisition.get_exposure_time()
         self.log.info(f'New expo time: {self.expo_time}us')
+        del self.acquisition
         self.acquisition = acquisition.LiveStream()
 
     def start_live_stream_mode(self):
+        del self.acquisition
         self.acquisition = acquisition.LiveStream()
