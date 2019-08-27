@@ -13,7 +13,7 @@ class Acquistion:
         self.live_fps = live_fps
         self.live_res = live_res
         self.expo_max = expo_max
-        self.mode = None
+        self._mode = None
         self.expo_time = None
 
     def autoset_exposure_time(self):
