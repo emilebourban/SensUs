@@ -3,13 +3,8 @@
 ## TODO
 - script pour tourner interface sans bureau
 - release folder of measures
-- Prendre image 12bits (10bits?) et filer à clara
 - rewrite `application/image_analysis` module -> Raluca
 - try high pass filter -> Clara
-- write spots selection layer -> Vianney
-- correct layers + modif sur interface
-- send capture in a subprocess -> Emile
-- Remove cursor in pygame
 - (Optionnal) Create disable mode for buttons (becoming grayish)
 - (Optionnal) multiprocess capture
 - (Optionnal) being able to set spots positions during acquisitionduring acquisitions
