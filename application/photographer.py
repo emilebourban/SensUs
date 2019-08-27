@@ -22,7 +22,7 @@ class Photographer(Thread):
         self.capture_refresh_time = capture_refresh_time
         self.capture_path = capture_path
         self.n_acquisitions = 10
-        self.acquisition = None
+        self.acquisition = acquisition.Acquistion()
         self._acquisition_i = 0
         self._acquisition_i_lock = Lock()
         self.mode = None
@@ -115,9 +115,7 @@ class Photographer(Thread):
 
     def capture(self):
         try:
-            del self.acquisition
-            self.acquisition = acquisition.Capture(expo_time=self.expo_time)
-            img = self.acquisition.get_image()
+            img = self.acquisition.get_capture_image()
             self.log.info(f'capture res: {img.shape}')
             path = self.capture_path + f"{self.acquisition_i:04d}"
             np.save(path, img)
@@ -126,14 +124,12 @@ class Photographer(Thread):
             if self.acquisition_i >= self.n_acquisitions:
                 self.log.info('Capture mode ended')
                 self.mode = 'live_stream'
-            del self.acquisition
-            self.acquisition = acquisition.LiveStream()
         except BaseException as e:
             self.log.exception(f'Capture acquisition failed {e}')
 
     def live_stream(self):
         try:
-            live_image = self.acquisition.get_image()
+            live_image = self.acquisition.get_live_stream_image()
             try:
                 self.live_image_queue.put(live_image, False)
             except Full:
@@ -159,13 +155,4 @@ class Photographer(Thread):
     def start_capture_mode(self):
         self.acquisition_i = 0
         self.start_time = time()
-        del self.acquisition
-        self.acquisition = acquisition.Capture()
-        self.expo_time = self.acquisition.get_exposure_time()
-        self.log.info(f'New expo time: {self.expo_time}us')
-        del self.acquisition
-        self.acquisition = acquisition.LiveStream()
-
-    def start_live_stream_mode(self):
-        del self.acquisition
-        self.acquisition = acquisition.LiveStream()
+        self.acquisition.autoset_exposure_time()
