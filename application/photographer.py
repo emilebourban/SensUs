@@ -55,8 +55,9 @@ class Photographer(Thread):
         total_time = self.n_acquisitions * self.capture_refresh_time
         if start_time is None:
             return 0
-        v = max(min((time() - start_time) / total_time, 1), 0)
-        return v
+        time_progress = max(min((time() - start_time) / total_time, 1), 0)
+        n_img_progress = round(self.acquisition_i / self.n_acquisitions)
+        return n_img_progress
 
     def is_finished(self):
         return self.acquisition_i == self.n_acquisitions
