@@ -84,19 +84,19 @@ class Acquistion:
         if self.expo_time is None:
             raise SystemError('Exposure time is not set')
         self._set_acquisition_mode('single')
-        self._set_pixel_format('Mono8')
         self._set_res('max', 'max')
         self._set_crc_check(True)
         self._set_gain(False)
         self._set_expo_time(self.expo_time)
+        self._set_pixel_format('Mono8')
 
     def switch_to_live_stream_mode(self):
         self._set_acquisition_mode('single')
-        self._set_pixel_format('Mono8')
         self._set_res(*self.live_res)
         self._set_crc_check(False)
         self._set_expo_time('auto')
         self.cam.BeginAcquisition()
+        self._set_pixel_format('Mono8')
 
     def _set_acquisition_mode(self, m):
         if m is 'single':
