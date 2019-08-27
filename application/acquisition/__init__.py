@@ -6,7 +6,7 @@ from logging import getLogger
 class Acquistion:
 
     def __init__(self, live_fps=24, live_res=(800, 533), expo_max=15000):
-        self.acq_log = getLogger('main.acquisition')
+        self.log = getLogger('main.acquisition')
         self.log.debug('Creating acquisition')
         self.cam = cam.Camera()
         self.setup_basic()
