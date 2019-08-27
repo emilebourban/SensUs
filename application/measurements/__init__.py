@@ -1,5 +1,5 @@
-import skimage
-from skimage import measure
+#import skimage
+#from skimage import measure
 import os
 import re
 import numpy as np
@@ -69,6 +69,6 @@ class Measure:
         print('your concentration is 10 µg/mL')
 
         #release folder
-        for i in os.listdir(self.path):
-            os.remove(i)
+        #for i in os.listdir(self.path):
+        #    os.remove(i)
         return 42
