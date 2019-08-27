@@ -143,8 +143,3 @@ class Acquistion:
         self.log.debug('Deletting acquisition')
         if self.mode == 'live_stream':
             self.cam.EndAcquisition()
-        self.cam.DeInit()
-        self.cam.Clear_cam_list()
-        self.cam.Delete()
-        self.cam.ReleaseInstance()
-        del self.cam
