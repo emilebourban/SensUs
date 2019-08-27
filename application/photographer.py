@@ -77,8 +77,8 @@ class Photographer(Thread):
 
     def run(self):
         self.log.debug('Photographer start')
-        t_live = -1/self.live_stream_fps
-        t_capt = -self.capture_refresh_time()
+        t_live = 0
+        t_capt = 0
 
         while not self.quitting.is_set():
 
