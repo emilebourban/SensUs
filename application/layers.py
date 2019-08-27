@@ -321,11 +321,11 @@ class HelpLayer(Layer):
                                      color=(255, 255, 255))
         self['phone_img'] = gui.Image(self, (200, 200),
                                       'images/phone.png', h=80)
-        self['phone'] = gui.Text(self, (200, 200),
+        self['phone'] = gui.Text(self, (600, 200),
                                  'Phone: 078 842 25 20')
         self['mail_img'] = gui.Image(self, (200, 300),
                                      'images/mail.png', h=80)
-        self['mail'] = gui.Text(self, (200, 300),
+        self['mail'] = gui.Text(self, (600, 300),
                                 'Email: teamEPFSens@gmail.com')
 
 
