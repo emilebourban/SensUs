@@ -5,132 +5,141 @@ from logging import getLogger
 
 class Acquistion:
 
-    def __init__(self):
-        self.acq_log = getLogger('main.acquisition')
+    def __init__(self, live_fps=24, live_res=(800, 533), expo_max=15000):
+        self.log = getLogger('main.acquisition')
+        self.log.debug('Creating acquisition')
         self.cam = cam.Camera()
+        self.setup_basic()
+        self.live_fps = live_fps
+        self.live_res = live_res
+        self.expo_max = expo_max
+        self._mode = None
+        self.expo_time = None
 
-    def BeginAcquisition(self):
+    def autoset_exposure_time(self):
+        self.expo_time = 15000
+
+    def get_capture_image(self):
+        self.mode = 'capture'
         self.cam.BeginAcquisition()
-
-    def get_image():
-        pass
-
-    def EndAcquisition(self):
-        self.cam.EndAcquisition()
-
-    def __del__(self):
-        self.acq_log.debug('in acquisition del')
-        self.cam.EndAcquisition()
-        self.acq_log.debug('end acq')
-        self.cam.DeInit()
-        self.acq_log.debug('deinit')
-        self.cam.Clear_cam_list()
-        self.acq_log.debug('clear cam')
-        self.cam.Delete()
-        self.acq_log.debug('delete fct')
-        self.cam.ReleaseInstance()
-        self.acq_log.debug('release of cam')
-        del self.cam
-        self.acq_log.debug('acquisition del')
-
-
-class Capture(Acquistion):
-
-    def __init__(self, expo_time=20000):
-        super().__init__()
-        self.log = getLogger('main.capture')
-        self.log.debug('created capture')
-        self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
-        # TODO: use full depth, i.e 12 bits for image analysis :PixelFormat_Mono12p, try with packed
-        self.cam['PixelFormat'].value = 'Mono8'
-        self.cam['AcquisitionMode'].value = 'Continuous'
-        self.cam['StreamCRCCheckEnable'].value = True
-
-        #TODO give size to constructor depending on window size
-        self.cam['Width'].value = self.cam['Width'].max
-        self.cam['Height'].value = self.cam['Height'].max
-        self.cam['GainAuto'].value = 'Off'
-        self.cam['Gain'].value = 0
-        self.cam['AutoExposureExposureTimeUpperLimit'].value = 50000
-        self.cam['ExposureAuto'].value = 'Off'
-        self.cam['ExposureTime'].value = expo_time
-        self.BeginAcquisition()
-
-    def get_image(self):
-        image = self.cam.GetNextImage()
-        self.log.debug(f'image collected {image}')
+        image = cam.GetNextImage()
         if image.IsIncomplete():
-            self.log.error('Image incomplete with image status %d...' % image.GetImageStatus())
+            status = image.GetImageStatus()
+            self.log.error(f'Image incomplete, status: {status}')
+            image.Release()
+            return None
+        np_img = image.GetNDArray()
+        image.Release()
+        return np_img
+
+    def get_live_stream_image(self):
+        self.mode = 'live_stream'
+        image = self.cam.GetNextImage()
+        if image.IsIncomplete():
+            status = image.GetImageStatus()
+            self.log.error(f'Image incomplete, status: {status}')
             image.Release()
             return None
 
-        # Convert image to Mono8
-        import PySpin as spin
-        # image_converted = image.Convert(spin.PixelFormat_Mono16, spin.HQ_LINEAR)
-        return image.GetNDArray()
-
-    def get_exposure_time(self):
-        self.EndAcquisition()
-        self.cam['ExposureAuto'].value = 'Once'
-        old_expo_time = self.cam['ExposureTime'].value
-        self.BeginAcquisition()
-
-        for i in range(50):
-            image = self.cam.GetNextImage()
-            if image.IsIncomplete():
-                self.log.error('Image incomplete with image status %d...' % image.GetImageStatus())
-                image.Release()
-                return None
-            #chunk_data = im.GetChunkData()
-
-        self.EndAcquisition()
-        self.cam['ExposureAuto'].value = 'Off'
-        expo_time = self.cam['ExposureTime'].value
-        self.cam['ExposureTime'].value = old_expo_time
-        self.BeginAcquisition()
-        return expo_time
-
-class LiveStream(Acquistion):
-    def __init__(self):
-        super().__init__()
-        self.log = getLogger('main.LiveStream')
-        self.log.debug('created livestream')
-        self.cam['StreamBufferHandlingMode'].value = 'NewestFirst'
-        self.cam['TriggerMode'].value = 'Off'
-        self.cam['AcquisitionFrameRateEnable'].value = True
-        self.cam['AcquisitionFrameRate'].value = self.cam['AcquisitionFrameRate'].max
-        self.cam['StreamCRCCheckEnable'].value = False
-        self.cam['AcquisitionMode'].value = 'Continuous'
-        self.cam['DecimationSelector'].value = 'All'
-        self.cam['BinningHorizontal'].value = 4
-        self.cam['BinningVertical'].value = 4
-        self.cam['BinningHorizontalMode'].value = 'Average'
-        self.cam['BinningVerticalMode'].value = 'Average'
-        self.cam['PixelFormat'].value = 'Mono8'
-        self.cam['GainAuto'].value = 'Off'
-        self.cam['Gain'].value= 0
-        self.cam['AutoExposureExposureTimeUpperLimit'].value = 50000
-        self.cam['ExposureAuto'].value = 'Once'
-        #TODO take smaller part of image if lagging
-        self.cam['Width'].value = self.cam['Width'].max
-        self.cam['Height'].value = self.cam['Height'].max
-        self.BeginAcquisition()
-
-    def get_image(self):
-        image = self.cam.GetNextImage()
-        if image.IsIncomplete():
-            self.log.warning('Image incomplete with image status %d...' % image.GetImageStatus())
-            image.Release()
-            return None
-
+        n = image.GetNumChannels()
         h = image.GetHeight()
         w = image.GetWidth()
-        numChannels = image.GetNumChannels()
-        if numChannels > 1:
-            array = image.GetData().reshape(h, w, numChannels)
+        image.Release()
+        if n > 1:
+            array = image.GetData().reshape(h, w, n)
         else:
             array = image.GetData().reshape(h, w).T
             array = array[..., np.newaxis].repeat(3, -1).astype("uint8")
         image.Release()
 
         return array
+
+    @property
+    def mode(self):
+        return self._mode
+
+    @mode.setter
+    def mode(self, m):
+        if m not in {None, 'capture', 'live_stream'}:
+            raise KeyError(m)
+        if m == self.mode:
+            return
+        if self.mode == 'live_stream':
+            self.cam.EndAcquisition()
+        self.log.debug(f'switching to mode: {m}')
+        self._mode = m
+        if m == 'capture':
+            self.switch_to_capture_mode()
+        elif m == 'live_stream':
+            self.switch_to_live_stream_mode()
+
+    def setup_basic(self):
+        self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
+        self.cam['GainAuto'].value = 'Off'
+        self.cam['Gain'].value = 0
+        self.cam['TriggerMode'].value = 'Off'
+        self.cam['DecimationSelector'].value = 'All'
+
+    def switch_to_capture_mode(self):
+        if self.expo_time is None:
+            raise SystemError('Exposure time is not set')
+        self._set_acquisition_mode('single')
+        self.setup_basic()
+        self._set_res('max', 'max')
+        self._set_crc_check(True)
+        self._set_gain(False)
+        self._set_expo_time(self.expo_time)
+        self._set_pixel_format('Mono8')
+
+    def switch_to_live_stream_mode(self):
+        self._set_acquisition_mode('continuous')
+        self.setup_basic()
+        self._set_res(*self.live_res)
+        self._set_crc_check(False)
+        self._set_expo_time('auto')
+        self._set_pixel_format('Mono8')
+        self.cam.BeginAcquisition()
+
+    def _set_acquisition_mode(self, m):
+        if m is 'single':
+            self.cam['AcquisitionMode'].value = 'SingleFrame'
+        elif m is 'continuous':
+            self.cam['AcquisitionMode'].value = 'Continuous'
+            self.cam['AcquisitionFrameRateEnable'].value = True
+            self.cam['AcquisitionFrameRate'].value = self.live_fps
+        else:
+            raise KeyError(m)
+
+    def _set_pixel_format(self, pf):
+        self.cam['PixelFormat'].value = pf
+
+    def _set_res(self, w, h, binning=False):
+        w = self.cam['Width'].max if w is 'max' else w
+        h = self.cam['Height'].max if h is 'max' else h
+        self.cam['Width'].value = w
+        self.cam['Height'].value = h
+
+        if binning:
+            self.cam['BinningHorizontal'].value = 4
+            self.cam['BinningVertical'].value = 4
+            self.cam['BinningHorizontalMode'].value = 'Average'
+            self.cam['BinningVerticalMode'].value = 'Average'
+        else:
+            self.cam['BinningHorizontal'].value = 1
+            self.cam['BinningVertical'].value = 1
+
+    def _set_crc_check(self, crc):
+        self.cam['StreamCRCCheckEnable'].value = crc
+
+    def _set_expo_time(self, t):
+        if t is 'auto':
+            self.cam['ExposureAuto'].value = 'Continuous'
+            self.cam['AutoExposureExposureTimeUpperLimit'].value = self.expo_max
+        else:
+            self.cam['ExposureAuto'].value = 'Off'
+            self.cam['ExposureTime'].value = self.expo_time
+
+    def __del__(self):
+        self.log.debug('Deletting acquisition')
+        if self.mode == 'live_stream':
+            self.cam.EndAcquisition()
