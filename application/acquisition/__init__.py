@@ -77,7 +77,6 @@ class Acquistion:
         self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
         self.cam['GainAuto'].value = 'Off'
         self.cam['Gain'].value = 0
-        self.cam['PixelFormat'].value = 'Mono8'
         self.cam['BinningHorizontalMode'].value = 'Average'
         self.cam['BinningVerticalMode'].value = 'Average'
         self.cam['TriggerMode'].value = 'Off'
@@ -87,6 +86,7 @@ class Acquistion:
         if self.expo_time is None:
             raise SystemError('Exposure time is not set')
         self._set_acquisition_mode('single')
+        self._set_pixel_format('Mono8')
         self._set_res('max', 'max')
         self._set_crc_check(True)
         self._set_gain(False)
@@ -94,6 +94,7 @@ class Acquistion:
 
     def switch_to_live_stream_mode(self):
         self._set_acquisition_mode('single')
+        self._set_pixel_format('Mono8')
         self._set_res(*self.live_res)
         self._set_crc_check(False)
         self._set_expo_time('auto')
@@ -108,6 +109,9 @@ class Acquistion:
             self.cam['AcquisitionFrameRate'].value = self.live_fps
         else:
             raise KeyError(m)
+
+    def _set_pixel_format(self, pf):
+        self.cam['PixelFormat'].value = pf
 
     def _set_res(self, w, h, binning=False):
         w = self.cam['Width'].max if w is 'max' else w
