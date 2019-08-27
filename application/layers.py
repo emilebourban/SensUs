@@ -202,7 +202,7 @@ class FocusLayer(Layer):
                                        always_gray=True)
         self['stream'] = gui.Video(self)
         self.create_title('Please set the focus')
-        self.create_next_button('loading', 'Done')
+        self.create_next_button('acquisition', 'Done')
         self.create_back_button('insert')
 
 
