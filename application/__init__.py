@@ -9,7 +9,7 @@ from . import photographer
 import pygame
 from logging import getLogger
 from time import time
-from measurement import Measure
+from . import measurements
 
 # TODO set fullscreen=True at gui.init
 
@@ -66,7 +66,7 @@ class Application(dict):
             self.photographer.set_mode('capture')
         elif self.active_layer == 'analysis':
             circles = self['acquisition'].get_spots_coordinates()
-            mes = Measure('results/', circles)
+            mes = measurements.Measure('results/', circles)
             result = mes.run()
             self['results']['title'].text = f'Result = {result}'
         else:
