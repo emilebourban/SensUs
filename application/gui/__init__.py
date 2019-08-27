@@ -28,7 +28,10 @@ def init(fullscreen=False, hide_cursor=False):
     res = get_screen_resolution(log)
     flags = pygame.HWSURFACE | pygame.DOUBLEBUF
     if hide_cursor:
-        pygame.mouse.set_visible(False)
+        # create an invisble cursor image
+        pygame.mouse.set_cursor((8, 8), (0, 0),
+                                (0, 0, 0, 0, 0, 0, 0, 0),
+                                (0, 0, 0, 0, 0, 0, 0, 0))
     if fullscreen:
         return pygame.display.set_mode(res, flags | pygame.FULLSCREEN)
     return pygame.display.set_mode((800, 400), flags)
@@ -116,11 +119,12 @@ class Text(base.Element):
 
     # TODO tune default font_size
     def __init__(self, layer, pos, text, font_size=18, color=(0, 0, 0),
-                 gray_color=(160, 160, 160),
+                 gray_color=(160, 160, 160), always_gray=False,
                  font='fonts/texgyreheros-regular.otf'):
         super().__init__(layer, pos)
         self.fg_color = color
         self.gray_color = gray_color
+        self.always_gray = always_gray
         self.font_size = font_size
         self.font = pygame.font.Font(font, self.font_size)
         self.text = text
@@ -141,7 +145,10 @@ class Text(base.Element):
         return surf, surf.get_rect()
 
     def draw(self, gray=False):
-        self.screen.blit(self.surf if not gray else self.gray_surf, self.rect)
+        if gray or self.always_gray:
+            self.screen.blit(self.gray_surf, self.rect)
+        else:
+            self.screen.blit(self.surf, self.rect)
 
 
 class Image(base.Element):
@@ -182,7 +189,7 @@ class Rectangle(base.Element):
 class Button(Rectangle, Text, base.RectangleClickable):
 
     def __init__(self, layer, pos, size, text, action, disabled=False):
-        Rectangle.__init__(self, layer, pos, size, (235, 230, 230))
+        Rectangle.__init__(self, layer, pos, size, (230, 220, 220))
         Text.__init__(self, layer, pos, text)
         base.RectangleClickable.__init__(self, pos, size)
         self.action = action
@@ -194,7 +201,7 @@ class Button(Rectangle, Text, base.RectangleClickable):
             Rectangle.draw(self, (200, 200, 200))
             Text.draw(self, gray=True)
         elif self.is_pressed:
-            Rectangle.draw(self, (220, 220, 220))
+            Rectangle.draw(self, (210, 210, 210))
             Text.draw(self)
         else:
             Rectangle.draw(self)
@@ -224,7 +231,10 @@ class Circle(base.Element):
 
     def draw(self, force_color=None):
         color = force_color if force_color else self.color
+        # draw multiple circles to thicken the line
+        gfxdraw.aacircle(self.screen, *self.pos, self.radius-1, color)
         gfxdraw.aacircle(self.screen, *self.pos, self.radius, color)
+        gfxdraw.aacircle(self.screen, *self.pos, self.radius+1, color)
         #pygame.draw.circle(self.screen, color, self.pos, self.radius,
                            #self.thickness)
 
@@ -258,15 +268,16 @@ class DetectionCircle(Circle, base.Draggable, base.CircleClickable):
         return False
 
 
-class Loading_bar(base.Element):
+class LoadingBar(base.Element):
 
-    # TODO tune padding default value
-    # TODO set colors
-    def __init__(self, layer, pos, size, bg_color=(255, 0, 0),
-                 fg_color=(0, 0, 255), padding=1, progress=0):
+    def __init__(self, layer, pos, size, bg_color=(42, 42, 42),
+                 fg_color=(200, 200, 200), padding=1, progress=0):
         super().__init__(layer, pos)
+        self.bg_color = bg_color
+        self.fg_color = fg_color
         self._progress = progress
         self.size = size
+        self.padding = padding
 
     @property
     def progression(self):
@@ -278,13 +289,11 @@ class Loading_bar(base.Element):
 
     def draw(self):
         c, s, p, v = self.pos, self.size, self.padding, self.progression
-        x1, y1 = c[0] - s[0]/2, c[1] - s[1]/2
-        x2, y2 = c[0] + s[0]/2, c[1] + s[1]/2
-        px1, py1 = x1 + p, y1 + p
-        px2, py2 = px1 + v * (s[0] - 2 * p), y2 - p
-        # TODO check remove last arg: 3
-        pygame.draw.rect(self.screen, self.bg_color, (x1, y1, x2, y2), 3)
-        pygame.draw.rect(self.screen, self.fg_color, (px1, py1, px2, py2))
+        x, y = c[0] - s[0]/2, c[1] - s[1]/2
+        xp, yp = x + p, y + p
+        wp, hp = v * (s[0] - 2 * p), s[1] - 2 * p
+        pygame.draw.rect(self.screen, self.bg_color, (x, y, *s))
+        pygame.draw.rect(self.screen, self.fg_color, (xp, yp, wp, hp))
 
 
 class Video(base.Element):
@@ -337,7 +346,9 @@ class Slider(base.Draggable, base.RectangleClickable):
         w = self.size[0] - 2 * self.padding
         x = round(self.pos[0] + (self.value - 0.5) * w)
         y = self.pos[1]
-        pygame.draw.circle(self.screen, (100, 255, 100), (x, y), 16)
+        gfxdraw.filled_circle(self.screen, x, y, 16,
+                              (100, 255, 100))
+        # pygame.draw.circle(self.screen, (100, 255, 100), (x, y), 16)
 
     def mouse_motion(self, pos, catched):
         if self.dragging:

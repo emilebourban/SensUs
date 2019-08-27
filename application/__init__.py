@@ -21,8 +21,10 @@ class Application(dict):
         self.log = getLogger('main.app')
         self.debug = debug
         self.is_raspi = is_raspi
-        self.screen = gui.init(fullscreen=is_raspi, hide_cursor=False)
-        self.photographer = photographer.Photographer()
+        self.screen = gui.init(fullscreen=is_raspi, hide_cursor=is_raspi)
+        self.photographer = photographer.Photographer(live_stream_fps=18,
+                                                      n_acquisitions=3,
+                                                      capture_refresh_time=10)
         super().__init__({
             'welcome': layers.WelcomeLayer(self),
             'main': layers.MainLayer(self),
@@ -34,7 +36,8 @@ class Application(dict):
             'tutorial5': layers.Tutorial5Layer(self),
             'insert': layers.InsertLayer(self),
             'focus': layers.FocusLayer(self),
-            'loading': layers.LoadingLayer(self),
+            'acquisition': layers.AcquisitionLayer(self),
+            'analysis': layers.AnalysisLayer(self),
             'results': layers.ResultsLayer(self),
             'profiles': layers.ProfilesLayer(self),
             'help': layers.HelpLayer(self),
@@ -68,10 +71,12 @@ class Application(dict):
             raise KeyError(l)
         self.log.debug(f'Moving to layer "{l}"')
         self._active_layer = l
-        if self._active_layer == 'focus':
+        if self.active_layer == 'focus':
             self.photographer.set_mode('live_stream')
-        if self._active_layer == 'loading':
+        elif self.active_layer == 'acquisition':
             self.photographer.set_mode('capture')
+        else:
+            self.photographer.set_mode(None)
 
     def run(self):
         self.log.debug('starting photographer')
@@ -103,27 +108,35 @@ class Application(dict):
                     try:
                         img = self.photographer.get_new_live_image()
                         self.log.debug('Got new live image')
-                    except BaseException:
-                        pass
+                    except BaseException as e:
+                        self.log.warn('Failed to get new live image: {e}')
                 img = pygame.pixelcopy.make_surface(img)
                 img = pygame.transform.scale(img, (800, 533))
                 self.live_image = img
-
 
             # update ip
             if self.debug and time() - t_ip > self.ip_refresh_time:
                 t_ip = time()
                 self.over_layer['ip'].text = ifconfig.get_ip_addresses_str()
 
-            # drawing
+            # drawing, update progessbar, update fps, "next" btn
             if time() - t_draw >= 1 / self.draw_fps:
                 fps = 1 / (time() - t_draw)
+                progress = self.photographer.get_progress()
+                self['acquisition']['progress'].progression = progress
+                finished = self.photographer.is_finished()
+                self['acquisition']['next'].disabled = not finished
                 self.over_layer['fps'].text = f"{fps:05.2f} fps"
                 t_draw = time()
                 self.draw()
 
+        self.log.debug('Waiting on photographer to finished...')
         self.photographer.stop()
         self.photographer.join(5)
+        if self.photographer.is_alive():
+            self.log.error('Photographer failed to finish')
+        else:
+            self.log.debug('Photographer finished')
         return True
 
     def capture(self):
@@ -155,9 +168,11 @@ class Application(dict):
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
+                self.log.debug('QUIT event type')
                 self.quitting = True
 
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                self.log.debug('ESCAPE KEY event type')
                 self.quitting = True
 
             # 'd' is pressed -> toggle debug mode

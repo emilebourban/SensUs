@@ -26,7 +26,7 @@ class Layer(gui.Layer):
         pitch = 75
         x_img = 220
         x_btn = 420
-        y0 = round(480/2 - len(buttons)/2 * pitch)
+        y0 = round(480/2 - (len(buttons) - 1) / 2 * pitch)
         for n, (k, title, path, action) in enumerate(buttons):
             y = y0 + n * pitch
             self['img_' + k] = gui.Image(self, [x_img, y], path, h=h_btn)
@@ -35,10 +35,10 @@ class Layer(gui.Layer):
 
     def create_small_buttons_list(self, buttons):
         w_btn = 300
-        h_btn = 32
-        pitch = 40
+        h_btn = 35
+        pitch = 45
         x_btn = 400
-        y0 = round(480/2 - len(buttons)/2 * pitch)
+        y0 = round(480/2 - (len(buttons) - 1) / 2 * pitch)
         for n, (k, title, action) in enumerate(buttons):
             y = y0 + n * pitch
             self[k] = gui.Button(self, [x_btn, y], [w_btn, h_btn], title,
@@ -46,13 +46,13 @@ class Layer(gui.Layer):
 
     def create_next_button(self, target, text='Next', size=[150, 40],
                            disabled=False):
-        pos = (800 - 100, 480 - 50)
+        pos = (800 - 100, 480 - 40)
         self['next'] = gui.Button(self, pos, size, text,
                                   lambda: self.set_layer(target),
                                   disabled=disabled)
 
     def create_back_button(self, target, text='Back', size=[150, 40]):
-        pos = (0 + 100, 480 - 50)
+        pos = (0 + 100, 480 - 40)
         self['back'] = gui.Button(self, pos, size, text,
                                   lambda: self.set_layer(target))
 
@@ -76,10 +76,10 @@ class WelcomeLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
-        self['logo'] = gui.Image(self, (400, 160),
+        self['logo'] = gui.Image(self, (400, 200),
                                  'images/logo.png',
                                  h=300)
-        self['text'] = gui.Text(self, (400, 350),
+        self['text'] = gui.Text(self, (400, 400),
                                 'Swiss Precision for Healthcare Improvement',
                                 font_size=25, color=(218, 41, 28))
 
@@ -93,7 +93,7 @@ class MainLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
         btn_list = [
-            ('measure', 'Start analysis', 'images/measure.png',
+            ('measure', 'New measure', 'images/measure.png',
              lambda: self.set_layer('chip')),
             ('profiles', 'Profiles', 'images/profile.png',
              lambda: self.set_layer('profiles')),
@@ -120,7 +120,7 @@ class ChipLayer(Layer):
         self.create_background()
         self.create_title('Prepare the chip')
         self.create_buttons_list(btn_list)
-        self.create_back_button('main')
+        self.create_back_button('main', 'Cancel')
 
 
 class Tutorial1Layer(Layer):
@@ -187,9 +187,9 @@ class InsertLayer(Layer):
         self.create_next_button('focus', 'Done')
         self.create_back_button('chip')
         # TODO create correct insert_chip.png
-        self['img'] = gui.Image(self, [400, 240],
+        self['img'] = gui.Image(self, [400, 280],
                                 'images/insert_chip.png',
-                                h=200)
+                                h=300)
 
 
 class FocusLayer(Layer):
@@ -197,16 +197,22 @@ class FocusLayer(Layer):
     # TODO: add a stream object in initGui
     def __init__(self, app):
         super().__init__(app)
+        self['wait_stream'] = gui.Text(self, (400, 240),
+                                       'Loading video...',
+                                       always_gray=True)
         self['stream'] = gui.Video(self)
         self.create_title('Please set the focus')
-        self.create_next_button('loading', 'Done')
+        self.create_next_button('acquisition', 'Done')
         self.create_back_button('insert')
 
 
-class LoadingLayer(Layer):
+class AcquisitionLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
+        self['wait_stream'] = gui.Text(self, (400, 240),
+                                       'Loading video...',
+                                       always_gray=True)
         self['stream'] = gui.Video(self)
         self.create_title('Please the spots and wait...')
         self.create_next_button('choice', disabled=True)
@@ -227,16 +233,23 @@ class CircleLayer(Layer):
         self.create_title('Please select the visible spots')
         self.create_next_button('choice', 'Done')
         self.create_back_button('loading')
-
         self['circles'] = gui.Group()
-        self['add'] = gui.Button(self, (600, 50), (40, 40), '+',
+        self.create_title('Acquisition')
+        self.create_next_button('analysis', disabled=True)
+        self.create_back_button('focus', 'Cancel')
+
+        x0 = 740
+        y0 = 60
+        s = 40
+        self['add'] = gui.Button(self, (x0-s/2, y0-s/2), (s, s), '+',
                                  lambda: self.new_circle((100, 100), 42))
-        self['rem'] = gui.Button(self, (660, 50), (40, 40), '-',
+        self['rem'] = gui.Button(self, (x0+s/2, y0-s/2), (s, s), '−',
                                  lambda: self.rem_selected_circles())
-        self['reset'] = gui.Button(self, (740, 50), (80, 40), 'Reset',
+        self['reset'] = gui.Button(self, (x0, y0+s/2), (2*s, s), 'Reset',
                                    lambda: self.set_circles([]))
         self['size'] = gui.Slider(self, (400, 480 - 50), (350, 64), 10, 200,
                                   lambda r: self.set_selected_circles_radius(r))
+        self['progress'] = gui.LoadingBar(self, (400, 120), (300, 8))
 
     def select_circle(self, c):
         for v in self['circles'].values():
@@ -281,6 +294,15 @@ class CircleLayer(Layer):
         return catched
 
 
+class AnalysisLayer(Layer):
+
+    def __init__(self, app):
+        super().__init__(app)
+        self.create_title('Analysis')
+        self.create_back_button('focus', 'Cancel')
+        self['progress'] = gui.LoadingBar(self, (400, 300), (300, 8))
+
+
 class ResultsLayer(Layer):
 
     def __init__(self, app):
@@ -315,21 +337,19 @@ class HelpLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
 
-        def nope():
-            pass
-
-        btn_list = [
-            ('bourban', 'Bourban Emile', nope),
-            ('conti', 'Conti Mark', nope),
-            ('cucu', 'Cucu Raluca', nope),
-            ('giezendanner', 'Giezendanner Ludovic', nope),
-            ('perier', 'Perier Marion', nope),
-            ('schalk', 'Schalk Katia', nope),
-            ('viatte', 'Viatte Clara', nope),
-        ]
         self.create_background()
-        self.create_small_buttons_list(btn_list)
+        self.create_title('In case of problem, please contact us')
         self.create_back_button('main')
+        self['rect'] = gui.Rectangle(self, (400, 260), (500, 200),
+                                     color=(255, 255, 255))
+        self['phone_img'] = gui.Image(self, (200, 200),
+                                      'images/phone.png', h=80)
+        self['phone'] = gui.Text(self, (200, 200),
+                                 'Phone: 078 842 25 20')
+        self['mail_img'] = gui.Image(self, (200, 300),
+                                     'images/mail.png', h=80)
+        self['mail'] = gui.Text(self, (200, 300),
+                                'Email: teamEPFSens@gmail.com')
 
 
 class ParametersLayer(Layer):
@@ -341,14 +361,9 @@ class ParametersLayer(Layer):
             pass
 
         btn_list = [
-            ('bourban', 'Bourban Emile', nope),
-            ('conti', 'Conti Mark', nope),
-            ('cucu', 'Cucu Raluca', nope),
-            ('giezendanner', 'Giezendanner Ludovic', nope),
-            ('perier', 'Perier Marion', nope),
-            ('schalk', 'Schalk Katia', nope),
-            ('viatte', 'Viatte Clara', nope),
+            ('language', 'Languages', 'images/language.png', nope),
+            ('brightness', 'Brightness', 'images/light.png', nope)
         ]
         self.create_background()
-        self.create_small_buttons_list(btn_list)
+        self.create_buttons_list(btn_list)
         self.create_back_button('main')

@@ -67,6 +67,7 @@ class Capture(Acquistion):
         image.Release()
         self.log.debug(f'image released: {image_converted}')
         return image_converted.GetNDArray()
+        # image_converted = image.Convert(spin.PixelFormat_Mono16, spin.HQ_LINEAR)
 
     def get_exposure_time(self):
         self.EndAcquisition()
