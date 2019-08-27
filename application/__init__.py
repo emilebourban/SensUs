@@ -2,15 +2,14 @@
 
 from . import gui
 import os
-import numpy as np
 from . import layers
 #from . import measurement
 from . import acquisition
+from . import ifconfig
+from . import photographer
 import pygame
 from logging import getLogger
 from time import time
-from subprocess import run, PIPE
-import re
 
 # TODO set fullscreen=True at gui.init
 
@@ -19,10 +18,11 @@ class Application(dict):
 
     def __init__(self, is_raspi=True, debug=False, draw_fps=30,
                  ip_refresh_time=1.0, live_fps=24, capture_refresh_time=30):
-
         self.log = getLogger('main.app')
+        self.debug = debug
         self.is_raspi = is_raspi
         self.screen = gui.init(fullscreen=is_raspi, hide_cursor=False)
+        self.photographer = photographer.Photographer()
         super().__init__({
             'welcome': layers.WelcomeLayer(self),
             'main': layers.MainLayer(self),
@@ -35,7 +35,6 @@ class Application(dict):
             'insert': layers.InsertLayer(self),
             'focus': layers.FocusLayer(self),
             'loading': layers.LoadingLayer(self),
-            'circle': layers.CircleLayer(self),
             'results': layers.ResultsLayer(self),
             'profiles': layers.ProfilesLayer(self),
             'help': layers.HelpLayer(self),
@@ -44,6 +43,7 @@ class Application(dict):
         self.over_layer = layers.OverLayer(self)
         self.active_layer = 'welcome'
         self.quitting = False
+        self.live_image = None
         self.draw_fps = draw_fps
         self.ip_refresh_time = ip_refresh_time
         self.live_fps = live_fps
@@ -55,7 +55,8 @@ class Application(dict):
         self.live_image = None
         self.result_path = 'results/img_'
         self.n_results = 10
-        #self.meas = None
+        self.meas = None
+
 
     @property
     def active_layer(self):
@@ -68,39 +69,17 @@ class Application(dict):
         self.log.debug(f'Moving to layer "{l}"')
         self._active_layer = l
         if self._active_layer == 'focus':
-            self.acquisition_mode = 'live_stream'
+            self.photographer.set_mode('live_stream')
         if self._active_layer == 'loading':
-            self.acquisition_mode = 'capture'
-
-    @property
-    def acquisition_mode(self):
-        return self._acquisition_mode
-
-    @acquisition_mode.setter
-    def acquisition_mode(self, m):
-        if m not in ('capture', 'live_stream', None):
-            raise KeyError(m)
-        self.log.debug(f'Setting acquisition mode to "{m}"')
-        self._acquisition_mode = m
-
-        if m == 'capture':
-            del self.acq
-            self.acq = acquisition.Capture()
-            self.expo_time = self.acq.get_exposure_time()
-            self.log.info(f'New expo time: {self.expo_time}us')
-            del self.acq
-            self.acq = acquisition.LiveStream()
-            self.acq_i = 0
-        if m is not None:
-            del self.acq
-            self.acq = acquisition.LiveStream()
+            self.photographer.set_mode('capture')
 
     def run(self):
+        self.log.debug('starting photographer')
+        self.photographer.start()
+        self.log.debug('photographer started')
         self.quitting = False
         t_draw = time()
         t_ip = time()
-        t_live = time()
-        t_capt = time()
 
         while not self.quitting:
 
@@ -118,17 +97,33 @@ class Application(dict):
             # events
             self.exec_events()
 
+            # get latest photographer's live image
+            if self.photographer.has_new_live_image():
+                while self.photographer.has_new_live_image():
+                    try:
+                        img = self.photographer.get_new_live_image()
+                        self.log.debug('Got new live image')
+                    except BaseException:
+                        pass
+                img = pygame.pixelcopy.make_surface(img)
+                img = pygame.transform.scale(img, (800, 533))
+                self.live_image = img
+
+
             # update ip
             if self.debug and time() - t_ip > self.ip_refresh_time:
                 t_ip = time()
-                ips = self.get_ip_addresses()
-                self.over_layer['ip'].text = ' - '.join(ips)
+                self.over_layer['ip'].text = ifconfig.get_ip_addresses_str()
 
             # drawing
             if time() - t_draw >= 1 / self.draw_fps:
+                fps = 1 / (time() - t_draw)
+                self.over_layer['fps'].text = f"{fps:05.2f} fps"
                 t_draw = time()
                 self.draw()
 
+        self.photographer.stop()
+        self.photographer.join(5)
         return True
 
     def capture(self):
@@ -138,10 +133,10 @@ class Application(dict):
         path = self.result_path + f"{self.acq_i:04d}"
         np.save(path, img)
         self.log.debug(f'Capture to "{path}"')
-        self.meas =
         self.acq_i += 1
         if self.acq_i >= self.n_results:
-            #self.meas = measurement.Measure(path, spot_position)
+            circles = layers.CircleLayer.get_spots_coordoniates()
+            self.meas = measurement.Measure(self.path, circles)
             self.acquisition_mode = 'live_stream'
         del self.acq
         self.acq = acquisition.LiveStream()
@@ -155,7 +150,6 @@ class Application(dict):
         except BaseException as e:
             self.log.warn(f'Failed to get ip addresses: {e}')
             return ['Failed to get IP addresses']
-
 
     def exec_events(self):
         for event in pygame.event.get():

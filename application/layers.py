@@ -7,7 +7,8 @@ class Layer(gui.Layer):
     background = None
 
     def __init__(self, app):
-        gui.Layer.__init__(self, app)
+        bg_color = (200, 200, 255) if app.debug else (255, 255, 255)
+        gui.Layer.__init__(self, app, bg_color)
         if self.background is None:
             self.background = gui.Image(self, [800/2, 480/2],
                                         'images/background.jpg',
@@ -45,13 +46,13 @@ class Layer(gui.Layer):
 
     def create_next_button(self, target, text='Next', size=[150, 40],
                            disabled=False):
-        pos = (800 - 100, 480 - 60)
+        pos = (800 - 100, 480 - 50)
         self['next'] = gui.Button(self, pos, size, text,
                                   lambda: self.set_layer(target),
                                   disabled=disabled)
 
     def create_back_button(self, target, text='Back', size=[150, 40]):
-        pos = (0 + 100, 480 - 40)
+        pos = (0 + 100, 480 - 50)
         self['back'] = gui.Button(self, pos, size, text,
                                   lambda: self.set_layer(target))
 
@@ -64,6 +65,7 @@ class OverLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
         self['ip'] = gui.Text(self, (400, 16), '-', font_size=11)
+        self['fps'] = gui.Text(self, (100, 16), '?? fps', font_size=11)
 
     # overwrite draw to avoid drawing the background
     def draw(self):
@@ -128,7 +130,7 @@ class Tutorial1Layer(Layer):
         self.create_title('Insert the chip')
         self.create_next_button('tutorial2')
         self.create_back_button('chip')
-        self['img'] = gui.Image(self, [400, 300],
+        self['img'] = gui.Image(self, [400, 270],
                                 'images/tuto1.png',
                                 h=300)
 
@@ -139,7 +141,7 @@ class Tutorial2Layer(Layer):
         super().__init__(app)
         self.create_next_button('tutorial3')
         self.create_back_button('tutorial1', 'Previous')
-        self['img'] = gui.Image(self, [400, 300],
+        self['img'] = gui.Image(self, [400, 220],
                                 'images/tuto2.png',
                                 h=300)
 
@@ -150,7 +152,7 @@ class Tutorial3Layer(Layer):
         super().__init__(app)
         self.create_next_button('tutorial4')
         self.create_back_button('tutorial2', 'Previous')
-        self['img'] = gui.Image(self, [400, 300],
+        self['img'] = gui.Image(self, [400, 220],
                                 'images/tuto3.png',
                                 h=300)
 
@@ -161,7 +163,7 @@ class Tutorial4Layer(Layer):
         super().__init__(app)
         self.create_next_button('tutorial5')
         self.create_back_button('tutorial3', 'Previous')
-        self['img'] = gui.Image(self, [400, 300],
+        self['img'] = gui.Image(self, [400, 220],
                                 'images/tuto4.png',
                                 h=300)
 
@@ -172,7 +174,7 @@ class Tutorial5Layer(Layer):
         super().__init__(app)
         self.create_next_button('insert', 'Start')
         self.create_back_button('tutorial4', 'Previous')
-        self['img'] = gui.Image(self, [400, 300],
+        self['img'] = gui.Image(self, [400, 220],
                                 'images/tuto5.png',
                                 h=300)
 
@@ -185,7 +187,7 @@ class InsertLayer(Layer):
         self.create_next_button('focus', 'Done')
         self.create_back_button('chip')
         # TODO create correct insert_chip.png
-        self['img'] = gui.Image(self, [400, 200],
+        self['img'] = gui.Image(self, [400, 240],
                                 'images/insert_chip.png',
                                 h=200)
 
@@ -195,8 +197,8 @@ class FocusLayer(Layer):
     # TODO: add a stream object in initGui
     def __init__(self, app):
         super().__init__(app)
-        self['stream'] = gui.Video(self, (400, 200), h=300)
-        self.create_title('Set the focus')
+        self['stream'] = gui.Video(self)
+        self.create_title('Please set the focus')
         self.create_next_button('loading', 'Done')
         self.create_back_button('insert')
 
@@ -205,11 +207,10 @@ class LoadingLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
-        self['stream'] = gui.Video(self, (400, 200), h=300)
-        self.create_title('Please wait...')
-        self.create_next_button('circle', disabled=True)
-        self.create_back_button('focus')
-
+        self['stream'] = gui.Video(self)
+        self.create_title('Please the spots and wait...')
+        self.create_next_button('choice', disabled=True)
+        self.create_back_button('focus', 'Cancel')
 
 
 class ResultsLayer(Layer):
@@ -234,7 +235,7 @@ class CircleLayer(Layer):
                                  lambda: self.rem_selected_circles())
         self['reset'] = gui.Button(self, (740, 50), (80, 40), 'Reset',
                                    lambda: self.set_circles([]))
-        self['size'] = gui.Slider(self, (400, 340), (512, 64), 10, 200,
+        self['size'] = gui.Slider(self, (400, 480 - 50), (350, 64), 10, 200,
                                   lambda r: self.set_selected_circles_radius(r))
 
     def select_circle(self, c):
@@ -251,6 +252,10 @@ class CircleLayer(Layer):
 
     def get_selected_circles(self):
         return {k for k, v in self['circles'].items() if v.is_selected}
+
+    def get_spots_coordoniates(self):
+        circles = [([4*c.pos[0], 4*(c.pos[1]+26.5)], 4*c.radius) for c in self.get_selected_circles()]
+        return circles
 
     def set_circles(self, circles):
         circles = [gui.DetectionCircle(self, p, r) for p, r in circles]
@@ -274,6 +279,13 @@ class CircleLayer(Layer):
         if not catched:
             self.select_circle(None)
         return catched
+
+
+class ResultsLayer(Layer):
+
+    def __init__(self, app):
+        super().__init__(app)
+        self.create_title('Results')
 
 
 class ProfilesLayer(Layer):

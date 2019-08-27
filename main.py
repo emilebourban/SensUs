@@ -17,7 +17,7 @@ def is_raspi():
 
 
 def main(log):
-    app = Application(is_raspi=is_raspi(), debug=True)
+    app = Application(is_raspi=is_raspi(), debug=False)
     try:
         rtn_msg = app.run()
         if rtn_msg:

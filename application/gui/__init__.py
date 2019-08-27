@@ -182,7 +182,7 @@ class Rectangle(base.Element):
 class Button(Rectangle, Text, base.RectangleClickable):
 
     def __init__(self, layer, pos, size, text, action, disabled=False):
-        Rectangle.__init__(self, layer, pos, size, (255, 240, 230))
+        Rectangle.__init__(self, layer, pos, size, (235, 230, 230))
         Text.__init__(self, layer, pos, text)
         base.RectangleClickable.__init__(self, pos, size)
         self.action = action
@@ -289,36 +289,13 @@ class Loading_bar(base.Element):
 
 class Video(base.Element):
 
-    def __init__(self, layer, pos, w=None, h=None):
-        super().__init__(layer, pos)
-        self.w, self.h = w, h
-
-    @property
-    def size(self):
-        w, h = self.w, self.h
-        if w and h:
-            return (w, h)
-        img = self.app.live_image
-        if img is None:
-            return None
-        iw, ih = img.shape[:2]
-        r = iw / ih
-        if not w and not h:
-            w, h = iw, ih
-        elif not w:
-            w, h = round(h * r), h
-        elif not h:
-            w, h = w, round(w / r)
-        return (w, h)
+    def __init__(self, layer):
+        super().__init__(layer, (0, 0))
 
     def draw(self):
         if self.app.live_image is None:
             return
-        img = pygame.pixelcopy.make_surface(self.app.live_image)
-        size = self.size
-        pos = self.pos[0] - size[0] / 2, self.pos[1] - size[1] / 2
-        img = pygame.transform.scale(img, size)
-        self.screen.blit(img, pos)
+        self.screen.blit(self.app.live_image, (0, 0))
 
 
 class Slider(base.Draggable, base.RectangleClickable):

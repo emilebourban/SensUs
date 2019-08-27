@@ -4,6 +4,7 @@ from logging import getLogger
 
 
 class Acquistion:
+
     def __init__(self):
         self.acq_log = getLogger('main.acquisition')
         self.cam = cam.Camera()
@@ -20,27 +21,22 @@ class Acquistion:
     def __del__(self):
         self.acq_log.debug('in acquisition del')
         self.cam.EndAcquisition()
-        self.acq_log.debug('end acq')
         self.cam.DeInit()
-        self.acq_log.debug('deinit')
         self.cam.Clear_cam_list()
-        self.acq_log.debug('clear cam')
         self.cam.Delete()
-        self.acq_log.debug('delete fct')
         self.cam.ReleaseInstance()
-        self.acq_log.debug('release of cam')
         del self.cam
-        self.acq_log.debug('acquisition del')
 
 
 class Capture(Acquistion):
+
     def __init__(self, expo_time=20000):
         super().__init__()
         self.log = getLogger('main.capture')
         self.log.debug('created capture')
         self.cam['StreamBufferHandlingMode'].value = 'NewestOnly'
         # TODO: use full depth, i.e 12 bits for image analysis :PixelFormat_Mono12p, try with packed
-        self.cam['PixelFormat'].value = 'Mono12p'
+        self.cam['PixelFormat'].value = 'Mono8'
         self.cam['AcquisitionMode'].value = 'Continuous'
         self.cam['StreamCRCCheckEnable'].value = True
 
@@ -64,7 +60,9 @@ class Capture(Acquistion):
 
         # Convert image to Mono8
         import PySpin as spin
-        image_converted = image.Convert(spin.PixelFormat_Mono12)
+
+        image_converted = image.Convert(spin.PixelFormat_Mono8)
+
         self.log.debug(f'image converted: {image_converted}')
         image.Release()
         self.log.debug(f'image released: {image_converted}')
