@@ -35,7 +35,8 @@ class Application(dict):
             'tutorial5': layers.Tutorial5Layer(self),
             'insert': layers.InsertLayer(self),
             'focus': layers.FocusLayer(self),
-            'loading': layers.LoadingLayer(self),
+            'acquisition': layers.AcquisitionLayer(self),
+            'analysis': layers.AnalysisLayer(self),
             'results': layers.ResultsLayer(self),
             'profiles': layers.ProfilesLayer(self),
             'help': layers.HelpLayer(self),
@@ -58,12 +59,12 @@ class Application(dict):
             raise KeyError(l)
         self.log.debug(f'Moving to layer "{l}"')
         self._active_layer = l
-        if self.active_layer == 'main':
-            self.photographer.set_mode(None)
         if self.active_layer == 'focus':
             self.photographer.set_mode('live_stream')
-        elif self.active_layer == 'loading':
+        elif self.active_layer == 'acquisition':
             self.photographer.set_mode('capture')
+        else:
+            self.photographer.set_mode(None)
 
     def run(self):
         self.log.debug('starting photographer')
@@ -99,9 +100,9 @@ class Application(dict):
             if time() - t_draw >= 1 / self.draw_fps:
                 fps = 1 / (time() - t_draw)
                 progress = self.photographer.get_progress()
-                self['loading']['progress'].progression = progress
+                self['analysis']['progress'].progression = progress
                 finished = self.photographer.is_finished()
-                self['loading']['next'].disabled = not finished
+                self['analysis']['next'].disabled = not finished
                 self.over_layer['fps'].text = f"{fps:05.2f} fps"
                 t_draw = time()
                 self.draw()

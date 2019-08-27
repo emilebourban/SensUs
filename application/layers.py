@@ -206,7 +206,7 @@ class FocusLayer(Layer):
         self.create_back_button('insert')
 
 
-class LoadingLayer(Layer):
+class AcquisitionLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
@@ -216,8 +216,8 @@ class LoadingLayer(Layer):
         self['stream'] = gui.Video(self)
         self['circles'] = gui.Group()
         self.create_title('Acquisition')
-        self.create_next_button('choice', disabled=True)
-        self.create_back_button('focus')
+        self.create_next_button('analysis', disabled=True)
+        self.create_back_button('focus', 'Cancel')
 
         x0 = 740
         y0 = 60
@@ -269,6 +269,14 @@ class LoadingLayer(Layer):
         if not catched:
             self.select_circle(None)
         return catched
+
+
+class AnalysisLayer(Layer):
+
+    def __init__(self, app):
+        self.create_title('Analysis')
+        self.create_back_button('focus', 'Cancel')
+        self['progress'] = gui.LoadingBar(self, (400, 300), (300, 8))
 
 
 class ResultsLayer(Layer):
