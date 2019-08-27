@@ -274,6 +274,7 @@ class AcquisitionLayer(Layer):
 class AnalysisLayer(Layer):
 
     def __init__(self, app):
+        super().__init__(app)
         self.create_title('Analysis')
         self.create_back_button('focus', 'Cancel')
         self['progress'] = gui.LoadingBar(self, (400, 300), (300, 8))
