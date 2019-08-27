@@ -64,6 +64,8 @@ class Acquistion:
             raise KeyError(m)
         if m == self.mode:
             return
+        if self.mode == 'live_stream':
+            self.cam.EndAcquisition()
         self.log.debug(f'switching to mode: {m}')
         self._mode = m
         if m == 'capture':
