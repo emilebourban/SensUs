@@ -145,14 +145,12 @@ class Photographer(Thread):
             self.mode = m
 
             if m == 'capture':
-                self.start_capture_mode()
-            if m == 'live_stream':
-                self.start_live_stream_mode()
+                self.new_capture_cycle()
 
         except BaseException as e:
             self.log.exception(f'Failed to switch to mode {m}: {e}')
 
-    def start_capture_mode(self):
+    def new_capture_cycle(self):
         self.acquisition_i = 0
         self.start_time = time()
         self.acquisition.autoset_exposure_time()
