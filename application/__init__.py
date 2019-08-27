@@ -100,9 +100,9 @@ class Application(dict):
             if time() - t_draw >= 1 / self.draw_fps:
                 fps = 1 / (time() - t_draw)
                 progress = self.photographer.get_progress()
-                self['analysis']['progress'].progression = progress
+                self['acquisition']['progress'].progression = progress
                 finished = self.photographer.is_finished()
-                self['analysis']['next'].disabled = not finished
+                self['acquisition']['next'].disabled = not finished
                 self.over_layer['fps'].text = f"{fps:05.2f} fps"
                 t_draw = time()
                 self.draw()
