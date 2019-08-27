@@ -110,7 +110,7 @@ class Application(dict):
         self.photographer.stop()
         self.photographer.join(5)
         if self.photographer.is_alive():
-            self.log.debug('Photographer failed to finish')
+            self.log.error('Photographer failed to finish')
         else:
             self.log.debug('Photographer finished')
         return True

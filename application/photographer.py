@@ -81,17 +81,14 @@ class Photographer(Thread):
 
         while not self.quitting.is_set():
 
-            self.log.debug('xxx 1 xxx')
-
             # get new mode
-            while self.mode_queue.empty():
+            while not self.mode_queue.empty():
                 try:
                     self._set_mode(self.mode_queue.get(block=False))
                     self.log.debug(f'Mode set to {self.mode}')
                 except Empty:
                     pass
 
-            self.log.debug('xxx 2 xxx')
             # capture
             if self.mode == 'capture' \
                     and time() - t_capt > self.capture_refresh_time:
@@ -103,7 +100,6 @@ class Photographer(Thread):
                     self.log.debug(f'Failed to captura: {e}')
 
 
-            self.log.debug('xxx 3 xxx')
             # livestream
             if self.mode \
                     and time() - t_live > 1 / self.live_stream_fps:
@@ -113,7 +109,6 @@ class Photographer(Thread):
                     self.live_stream()
                 except BaseException as e:
                     self.log.debug(f'Failed to live stream: {e}')
-            self.log.debug('xxx 4 xxx')
 
     def stop(self):
         self.log.debug('stop signal')
