@@ -214,6 +214,7 @@ class LoadingLayer(Layer):
                                        'Loading video...',
                                        always_gray=True)
         self['stream'] = gui.Video(self)
+        self['circles'] = gui.Group()
         self.create_title('Acquisition')
         self.create_next_button('choice', disabled=True)
         self.create_back_button('focus')
@@ -221,7 +222,6 @@ class LoadingLayer(Layer):
         x0 = 740
         y0 = 60
         s = 40
-        self['circles'] = gui.Group()
         self['add'] = gui.Button(self, (x0-s/2, y0-s/2), (s, s), '+',
                                  lambda: self.new_circle((100, 100), 42))
         self['rem'] = gui.Button(self, (x0+s/2, y0-s/2), (s, s), '−',
