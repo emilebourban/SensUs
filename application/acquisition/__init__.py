@@ -21,11 +21,17 @@ class Acquistion:
     def __del__(self):
         self.acq_log.debug('in acquisition del')
         self.cam.EndAcquisition()
+        self.acq_log.debug('end acq')
         self.cam.DeInit()
+        self.acq_log.debug('deinit')
         self.cam.Clear_cam_list()
+        self.acq_log.debug('clear cam')
         self.cam.Delete()
+        self.acq_log.debug('delete fct')
         self.cam.ReleaseInstance()
+        self.acq_log.debug('release of cam')
         del self.cam
+        self.acq_log.debug('acquisition del')
 
 
 class Capture(Acquistion):
@@ -60,14 +66,8 @@ class Capture(Acquistion):
 
         # Convert image to Mono8
         import PySpin as spin
-
-        image_converted = image.Convert(spin.PixelFormat_Mono8)
-
-        self.log.debug(f'image converted: {image_converted}')
-        image.Release()
-        self.log.debug(f'image released: {image_converted}')
-        return image_converted.GetNDArray()
         # image_converted = image.Convert(spin.PixelFormat_Mono16, spin.HQ_LINEAR)
+        return image.GetNDArray()
 
     def get_exposure_time(self):
         self.EndAcquisition()
@@ -81,7 +81,6 @@ class Capture(Acquistion):
                 self.log.error('Image incomplete with image status %d...' % image.GetImageStatus())
                 image.Release()
                 return None
-
             #chunk_data = im.GetChunkData()
 
         self.EndAcquisition()

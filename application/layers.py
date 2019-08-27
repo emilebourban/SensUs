@@ -214,25 +214,6 @@ class AcquisitionLayer(Layer):
                                        'Loading video...',
                                        always_gray=True)
         self['stream'] = gui.Video(self)
-        self.create_title('Please the spots and wait...')
-        self.create_next_button('choice', disabled=True)
-        self.create_back_button('focus', 'Cancel')
-
-
-class ResultsLayer(Layer):
-
-    def __init__(self, app):
-        super().__init__(app)
-        self.create_title('Results')
-
-
-class CircleLayer(Layer):
-
-    def __init__(self, app):
-        super().__init__(app)
-        self.create_title('Please select the visible spots')
-        self.create_next_button('choice', 'Done')
-        self.create_back_button('loading')
         self['circles'] = gui.Group()
         self.create_title('Acquisition')
         self.create_next_button('analysis', disabled=True)
@@ -265,10 +246,6 @@ class CircleLayer(Layer):
 
     def get_selected_circles(self):
         return {k for k, v in self['circles'].items() if v.is_selected}
-
-    def get_spots_coordoniates(self):
-        circles = [([4*c.pos[0], 4*(c.pos[1]+26.5)], 4*c.radius) for c in self.get_selected_circles()]
-        return circles
 
     def set_circles(self, circles):
         circles = [gui.DetectionCircle(self, p, r) for p, r in circles]
