@@ -81,6 +81,8 @@ class Photographer(Thread):
 
         while not self.quitting.is_set():
 
+            self.log.debug('xxx')
+
             # get new mode
             while self.mode_queue.empty():
                 try:
@@ -88,8 +90,6 @@ class Photographer(Thread):
                     self.log.debug(f'Mode set to {self.mode}')
                 except Empty:
                     pass
-                except BaseException as e:
-                    self.log.debug(f'Failed to switch to mode {m}: {e}')
 
             # capture
             if self.mode == 'capture' \
@@ -157,7 +157,7 @@ class Photographer(Thread):
                 self.start_live_stream_mode()
 
         except BaseException as e:
-            self.log.exception(f'Failed to set mode to {m}: {e}')
+            self.log.exception(f'Failed to switch to mode {m}: {e}')
 
     def start_capture_mode(self):
         self.acquisition_i = 0
