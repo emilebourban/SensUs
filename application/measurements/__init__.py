@@ -53,10 +53,8 @@ class Measure:
 
         x = np.array([i for i in range(len(self.particles))])
         x.astype(float)
-<<<<<<< HEAD:application/Measurement/__init__.py
         slope, intercept, r_value, p_value, std_err = stats.linregress(x, count_particles)
         return slope
-=======
         #slope, intercept, r_value, p_value, std_err = stats.linregress(x, count_particles)
         #print("slope: %f    intercept: %f" % (slope, intercept))
         #plt.plot(x, i, 'o', label='original data')
@@ -64,7 +62,6 @@ class Measure:
         #plt.legend()
         #plt.show()
         #return slope
->>>>>>> a37b2f0fe1a6e58afd1feec22fcf99045eeefbab:application/measurements/__init__.py
 
 
     def run(self):
