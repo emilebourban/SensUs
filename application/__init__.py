@@ -9,7 +9,7 @@ from . import photographer
 import pygame
 from logging import getLogger
 from time import time
-from . import measurements
+from . import measurement
 
 # TODO set fullscreen=True at gui.init
 

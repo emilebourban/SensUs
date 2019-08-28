@@ -54,8 +54,10 @@ class Capture(Acquistion):
         self.log.info(f'height before camSet :{self.cam["Height"].value}')
         self.log.info(f'width before camSet :{self.cam["Width"].max}')
         self.log.info(f'height before camSet :{self.cam["Height"].max}')
+
         self.cam['Width'].value = self.cam['Width'].max
         self.cam['Height'].value = self.cam['Height'].max
+
         self.log.info(f'width after camSet :{self.cam["Width"].value}')
         self.log.info(f'height after camSet :{self.cam["Height"].value}')
         self.cam['GainAuto'].value = 'Off'
