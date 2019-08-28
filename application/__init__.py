@@ -66,7 +66,7 @@ class Application(dict):
             self.photographer.set_mode('capture')
         elif self.active_layer == 'analysis':
             circles = self['acquisition'].get_spots_coordinates()
-            mes = measurements.Measure('results/', circles)
+            mes = measurement.Measure('results/', circles)
             result = mes.run()
             self['results']['title'].text = f'Result = {result}'
         else:

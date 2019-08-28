@@ -50,16 +50,16 @@ class Capture(Acquistion):
         self.cam['BinningVertical'].value = 1
 
         #TODO give size to constructor depending on window size
-        self.log.info(f'width before camSet :{self.cam["Width"].value}')
-        self.log.info(f'height before camSet :{self.cam["Height"].value}')
-        self.log.info(f'width before camSet :{self.cam["Width"].max}')
-        self.log.info(f'height before camSet :{self.cam["Height"].max}')
+        print(f'width before camSet :{self.cam["Width"].value}')
+        print(f'height before camSet :{self.cam["Height"].value}')
+        print(f'width before camSet :{self.cam["Width"].max}')
+        print(f'height before camSet :{self.cam["Height"].max}')
 
         self.cam['Width'].value = self.cam['Width'].max
         self.cam['Height'].value = self.cam['Height'].max
 
-        self.log.info(f'width after camSet :{self.cam["Width"].value}')
-        self.log.info(f'height after camSet :{self.cam["Height"].value}')
+        print(f'width after camSet :{self.cam["Width"].value}')
+        print(f'height after camSet :{self.cam["Height"].value}')
         self.cam['GainAuto'].value = 'Off'
         self.cam['Gain'].value = 0
         self.cam['AutoExposureExposureTimeUpperLimit'].value = 50000

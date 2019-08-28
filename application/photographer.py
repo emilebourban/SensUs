@@ -11,7 +11,7 @@ class Photographer(Thread):
     # !! FROM THE OUTSIDE, ONLY CALL start(), set_mode(...), is_finished()
     # !! has_new_live_image(), get_new_live_image(), get_progess() and stop()
 
-    def __init__(self, capture_path='results/img_', n_acquisitions=10,
+    def __init__(self, capture_path='results/img_', n_acquisitions=4,
                  live_stream_fps=24, capture_refresh_time=30):
         Thread.__init__(self)
         self.log = getLogger('main.Photographer')
@@ -122,6 +122,7 @@ class Photographer(Thread):
             self.log.info(f'capture res: {img.shape}')
             path = self.capture_path + f"{self.acquisition_i:04d}"
             np.save(path, img)
+            print(time())
             self.log.debug(f'Capture to "{path}"')
             self.acquisition_i += 1
             if self.acquisition_i >= self.n_acquisitions:
