@@ -214,25 +214,6 @@ class AcquisitionLayer(Layer):
                                        'Loading video...',
                                        always_gray=True)
         self['stream'] = gui.Video(self)
-        self.create_title('Please the spots and wait...')
-        self.create_next_button('choice', disabled=True)
-        self.create_back_button('focus', 'Cancel')
-
-
-class ResultsLayer(Layer):
-
-    def __init__(self, app):
-        super().__init__(app)
-        self.create_title('Results')
-
-
-class CircleLayer(Layer):
-
-    def __init__(self, app):
-        super().__init__(app)
-        self.create_title('Please select the visible spots')
-        self.create_next_button('choice', 'Done')
-        self.create_back_button('loading')
         self['circles'] = gui.Group()
         self.create_title('Acquisition')
         self.create_next_button('analysis', disabled=True)
@@ -344,11 +325,11 @@ class HelpLayer(Layer):
                                      color=(255, 255, 255))
         self['phone_img'] = gui.Image(self, (200, 200),
                                       'images/phone.png', h=60)
-        self['phone'] = gui.Text(self, (400, 200),
+        self['phone'] = gui.Text(self, (500, 200),
                                  'Phone: 078 842 25 20')
         self['mail_img'] = gui.Image(self, (200, 300),
                                      'images/mail.png', h=60)
-        self['mail'] = gui.Text(self, (400, 200),
+        self['mail'] = gui.Text(self, (500, 300),
                                 'Email: teamEPFSens@gmail.com')
 
 

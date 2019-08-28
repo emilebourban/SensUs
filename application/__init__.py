@@ -3,13 +3,13 @@
 from . import gui
 import os
 from . import layers
-#from . import measurement
-from . import acquisition
+#from . import image_analysis
 from . import ifconfig
 from . import photographer
 import pygame
 from logging import getLogger
 from time import time
+from . import measurements
 
 # TODO set fullscreen=True at gui.init
 
@@ -49,17 +49,6 @@ class Application(dict):
         self.live_image = None
         self.draw_fps = draw_fps
         self.ip_refresh_time = ip_refresh_time
-        self.live_fps = live_fps
-        self.capture_refresh_time = capture_refresh_time
-        self.debug = debug
-        self.acq = None
-        self.acq_i = 0
-        self.acquisition_mode = None
-        self.live_image = None
-        self.result_path = 'results/img_'
-        self.n_results = 10
-        self.meas = None
-
 
     @property
     def active_layer(self):
@@ -75,6 +64,11 @@ class Application(dict):
             self.photographer.set_mode('live_stream')
         elif self.active_layer == 'acquisition':
             self.photographer.set_mode('capture')
+        elif self.active_layer == 'analysis':
+            circles = self['acquisition'].get_spots_coordinates()
+            mes = measurements.Measure('results/', circles)
+            result = mes.run()
+            self['results']['title'].text = f'Result = {result}'
         else:
             self.photographer.set_mode(None)
 
@@ -87,17 +81,6 @@ class Application(dict):
         t_ip = time()
 
         while not self.quitting:
-
-            # livestream
-            if self.acquisition_mode and time() - t_live > 1/self.live_fps:
-                t_live = time()
-                self.live_image = self.acq.get_image()
-
-            # capture
-            if self.acquisition_mode == 'capture' \
-                    and time() - t_capt > self.capture_refresh_time:
-                self.capture()
-                t_capt = 0
 
             # events
             self.exec_events()
@@ -138,31 +121,6 @@ class Application(dict):
         else:
             self.log.debug('Photographer finished')
         return True
-
-    def capture(self):
-        del self.acq
-        self.acq = acquisition.Capture(expo_time=self.expo_time)
-        img = self.acq.get_image()
-        path = self.result_path + f"{self.acq_i:04d}"
-        np.save(path, img)
-        self.log.debug(f'Capture to "{path}"')
-        self.acq_i += 1
-        if self.acq_i >= self.n_results:
-            circles = layers.CircleLayer.get_spots_coordoniates()
-            self.meas = measurement.Measure(self.path, circles)
-            self.acquisition_mode = 'live_stream'
-        del self.acq
-        self.acq = acquisition.LiveStream()
-
-    def get_ip_addresses(self):
-        try:
-            pat = re.compile('^(\w+):.*$\n\s*inet\s+(\d+\.\d+\.\d+.\d+)',
-                             re.MULTILINE)
-            cmd = run(['ifconfig'], stdout=PIPE, encoding='utf8').stdout
-            return [f"{m.group(1)}: {m.group(2)}" for m in pat.finditer(cmd)]
-        except BaseException as e:
-            self.log.warn(f'Failed to get ip addresses: {e}')
-            return ['Failed to get IP addresses']
 
     def exec_events(self):
         for event in pygame.event.get():

@@ -21,11 +21,17 @@ class Acquistion:
     def __del__(self):
         self.acq_log.debug('in acquisition del')
         self.cam.EndAcquisition()
+        self.acq_log.debug('end acq')
         self.cam.DeInit()
+        self.acq_log.debug('deinit')
         self.cam.Clear_cam_list()
+        self.acq_log.debug('clear cam')
         self.cam.Delete()
+        self.acq_log.debug('delete fct')
         self.cam.ReleaseInstance()
+        self.acq_log.debug('release of cam')
         del self.cam
+        self.acq_log.debug('acquisition del')
 
 
 class Capture(Acquistion):
@@ -39,10 +45,19 @@ class Capture(Acquistion):
         self.cam['PixelFormat'].value = 'Mono8'
         self.cam['AcquisitionMode'].value = 'Continuous'
         self.cam['StreamCRCCheckEnable'].value = True
+        self.cam['DecimationSelector'].value = 'All'
+        self.cam['BinningHorizontal'].value = 1
+        self.cam['BinningVertical'].value = 1
 
         #TODO give size to constructor depending on window size
+        self.log.info(f'width before camSet :{self.cam['Width'].value})
+        self.log.info(f'height before camSet :{self.cam['Height'].value})
+        self.log.info(f'width before camSet :{self.cam['Width'].max})
+        self.log.info(f'height before camSet :{self.cam['Height'].max})
         self.cam['Width'].value = self.cam['Width'].max
         self.cam['Height'].value = self.cam['Height'].max
+        self.log.info(f'width after camSet :{self.cam['Width'].value})
+        self.log.info(f'height after camSet :{self.cam['Height'].value})
         self.cam['GainAuto'].value = 'Off'
         self.cam['Gain'].value = 0
         self.cam['AutoExposureExposureTimeUpperLimit'].value = 50000
@@ -60,14 +75,8 @@ class Capture(Acquistion):
 
         # Convert image to Mono8
         import PySpin as spin
-
         image_converted = image.Convert(spin.PixelFormat_Mono8)
-
-        self.log.debug(f'image converted: {image_converted}')
-        image.Release()
-        self.log.debug(f'image released: {image_converted}')
         return image_converted.GetNDArray()
-        # image_converted = image.Convert(spin.PixelFormat_Mono16, spin.HQ_LINEAR)
 
     def get_exposure_time(self):
         self.EndAcquisition()
@@ -81,7 +90,6 @@ class Capture(Acquistion):
                 self.log.error('Image incomplete with image status %d...' % image.GetImageStatus())
                 image.Release()
                 return None
-
             #chunk_data = im.GetChunkData()
 
         self.EndAcquisition()

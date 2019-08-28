@@ -42,27 +42,33 @@ class Measure:
     def count_particles(self):
         #order file
         ordered_id = sorted([int(file[4:8]) for file in os.listdir(self.path) \
-        if file[0:4] == 'img_' and file[-4:] == '.npy'])
+                             if file[0:4] == 'img_' and file[-4:] == '.npy'])
         ordered_pathes = [f'results/img_{n:04d}.npy' for n in ordered_id]
 
-        particles = [count_particles_one_image(np.load(f)) for f in ordered_pathes]
+        particles = [self.count_particles_one_image(np.load(f)) for f in ordered_pathes]
 
         return particles
 
     def compute_slope(self):
 
-        x = np.array([i for i in range(len(particles))])
+        x = np.array([i for i in range(len(self.particles))])
         x.astype(float)
-        slope, intercept, r_value, p_value, std_err = stats.linregress(x, count_particles)
-        return slope
+        #slope, intercept, r_value, p_value, std_err = stats.linregress(x, count_particles)
+        #print("slope: %f    intercept: %f" % (slope, intercept))
+        #plt.plot(x, i, 'o', label='original data')
+        #plt.plot(x, intercept + slope*x, 'r', label='fitted line')
+        #plt.legend()
+        #plt.show()
+        #return slope
 
 
     def run(self):
 
-            print(compute_slope())
-            #get_concentration()
-            print('your concentration is 10 µg/mL')
+        #print(compute_slope())
+        #get_concentration()
+        print('your concentration is 10 µg/mL')
 
-            #release folder
-            for i in os.listdir(self.path):
-                os.remove(i)
+        #release folder
+        #for i in os.listdir(self.path):
+        #    os.remove(i)
+        return 42
