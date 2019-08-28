@@ -64,7 +64,7 @@ class Measure:
 
     def run(self):
 
-        print(compute_slope())
+        print(self.compute_slope())
         #get_concentration()
         print('your concentration is 10 µg/mL')
 
