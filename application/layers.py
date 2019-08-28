@@ -289,8 +289,8 @@ class ResultsLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
         self.create_title('Results')
-        self['result'] = gui.Text(self, (500, 200),
-                                 f'The concentration is: {self.app.result} µg/mL')
+        self['title'] = gui.Text(self, (500, 200),
+                                 'The concentration is: ', always_gray=True)
         self.create_next_button(self, 'focus', text='New measure')
 
 

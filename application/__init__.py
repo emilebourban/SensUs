@@ -48,7 +48,7 @@ class Application(dict):
         self.live_image = None
         self.draw_fps = draw_fps
         self.ip_refresh_time = ip_refresh_time
-        self.result = 0
+        #self.result = None
 
     @property
     def active_layer(self):
@@ -67,8 +67,8 @@ class Application(dict):
         elif self.active_layer == 'analysis':
             circles = self['acquisition'].get_spots_coordinates()
             mes = measurements.Measure('results/', circles)
-            self.result = mes.run()
-            #self['results']['title'].text = f'Result = {result}'
+            result = mes.run()
+            self['results']['title'].text = f' Your Adalimumab concentration is: {result}'
         else:
             self.photographer.set_mode(None)
 
