@@ -45,6 +45,9 @@ class Capture(Acquistion):
         self.cam['PixelFormat'].value = 'Mono8'
         self.cam['AcquisitionMode'].value = 'Continuous'
         self.cam['StreamCRCCheckEnable'].value = True
+        self.cam['DecimationSelector'].value = 'All'
+        self.cam['BinningHorizontal'].value = 1
+        self.cam['BinningVertical'].value = 1
 
         #TODO give size to constructor depending on window size
         self.cam['Width'].value = self.cam['Width'].max
@@ -66,8 +69,8 @@ class Capture(Acquistion):
 
         # Convert image to Mono8
         import PySpin as spin
-        # image_converted = image.Convert(spin.PixelFormat_Mono16, spin.HQ_LINEAR)
-        return image.GetNDArray()
+        image_converted = image.Convert(spin.PixelFormat_Mono8)
+        return image_converted.GetNDArray()
 
     def get_exposure_time(self):
         self.EndAcquisition()
