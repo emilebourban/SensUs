@@ -326,12 +326,12 @@ class HelpLayer(Layer):
         self['rect'] = gui.Rectangle(self, (400, 260), (500, 200),
                                      color=(255, 255, 255))
         self['phone_img'] = gui.Image(self, (200, 200),
-                                      'images/phone.png', h=60)
-        self['phone'] = gui.Text(self, (500, 200),
+                                      'images/phone.png', h=50)
+        self['phone'] = gui.Text(self, (450, 200),
                                  'Phone: 078 842 25 20')
         self['mail_img'] = gui.Image(self, (200, 300),
-                                     'images/mail.png', h=60)
-        self['mail'] = gui.Text(self, (500, 300),
+                                     'images/mail.png', h=50)
+        self['mail'] = gui.Text(self, (450, 300),
                                 'Email: teamEPFSens@gmail.com')
 
 
