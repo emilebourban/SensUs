@@ -290,7 +290,7 @@ class ResultsLayer(Layer):
         super().__init__(app)
         self.create_title('Results')
         self['title'] = gui.Text(self, (500, 200), always_gray=True)
-        self.create_next_button(self, 'focus', text='New measure')
+        self.create_next_button('focus', text ='New measure')
 
 
 class ProfilesLayer(Layer):
