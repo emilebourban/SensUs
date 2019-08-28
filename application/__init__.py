@@ -3,7 +3,6 @@
 from . import gui
 import os
 from . import layers
-#from . import image_analysis
 from . import ifconfig
 from . import photographer
 import pygame
@@ -69,7 +68,7 @@ class Application(dict):
             circles = self['acquisition'].get_spots_coordinates()
             mes = measurements.Measure('results/', circles)
             self.result = mes.run()
-            self['results']['title'].text = f'Result = {result}'
+            #self['results']['title'].text = f'Result = {result}'
         else:
             self.photographer.set_mode(None)
 
