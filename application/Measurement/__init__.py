@@ -54,11 +54,6 @@ class Measure:
         x = np.array([i for i in range(len(particles))])
         x.astype(float)
         slope, intercept, r_value, p_value, std_err = stats.linregress(x, count_particles)
-        print("slope: %f    intercept: %f" % (slope, intercept))
-        plt.plot(x, i, 'o', label='original data')
-        plt.plot(x, intercept + slope*x, 'r', label='fitted line')
-        plt.legend()
-        plt.show()
         return slope
 
 

@@ -266,7 +266,7 @@ class CircleLayer(Layer):
     def get_selected_circles(self):
         return {k for k, v in self['circles'].items() if v.is_selected}
 
-    def get_spots_coordoniates(self):
+    def get_spots_coordinates(self):
         circles = [([4*c.pos[0], 4*(c.pos[1]+26.5)], 4*c.radius) for c in self.get_selected_circles()]
         return circles
 
@@ -343,12 +343,12 @@ class HelpLayer(Layer):
         self['rect'] = gui.Rectangle(self, (400, 260), (500, 200),
                                      color=(255, 255, 255))
         self['phone_img'] = gui.Image(self, (200, 200),
-                                      'images/phone.png', h=80)
-        self['phone'] = gui.Text(self, (200, 200),
+                                      'images/phone.png', h=60)
+        self['phone'] = gui.Text(self, (400, 200),
                                  'Phone: 078 842 25 20')
         self['mail_img'] = gui.Image(self, (200, 300),
-                                     'images/mail.png', h=80)
-        self['mail'] = gui.Text(self, (200, 300),
+                                     'images/mail.png', h=60)
+        self['mail'] = gui.Text(self, (400, 200),
                                 'Email: teamEPFSens@gmail.com')
 
 
