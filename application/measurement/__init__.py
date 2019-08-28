@@ -53,7 +53,7 @@ class Measure:
 
         x = np.array([i for i in range(len(self.particles))])
         x.astype(float)
-        slope, intercept, r_value, p_value, std_err = stats.linregress(x, count_particles)
+        slope, intercept, r_value, p_value, std_err = stats.linregress(x, self.count_particles())
         #print("slope: %f    intercept: %f" % (slope, intercept))
         #plt.plot(x, i, 'o', label='original data')
         #plt.plot(x, intercept + slope*x, 'r', label='fitted line')
@@ -64,7 +64,7 @@ class Measure:
 
     def run(self):
 
-        print(compute_slope())
+        print(self.compute_slope())
         #get_concentration()
         print('your concentration is 10 µg/mL')
 
