@@ -68,7 +68,7 @@ class Application(dict):
             circles = self['acquisition'].get_spots_coordinates()
             mes = measurements.Measure('results/', circles)
             result = mes.run()
-            self['results']['title'].text = f' Your Adalimumab concentration is: {result}'
+            self['results']['title'].text = f'Your Adalimumab concentration is: {result}'
         else:
             self.photographer.set_mode(None)
 
