@@ -16,7 +16,7 @@ def get_screen_resolution(log):
         res = [int(i) for i in res]
     except BaseException as e:
         log.exception('Failed to get screen resolution, using 800x600: {e}')
-        return [800, 480]
+        return [800, 400]
     log.info(f'Screen resolution: {res[0]}x{res[1]}')
     return res
 
@@ -34,7 +34,7 @@ def init(fullscreen=False, hide_cursor=False):
                                 (0, 0, 0, 0, 0, 0, 0, 0))
     if fullscreen:
         return pygame.display.set_mode(res, flags | pygame.FULLSCREEN)
-    return pygame.display.set_mode((1000, 600), flags)
+    return pygame.display.set_mode((800, 400), flags)
 
 
 def quit():

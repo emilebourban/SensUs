@@ -20,6 +20,23 @@ class Measure:
         self.circles = circles
         self.log = getLogger('main.Analysis')
 
+
+    def high_pass(img):
+        lowpass = ndimage.gaussian_filter(img, 8)
+        gauss_highpass = img - lowpass
+        return gauss_highpass
+
+    def high_pass2(img):
+        kernel = np.array([[-1, -1, -1, -1, -1],
+                       [-1,  1,  2,  1, -1],
+                       [-1,  2,  4,  2, -1],
+                       [-1,  1,  2,  1, -1],
+                       [-1, -1, -1, -1, -1]])
+
+        highpass_5x5 = ndimage.convolve(img, kernel)
+        return highpass_5x5
+
+
     def intensity_perImage(self, img):
 
         spot = []
@@ -69,5 +86,6 @@ class Measure:
 
         concentration = self.get_concentration()
         print(concentration)
-        
+
+        #concentration + slope
         return slope, concentration

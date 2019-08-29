@@ -248,7 +248,7 @@ class AcquisitionLayer(Layer):
         return {k for k, v in self['circles'].items() if v.is_selected}
 
     def get_spots_coordinates(self):
-        circles = [([4*c.pos[0], 4*(c.pos[1]+26.5)], 4*c.radius) for c in self.get_selected_circles()]
+        circles = [([4*c.pos[0], 4*(c.pos[1]+26.5)], 4*c.radius) for c in self['circles'].value()]
         return circles
 
     def set_circles(self, circles):
@@ -289,7 +289,8 @@ class ResultsLayer(Layer):
     def __init__(self, app):
         super().__init__(app)
         self.create_title('Results')
-        self['title'] = gui.Text(self, (500, 200), always_gray=True)
+        self['concentration'] = gui.Text(self, (500, 200), always_gray=True)
+        self['slope'] = gui.Text(self, (500, 100), always_gray=True)
         self.create_next_button('focus', text ='New measure')
 
 
