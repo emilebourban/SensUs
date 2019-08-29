@@ -25,7 +25,7 @@ def init(fullscreen=False, hide_cursor=False):
     log = getLogger('main.gui')
     pygame.init()
     log.debug('Pygame initialized')
-    # res = get_screen_resolution(log)
+    res = get_screen_resolution(log)
     flags = pygame.HWSURFACE | pygame.DOUBLEBUF
     if hide_cursor:
         # create an invisble cursor image
@@ -34,7 +34,7 @@ def init(fullscreen=False, hide_cursor=False):
                                 (0, 0, 0, 0, 0, 0, 0, 0))
     if fullscreen:
         return pygame.display.set_mode(res, flags | pygame.FULLSCREEN)
-    return pygame.display.set_mode((800,480), flags)
+    return pygame.display.set_mode((800, 480), flags)
 
 
 def quit():
