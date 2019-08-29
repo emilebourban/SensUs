@@ -1,5 +1,6 @@
 import skimage
 from skimage import measure
+from skimage.draw import circle
 import os
 import re
 import numpy as np
@@ -26,7 +27,8 @@ class Measure:
     def count_particles_one_image(self, img):
         total_particle = []
 
-        for (cx, cy), rad in self.circles:
+        for cx, cy, rad in self.circles:
+            cx, cy, rad = int(cx), int(cy), int(rad)
             new_img = img[cx-rad:cx+rad, cy-rad:cy+rad]
             new_img = new_img/255
             bin_img = new_img < self.threshold
@@ -36,8 +38,9 @@ class Measure:
             particle = len(list(x for x in areas if 8 <= x <=30))
             total_particle.append(particle)
 
-        return sum(total_particle)/len(total_particle)
-
+        # return sum(total_particle)/3
+        return 42
+        #len(total_particle)
 
     def count_particles(self):
         #order file
@@ -51,9 +54,9 @@ class Measure:
 
     def compute_slope(self):
 
-        x = np.array([i for i in range(len(self.particles))])
+        x = np.array([i for i in range(len(self.count_particles()))])
         x.astype(float)
-        slope, intercept, r_value, p_value, std_err = stats.linregress(x, count_particles)
+        slope, intercept, r_value, p_value, std_err = stats.linregress(x, self.count_particles())
         #print("slope: %f    intercept: %f" % (slope, intercept))
         #plt.plot(x, i, 'o', label='original data')
         #plt.plot(x, intercept + slope*x, 'r', label='fitted line')

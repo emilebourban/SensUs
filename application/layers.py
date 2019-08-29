@@ -235,8 +235,10 @@ class AcquisitionLayer(Layer):
     def select_circle(self, c):
         for v in self['circles'].values():
             v.is_selected = False
+            print('unselected')
         if c:
             c.is_selected = True
+            print('selected_one cricle')
             self['size'].set(c.radius)
 
     def get_new_key(self):
@@ -245,10 +247,11 @@ class AcquisitionLayer(Layer):
                 return i
 
     def get_selected_circles(self):
-        return {k for k, v in self['circles'].items() if v.is_selected}
+        return { k:v for k, v in self['circles'].items() if v.is_selected}
 
     def get_spots_coordinates(self):
-        circles = [([4*c.pos[0], 4*(c.pos[1]+26.5)], 4*c.radius) for c in self.get_selected_circles()]
+        circles = [(4*c.pos[0], 4*(c.pos[1]+26.5), 4*c.radius) for c in self['circles'].values()]
+        print(circles)
         return circles
 
     def set_circles(self, circles):
