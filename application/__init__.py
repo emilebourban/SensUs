@@ -67,8 +67,10 @@ class Application(dict):
         elif self.active_layer == 'analysis':
             circles = self['acquisition'].get_spots_coordinates()
             mes = measurement.Measure('results/', circles)
-            result = mes.run()
-            self['results']['title'].text = f'Your Adalimumab concentration is: {result}'
+            slope, concentration = mes.run()
+            self['results']['concentration'].text = f'Your Adalimumab concentration is: {concentration}'
+            self['results']['slope'].text = f'The intensity variation slope is: {slope}'
+
         else:
             self.photographer.set_mode(None)
 
