@@ -15,10 +15,12 @@ from logging import getLogger
 class Measure:
 
 
-    def __init__(self, path, circles):
+    def __init__(self, path, circles, capture_refresh_time):
         self.path = path
         self.circles = circles
+        self.capture_refresh_time = capture_refresh_time
         self.log = getLogger('main.Analysis')
+
 
     def intensity_perImage(self, img):
 
@@ -53,7 +55,7 @@ class Measure:
 
     def compute_slope(self):
         y = self.total_intensity()
-        x = range(len(y))
+        x = np.array(range(len(y)))*(60/self.capture_refresh_time)
         reg_lin = np.polyfit(x, y, 1)
         return reg_lin[0], y
 
@@ -69,5 +71,5 @@ class Measure:
 
         concentration = self.get_concentration()
         print(concentration)
-        
+
         return slope, concentration

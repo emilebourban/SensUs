@@ -21,7 +21,7 @@ class Photographer(Thread):
         self.live_stream_fps = live_stream_fps
         self.capture_refresh_time = capture_refresh_time
         self.capture_path = capture_path
-        self.n_acquisitions = 5
+        self.n_acquisitions = n_acquisitions
         self.acquisition = None
         self._acquisition_i = 0
         self._acquisition_i_lock = Lock()

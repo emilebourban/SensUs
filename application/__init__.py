@@ -16,14 +16,15 @@ from . import measurement
 class Application(dict):
 
     def __init__(self, is_raspi=True, debug=False, draw_fps=30,
-                 ip_refresh_time=1.0, live_fps=24, capture_refresh_time=30):
+                 ip_refresh_time=1.0, live_fps=24, capture_refresh_time=15):
         self.log = getLogger('main.app')
         self.debug = debug
         self.is_raspi = is_raspi
+        self.capture_refresh_time = capture_refresh_time
         self.screen = gui.init(fullscreen=is_raspi, hide_cursor=is_raspi)
         self.photographer = photographer.Photographer(live_stream_fps=18,
-                                                      n_acquisitions=3,
-                                                      capture_refresh_time=10)
+                                                      n_acquisitions=5,
+                                                      capture_refresh_time=self.capture_refresh_time)
         super().__init__({
             'welcome': layers.WelcomeLayer(self),
             'main': layers.MainLayer(self),
@@ -48,7 +49,6 @@ class Application(dict):
         self.live_image = None
         self.draw_fps = draw_fps
         self.ip_refresh_time = ip_refresh_time
-        #self.result = None
 
     @property
     def active_layer(self):
@@ -66,7 +66,7 @@ class Application(dict):
             self.photographer.set_mode('capture')
         elif self.active_layer == 'analysis':
             circles = self['acquisition'].get_spots_coordinates()
-            mes = measurement.Measure('results/', circles)
+            mes = measurement.Measure('results/', circles, self.capture_refresh_time)
             slope, concentration = mes.run()
             self['results']['concentration'].text = f'Your Adalimumab concentration is: {concentration}'
             self['results']['slope'].text = f'The intensity variation slope is: {slope}'
