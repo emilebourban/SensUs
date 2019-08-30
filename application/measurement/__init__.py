@@ -56,7 +56,7 @@ class Measure:
 
     def compute_slope(self):
         y = self.total_intensity()
-        x = np.array(range(len(y)))*(60/self.capture_refresh_time)
+        x = np.array(range(len(y)))*(60/(self.capture_refresh_time+4))
         reg_lin = np.polyfit(x, y, 1)
         return reg_lin[0]
 
@@ -68,7 +68,7 @@ class Measure:
             return 0.5
         if concentration > 10:
             return 10
-        return slope*slope_calibration
+        return concentration
 
 
     def run(self):
