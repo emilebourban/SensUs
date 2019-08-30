@@ -25,17 +25,17 @@ class Measure:
         spot = []
         for cx, cy, rad in self.circles :
             self.log.info('cx, cy, rad: {},{},{}'.format(cx, cy, rad))
-            print('cx, cy, rad: {},{},{}'.format(cx, cy, rad))
+            # print('cx, cy, rad: {},{},{}'.format(cx, cy, rad))
             circy, circx = circle(cx,cy,rad)
             intensity_perSpot = img[circx, circy].mean()
             spot.append(intensity_perSpot)
 
         background = np.array(spot[-2:])
         self.log.info(f'background intensity: {background}')
-        print(f'background intensity: {background}')
+        # print(f'background intensity: {background}')
         foreground = np.array(spot[:-2])
         self.log.info(f'foreground intensity: {foreground}')
-        print(f'foreground intensity: {foreground}')
+        # print(f'foreground intensity: {foreground}')
         background = background.mean()
         foreground = foreground.mean()
         intensity_per_image = (background-foreground)/(background+foreground)
@@ -73,9 +73,9 @@ class Measure:
 
     def run(self):
         slope = self.compute_slope()
-        print('slope: ',slope)
+        # print('slope: ',slope)
 
         concentration = self.get_concentration(slope)
-        print('concentration ',concentration)
+        # print('concentration ',concentration)
 
         return slope, concentration

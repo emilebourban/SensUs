@@ -16,7 +16,7 @@ from . import measurement
 class Application(dict):
 
     def __init__(self, is_raspi=True, debug=False, draw_fps=30,
-                 ip_refresh_time=1.0, live_fps=24, capture_refresh_time=15):
+                 ip_refresh_time=1.0, live_fps=24, capture_refresh_time=11):
         self.log = getLogger('main.app')
         self.debug = debug
         self.is_raspi = is_raspi
@@ -67,8 +67,8 @@ class Application(dict):
             circles = self['acquisition'].get_spots_coordinates()
             mes = measurement.Measure('results/', circles, self.capture_refresh_time)
             slope, concentration = mes.run()
-            self['analysis']['concentration'].text = f'Your Adalimumab concentration is: {concentration}'
-            self['analysis']['slope'].text = f'The intensity variation slope is: {slope}'
+            self['analysis']['concentration'].text = 'Your Adalimumab concentration is: %.3f'%concentration
+            self['analysis']['slope'].text = 'The intensity variation slope is: %.3E'%slope
 
         else:
             self.photographer.set_mode(None)
