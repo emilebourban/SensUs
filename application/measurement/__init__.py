@@ -61,8 +61,9 @@ class Measure:
         return reg_lin[0]
 
     def get_concentration(self, slope):
-        slope_calibration = 2949
-        concentration = slope*slope_calibration
+        slope_calibration = -2446.18395303
+        offset = 9.59393346
+        concentration = slope*slope_calibration + offset
         if concentration < 0.5:
             return 0.5
         if concentration > 10:
