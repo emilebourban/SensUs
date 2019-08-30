@@ -23,7 +23,7 @@ class Application(dict):
         self.capture_refresh_time = capture_refresh_time
         self.screen = gui.init(fullscreen=is_raspi, hide_cursor=is_raspi)
         self.photographer = photographer.Photographer(live_stream_fps=18,
-                                                      n_acquisitions=5,
+                                                      n_acquisitions=40,
                                                       capture_refresh_time=self.capture_refresh_time)
         super().__init__({
             'welcome': layers.WelcomeLayer(self),
@@ -38,7 +38,6 @@ class Application(dict):
             'focus': layers.FocusLayer(self),
             'acquisition': layers.AcquisitionLayer(self),
             'analysis': layers.AnalysisLayer(self),
-            'results': layers.ResultsLayer(self),
             'profiles': layers.ProfilesLayer(self),
             'help': layers.HelpLayer(self),
             'parameters': layers.ParametersLayer(self),
@@ -68,8 +67,8 @@ class Application(dict):
             circles = self['acquisition'].get_spots_coordinates()
             mes = measurement.Measure('results/', circles, self.capture_refresh_time)
             slope, concentration = mes.run()
-            self['results']['concentration'].text = f'Your Adalimumab concentration is: {concentration}'
-            self['results']['slope'].text = f'The intensity variation slope is: {slope}'
+            self['analysis']['concentration'].text = f'Your Adalimumab concentration is: {concentration}'
+            self['analysis']['slope'].text = f'The intensity variation slope is: {slope}'
 
         else:
             self.photographer.set_mode(None)

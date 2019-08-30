@@ -216,7 +216,7 @@ class AcquisitionLayer(Layer):
         self['stream'] = gui.Video(self)
         self['circles'] = gui.Group()
         self.create_title('Acquisition')
-        self.create_next_button('analysis', disabled=True)
+        self.create_next_button('analysis', disabled=False)
         self.create_back_button('focus', 'Cancel')
 
         x0 = 740
@@ -250,12 +250,7 @@ class AcquisitionLayer(Layer):
         return { k:v for k, v in self['circles'].items() if v.is_selected}
 
     def get_spots_coordinates(self):
-<<<<<<< HEAD
-        circles = [([4*c.pos[0], 4*(c.pos[1]+26.5)], 4*c.radius) for c in self['circles'].value()]
-=======
         circles = [(4*c.pos[0], 4*(c.pos[1]+26.5), 4*c.radius) for c in self['circles'].values()]
-        print(circles)
->>>>>>> 592c73baa532d3a8b3989f15d0fd3a9ddfecbb90
         return circles
 
     def set_circles(self, circles):
@@ -286,19 +281,17 @@ class AnalysisLayer(Layer):
 
     def __init__(self, app):
         super().__init__(app)
-        self.create_title('Analysis')
-        self.create_back_button('focus', 'Cancel')
-        self['progress'] = gui.LoadingBar(self, (400, 300), (300, 8))
-
-
-class ResultsLayer(Layer):
-
-    def __init__(self, app):
-        super().__init__(app)
         self.create_title('Results')
-        self['concentration'] = gui.Text(self, (500, 200), always_gray=True)
-        self['slope'] = gui.Text(self, (500, 300), always_gray=True)
-        self.create_next_button('focus', text ='New measure')
+        self.create_back_button('focus', 'Cancel')
+        # self['progress'] = gui.LoadingBar(self, (400, 300), (300, 8))
+
+        self['concentration'] = gui.Text(self, (500, 200), font_size=25, color=(0, 0, 0),
+                     gray_color=(0, 0, 0), always_gray=False)
+        self['slope'] = gui.Text(self, (500, 300), font_size=25, color=(0, 0, 0),
+                     gray_color=(0, 0, 0), always_gray=False)
+        self['swiss'] = gui.Text(self, (500, 390), text='(Swiss precision)', font_size=18, color=(0, 0, 0),
+                     gray_color=(0, 0, 0), always_gray=False)
+        self.create_next_button('focus', text='New measure')
 
 
 class ProfilesLayer(Layer):

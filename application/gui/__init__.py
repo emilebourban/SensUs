@@ -34,6 +34,7 @@ def init(fullscreen=False, hide_cursor=False):
                                 (0, 0, 0, 0, 0, 0, 0, 0))
     if fullscreen:
         return pygame.display.set_mode(res, flags | pygame.FULLSCREEN)
+#800, 400
     return pygame.display.set_mode((800, 400), flags)
 
 

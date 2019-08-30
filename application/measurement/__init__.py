@@ -8,12 +8,10 @@ from skimage.filters import gaussian, threshold_otsu, threshold_minimum, sobel
 from skimage.measure import label, regionprops
 from skimage.morphology import closing, opening, disk, dilation
 from skimage.io import ImageCollection, imread
-from utilities import smooth_background
 from scipy import ndimage
 from logging import getLogger
 
 class Measure:
-
 
     def __init__(self, path, circles, capture_refresh_time):
         self.path = path
@@ -27,14 +25,17 @@ class Measure:
         spot = []
         for cx, cy, rad in self.circles :
             self.log.info('cx, cy, rad: {},{},{}'.format(cx, cy, rad))
+            print('cx, cy, rad: {},{},{}'.format(cx, cy, rad))
             circy, circx = circle(cx,cy,rad)
             intensity_perSpot = img[circx, circy].mean()
             spot.append(intensity_perSpot)
 
         background = np.array(spot[-2:])
         self.log.info(f'background intensity: {background}')
+        print(f'background intensity: {background}')
         foreground = np.array(spot[:-2])
         self.log.info(f'foreground intensity: {foreground}')
+        print(f'foreground intensity: {foreground}')
         background = background.mean()
         foreground = foreground.mean()
         intensity_per_image = (background-foreground)/(background+foreground)
@@ -57,19 +58,23 @@ class Measure:
         y = self.total_intensity()
         x = np.array(range(len(y)))*(60/self.capture_refresh_time)
         reg_lin = np.polyfit(x, y, 1)
-        return reg_lin[0], y
+        return reg_lin[0]
 
-    def get_concentration(self):
-        slope_calibration = 5.0;
-        return self.compute_slope()*slope_calibration
+    def get_concentration(self, slope):
+        slope_calibration = 2949
+        concentration = slope*slope_calibration
+        if concentration < 0.5:
+            return 0.5
+        if concentration > 10:
+            return 10
+        return slope*slope_calibration
 
 
     def run(self):
-
         slope = self.compute_slope()
-        print(slope)
+        print('slope: ',slope)
 
-        concentration = self.get_concentration()
-        print(concentration)
+        concentration = self.get_concentration(slope)
+        print('concentration ',concentration)
 
         return slope, concentration
