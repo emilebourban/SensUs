@@ -52,7 +52,6 @@ class Measure:
             img = np.load(f)
             intensity.append(self.intensity_perImage(img))
             del img
-            os.remove(f)
         return intensity
 
     def compute_slope(self):
